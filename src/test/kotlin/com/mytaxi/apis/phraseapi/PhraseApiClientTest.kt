@@ -11,6 +11,7 @@ import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import java.nio.charset.StandardCharsets
+import java.util.Locale
 import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -111,7 +112,7 @@ internal class PhraseApiClientTest {
         val projectId = UUID.randomUUID().toString()
         val localeId = UUID.randomUUID().toString()
         val localeName = UUID.randomUUID().toString()
-        val localeCode =  "by-BY"
+        val localeCode =  Locale.CANADA
 
         val listLocales = PhraseLocales()
         listLocales.add(PhraseLocale(localeId, localeName, localeCode))
@@ -143,7 +144,7 @@ internal class PhraseApiClientTest {
         val projectId = UUID.randomUUID().toString()
         val localeId = UUID.randomUUID().toString()
         val localeName = UUID.randomUUID().toString()
-        val localeCode =  "by-BY"
+        val localeCode =  Locale.CANADA
 
         val listLocales = PhraseLocales()
         listLocales.add(PhraseLocale(localeId, localeName, localeCode))

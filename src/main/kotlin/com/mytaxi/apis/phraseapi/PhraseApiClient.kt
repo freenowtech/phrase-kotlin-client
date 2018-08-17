@@ -2,16 +2,24 @@ package com.mytaxi.apis.phraseapi
 
 import com.google.common.cache.CacheBuilder
 import com.google.gson.Gson
+import com.mytaxi.apis.phraseapi.locale.reponse.CreatePhraseLocale
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocale
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocaleMessages
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocales
+import com.mytaxi.apis.phraseapi.project.reponse.CreatePhraseProject
 import com.mytaxi.apis.phraseapi.project.reponse.PhraseProject
+import com.mytaxi.apis.phraseapi.project.reponse.PhraseProjects
+import com.mytaxi.apis.phraseapi.project.reponse.UpdatePhraseProject
 import com.mytaxi.apis.phraseapi.translation.responce.Translations
+import com.sun.org.apache.xpath.internal.operations.Bool
 import feign.Feign
+import feign.Param
 import feign.RequestInterceptor
 import feign.Response
+import feign.form.FormEncoder
 import feign.gson.GsonDecoder
 import feign.gson.GsonEncoder
+import java.io.File
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -37,19 +45,58 @@ class PhraseApiClient {
         client = PhraseApiImpl(authKey, url)
     }
 
+    fun projects(): PhraseProjects? {
+        val response = client.projects()
+        return processResponse("/v2/projects", response)
+    }
+
+    fun project(projectId: String): PhraseProject? {
+        val response = client.project(projectId)
+        return processResponse("/v2/projects/$projectId", response)
+    }
+
+    fun deleteProject(projectId: String): Boolean {
+        return client.deleteProject(projectId).status() == 204
+    }
+
+    fun createProject(phraseProject: CreatePhraseProject): PhraseProject? {
+        val response = client.createProject(
+            phraseProject.name,
+            phraseProject.project_image,
+            phraseProject.main_format,
+            phraseProject.sharesTranslationMemory,
+            phraseProject.remove_project_image,
+            phraseProject.account_id
+        )
+        return processResponse("/v2/projects", response)
+    }
+
+    fun updateProject(projectId: String, phraseProject: UpdatePhraseProject): PhraseProject? {
+        val response = client.updateProject(
+            projectId,
+            phraseProject.name,
+            phraseProject.project_image,
+            phraseProject.main_format,
+            phraseProject.sharesTranslationMemory,
+            phraseProject.remove_project_image,
+            phraseProject.account_id
+        )
+        return processResponse("/v2/projects/$projectId", response)
+    }
+
     fun locales(projectId: String): PhraseLocales? {
         val response = client.locales(projectId)
+        return processResponse("/v2/projects/$projectId/locales", response)
+    }
+
+    fun createLocale(projectId: String, locale: CreatePhraseLocale): PhraseLocale? {
+        val response =  client.createLocale(projectId, locale)
         return processResponse("/v2/projects/$projectId/locales", response)
     }
 
     fun downloadLocale(projectId: String, localeId: String): PhraseLocaleMessages? {
         val response = client.downloadLocale(projectId, localeId)
         return processResponse("/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
-    }
-
-    fun project(projectId: String): PhraseProject? {
-        val response = client.project(projectId)
-        return processResponse("/v2/projects/$projectId", response)
     }
 
     fun translations(project: PhraseProject, locale: PhraseLocale): Translations? {
@@ -105,7 +152,7 @@ class PhraseApiClient {
             target = Feign.builder()
                 .requestInterceptor(getInterceptor())
                 .decoder(GsonDecoder())
-                .encoder(GsonEncoder())
+                .encoder(FormEncoder(GsonEncoder()))
                 .target(PhraseApi::class.java, url)
         }
 
@@ -116,21 +163,65 @@ class PhraseApiClient {
             }
         }
 
-        override fun locales(projectId: String): Response {
-            return target.locales(projectId)
-        }
 
-        override fun downloadLocale(projectId: String, localeId: String): Response {
-            return target.downloadLocale(projectId, localeId)
-        }
+        //PROJECT
+        override fun projects(): Response = target.projects()
 
-        override fun project(projectId: String): Response {
-            return target.project(projectId)
-        }
+        override fun project(projectId: String): Response = target.project(projectId)
 
-        override fun translations(projectId: String, localeId: String): Response {
-            return target.translations(projectId, localeId)
-        }
+        override fun createProject(
+            name: String,
+            projectImage: File?,
+            mainFormat: String?,
+            sharesTranslationMemory: String?,
+            removeProjectImage: Boolean?,
+            accountId: String?
+        ): Response = target.createProject(
+            name = name,
+            mainFormat = mainFormat,
+            accountId = accountId,
+            projectImage = projectImage,
+            removeProjectImage = removeProjectImage,
+            sharesTranslationMemory = sharesTranslationMemory
+        )
+
+        override fun updateProject(
+            projectId: String,
+            name: String,
+            projectImage: File?,
+            mainFormat: String?,
+            sharesTranslationMemory: String?,
+            removeProjectImage: Boolean?,
+            accountId: String?
+        ): Response = target.updateProject(
+            projectId = projectId,
+            name = name,
+            mainFormat = mainFormat,
+            accountId = accountId,
+            projectImage = projectImage,
+            removeProjectImage = removeProjectImage,
+            sharesTranslationMemory = sharesTranslationMemory
+        )
+
+        override fun deleteProject(projectId: String): Response = target.deleteProject(projectId)
+
+
+        //LOCALE
+        override fun locales(projectId: String): Response = target.locales(projectId)
+
+        override fun locale(projectId: String, localeId: String): Response = target.locale(projectId, localeId)
+
+        override fun downloadLocale(projectId: String, localeId: String): Response = target.downloadLocale(projectId, localeId)
+
+        override fun createLocale(projectId: String, locale: CreatePhraseLocale): Response = target.createLocale(projectId, locale)
+
+        override fun updateLocale(projectId: String, localeId: String, locale: CreatePhraseLocale): Response = target.updateLocale(projectId, localeId, locale)
+
+        override fun deleteLocale(projectId: String, localeId: String): Response = target.deleteLocale(projectId, localeId)
+
+
+        //TRANSLATION
+        override fun translations(projectId: String, localeId: String): Response = target.translations(projectId, localeId)
     }
 }
 
