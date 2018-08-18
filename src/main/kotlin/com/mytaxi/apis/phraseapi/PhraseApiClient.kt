@@ -47,12 +47,12 @@ class PhraseApiClient {
 
     fun projects(): PhraseProjects? {
         val response = client.projects()
-        return processResponse("/v2/projects", response)
+        return processResponse("GET/v2/projects", response)
     }
 
     fun project(projectId: String): PhraseProject? {
         val response = client.project(projectId)
-        return processResponse("/v2/projects/$projectId", response)
+        return processResponse("GET/v2/projects/$projectId", response)
     }
 
     fun deleteProject(projectId: String): Boolean {
@@ -68,7 +68,7 @@ class PhraseApiClient {
             phraseProject.remove_project_image,
             phraseProject.account_id
         )
-        return processResponse("/v2/projects", response)
+        return processResponse("POST/v2/projects", response)
     }
 
     fun updateProject(projectId: String, phraseProject: UpdatePhraseProject): PhraseProject? {
@@ -81,27 +81,27 @@ class PhraseApiClient {
             phraseProject.remove_project_image,
             phraseProject.account_id
         )
-        return processResponse("/v2/projects/$projectId", response)
+        return processResponse("PUT/v2/projects/$projectId", response)
     }
 
     fun locales(projectId: String): PhraseLocales? {
         val response = client.locales(projectId)
-        return processResponse("/v2/projects/$projectId/locales", response)
+        return processResponse("GET/v2/projects/$projectId/locales", response)
     }
 
     fun createLocale(projectId: String, locale: CreatePhraseLocale): PhraseLocale? {
         val response =  client.createLocale(projectId, locale)
-        return processResponse("/v2/projects/$projectId/locales", response)
+        return processResponse("POST/v2/projects/$projectId/locales", response)
     }
 
     fun downloadLocale(projectId: String, localeId: String): PhraseLocaleMessages? {
         val response = client.downloadLocale(projectId, localeId)
-        return processResponse("/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
+        return processResponse("GET/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
     }
 
     fun translations(project: PhraseProject, locale: PhraseLocale): Translations? {
         val response = client.translations(project.id, locale.id)
-        return processResponse("/v2/projects/${project.id}/locales/${locale.id}/translationsn", response)
+        return processResponse("GET/v2/projects/${project.id}/locales/${locale.id}/translationsn", response)
     }
 
     private fun getETag(key: String, response: Response): String? {
@@ -158,7 +158,7 @@ class PhraseApiClient {
 
         private fun getInterceptor() = RequestInterceptor {
             apply {
-                it.header("If-None-Match", eTagCache.getIfPresent(it.request().url()))
+                it.header("If-None-Match", eTagCache.getIfPresent(it.request().method() + it.request().url()))
                 it.header("Authorization", "token $authKey")
             }
         }
