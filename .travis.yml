@@ -1,1 +1,12 @@
+dist: trusty
 language: java
+
+addons:
+  sonarcloud:
+    organization: "sadovnikov94-github"
+    token:
+      secure: "1828601096b006c057a09f668b3f9a97e6278e2c"
+
+script:
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+  - mvn sonar:sonar -Dsonar.organization=sadovnikov94-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=1828601096b006c057a09f668b3f9a97e6278e2c
