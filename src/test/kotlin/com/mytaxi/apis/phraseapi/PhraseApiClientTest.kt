@@ -16,7 +16,7 @@ import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-internal class PhraseApiClientTest {
+class PhraseApiClientTest {
 
     private var client: PhraseApi = mock(PhraseApi::class.java)
 
