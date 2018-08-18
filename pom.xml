@@ -32,7 +32,7 @@
     <properties>
         <javaVersion>1.8</javaVersion>
         <scm.connection>scm:git:git@github.com:mytaxi/phrase-java-client.git</scm.connection>
-        <scm.url>https://github.com/mytaxi/phrase-java-client</scm.url>
+        <scm.url>https://github.com/mytaxi/phrase-kotlin-client</scm.url>
         <kotlin.version>1.2.60</kotlin.version>
     </properties>
 
