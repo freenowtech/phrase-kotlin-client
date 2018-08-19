@@ -1,5 +1,8 @@
 # phrase-kotlin-client
 Kotlin Client for PhraseApp 
+## What is this?
+This projects contain client to handle the API from [PhraseApp API v2](http://docs.phraseapp.com/api/v2/).
+It's supposed to expose Phrase Core within the kotlin world.
 
 [![sonar-quality-gate][sonar-quality-gate]][sonar-url]
 [![Build Status][travis-image]][travis-url-main]
