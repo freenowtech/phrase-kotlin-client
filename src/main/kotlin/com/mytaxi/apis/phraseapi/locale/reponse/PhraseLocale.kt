@@ -5,7 +5,7 @@ import java.util.Locale
 data class PhraseLocale(
     val id: String,
     val name: String,
-    val code: Locale,
+    val code: String,
     val default: Boolean? = null,
     val mail: Boolean? = null,
     val rtl: Boolean? = null,

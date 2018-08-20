@@ -112,7 +112,7 @@ class PhraseApiClientTest {
         val projectId = UUID.randomUUID().toString()
         val localeId = UUID.randomUUID().toString()
         val localeName = UUID.randomUUID().toString()
-        val localeCode =  Locale.CANADA
+        val localeCode =  Locale.CANADA.toLanguageTag()
 
         val listLocales = PhraseLocales()
         listLocales.add(PhraseLocale(localeId, localeName, localeCode))
@@ -144,7 +144,7 @@ class PhraseApiClientTest {
         val projectId = UUID.randomUUID().toString()
         val localeId = UUID.randomUUID().toString()
         val localeName = UUID.randomUUID().toString()
-        val localeCode =  Locale.CANADA
+        val localeCode =  Locale.CANADA.toLanguageTag()
 
         val listLocales = PhraseLocales()
         listLocales.add(PhraseLocale(localeId, localeName, localeCode))
