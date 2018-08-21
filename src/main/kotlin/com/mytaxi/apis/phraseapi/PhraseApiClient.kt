@@ -1,6 +1,7 @@
 package com.mytaxi.apis.phraseapi
 
 import com.google.common.cache.CacheBuilder
+import com.google.common.net.HttpHeaders
 import com.google.gson.Gson
 import com.mytaxi.apis.phraseapi.locale.reponse.CreatePhraseLocale
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocale
@@ -11,9 +12,7 @@ import com.mytaxi.apis.phraseapi.project.reponse.PhraseProject
 import com.mytaxi.apis.phraseapi.project.reponse.PhraseProjects
 import com.mytaxi.apis.phraseapi.project.reponse.UpdatePhraseProject
 import com.mytaxi.apis.phraseapi.translation.responce.Translations
-import com.sun.org.apache.xpath.internal.operations.Bool
 import feign.Feign
-import feign.Param
 import feign.RequestInterceptor
 import feign.Response
 import feign.form.FormEncoder
@@ -21,13 +20,13 @@ import feign.gson.GsonDecoder
 import feign.gson.GsonEncoder
 import java.io.File
 import java.util.concurrent.TimeUnit
-import java.util.logging.Level
-import java.util.logging.Logger
+import org.slf4j.LoggerFactory
+import org.apache.commons.httpclient.HttpStatus
 
 
 class PhraseApiClient {
 
-    private var log = Logger.getLogger(PhraseApiClient::class.java.name)
+    private var LOG = LoggerFactory.getLogger(PhraseApiClient::class.java.name)
 
     private val client: PhraseApi
     private val gson = Gson()
@@ -47,16 +46,16 @@ class PhraseApiClient {
 
     fun projects(): PhraseProjects? {
         val response = client.projects()
-        return processResponse("GET/v2/projects", response)
+        return processResponse("GET/api/v2/projects", response)
     }
 
     fun project(projectId: String): PhraseProject? {
         val response = client.project(projectId)
-        return processResponse("GET/v2/projects/$projectId", response)
+        return processResponse("GET/api/v2/projects/$projectId", response)
     }
 
     fun deleteProject(projectId: String): Boolean {
-        return client.deleteProject(projectId).status() == 204
+        return client.deleteProject(projectId).status() == HttpStatus.SC_NO_CONTENT
     }
 
     fun createProject(phraseProject: CreatePhraseProject): PhraseProject? {
@@ -68,7 +67,7 @@ class PhraseApiClient {
             phraseProject.remove_project_image,
             phraseProject.account_id
         )
-        return processResponse("POST/v2/projects", response)
+        return processResponse("POST/api/v2/projects", response)
     }
 
     fun updateProject(projectId: String, phraseProject: UpdatePhraseProject): PhraseProject? {
@@ -81,31 +80,31 @@ class PhraseApiClient {
             phraseProject.remove_project_image,
             phraseProject.account_id
         )
-        return processResponse("PUT/v2/projects/$projectId", response)
+        return processResponse("PUT/api/v2/projects/$projectId", response)
     }
 
     fun locales(projectId: String): PhraseLocales? {
         val response = client.locales(projectId)
-        return processResponse("GET/v2/projects/$projectId/locales", response)
+        return processResponse("GET/api/v2/projects/$projectId/locales", response)
     }
 
     fun createLocale(projectId: String, locale: CreatePhraseLocale): PhraseLocale? {
         val response =  client.createLocale(projectId, locale)
-        return processResponse("POST/v2/projects/$projectId/locales", response)
+        return processResponse("POST/api/v2/projects/$projectId/locales", response)
     }
 
     fun downloadLocale(projectId: String, localeId: String): PhraseLocaleMessages? {
         val response = client.downloadLocale(projectId, localeId)
-        return processResponse("GET/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
+        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
     }
 
     fun translations(project: PhraseProject, locale: PhraseLocale): Translations? {
         val response = client.translations(project.id, locale.id)
-        return processResponse("GET/v2/projects/${project.id}/locales/${locale.id}/translationsn", response)
+        return processResponse("GET/api/v2/projects/${project.id}/locales/${locale.id}/translationsn", response)
     }
 
     private fun getETag(key: String, response: Response): String? {
-        val eTagHeader = response.headers().entries.find { it.key == "etag" }
+        val eTagHeader = response.headers().entries.find { it.key.equals(HttpHeaders.ETAG, true)}
         val eTag = eTagHeader?.value?.first()
         if (eTag != null) {
             eTagCache.put(key, eTag)
@@ -114,14 +113,15 @@ class PhraseApiClient {
     }
 
     private inline fun <reified T> processResponse(key: String, response: Response): T? {
-        if (response.status() !in 200..400) {
+        LOG.debug("Response : status [${response.status()}] \n headers [${response.headers()}]")
+        if (response.status() !in HttpStatus.SC_OK..HttpStatus.SC_BAD_REQUEST) {
             val message = response.body().asReader().readText()
-            log.log(Level.WARNING, message)
+            LOG.warn(message)
             throw PhraseAppApiException(message)
         }
 
         val eTag = getETag(key, response)
-        return if (response.status() == 304) {
+        return if (response.status() == HttpStatus.SC_NOT_MODIFIED) {
             responseCache.getIfPresent(eTag!!) as T
         } else {
             val responseObject: T = getObject(response)
@@ -134,9 +134,11 @@ class PhraseApiClient {
 
     private inline fun <reified T> getObject(response: Response): T {
         try {
-            return gson.fromJson(response.body().asReader(), T::class.java)
+            val responseObject = gson.fromJson(response.body().asReader(), T::class.java)
+            LOG.debug("Response object : $responseObject")
+            return responseObject
         } catch (ex: Exception) {
-            log.log(Level.WARNING, ex.message)
+            LOG.error(ex.message)
             throw PhraseAppApiException("Error during parsing response", ex)
         }
     }
@@ -158,8 +160,8 @@ class PhraseApiClient {
 
         private fun getInterceptor() = RequestInterceptor {
             apply {
-                it.header("If-None-Match", eTagCache.getIfPresent(it.request().method() + it.request().url()))
-                it.header("Authorization", "token $authKey")
+                it.header(HttpHeaders.IF_NONE_MATCH, eTagCache.getIfPresent(it.request().method() + it.request().url()))
+                it.header(HttpHeaders.AUTHORIZATION, "token $authKey")
             }
         }
 

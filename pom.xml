@@ -32,6 +32,8 @@
         <scm.connection>scm:git:git@github.com:mytaxi/phrase-kotlin-client.git</scm.connection>
         <scm.url>https://github.com/mytaxi/phrase-kotlin-client</scm.url>
         <kotlin.version>1.2.60</kotlin.version>
+
+        <feign.version>8.18.0</feign.version>
     </properties>
 
     <dependencies>
@@ -46,12 +48,12 @@
         <dependency>
             <groupId>com.netflix.feign</groupId>
             <artifactId>feign-gson</artifactId>
-            <version>8.18.0</version>
+            <version>${feign.version}</version>
         </dependency>
         <dependency>
             <groupId>com.netflix.feign</groupId>
             <artifactId>feign-core</artifactId>
-            <version>8.18.0</version>
+            <version>${feign.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.openfeign.form</groupId>
@@ -71,6 +73,14 @@
             <version>26.0-jre</version>
         </dependency>
 
+
+        <!--Other-->
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+
         <!--Test-->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -83,6 +93,14 @@
             <artifactId>mockito-inline</artifactId>
             <version>2.13.0</version>
         </dependency>
+
+        <!--Logging-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+
     </dependencies>
 
     <scm>

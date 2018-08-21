@@ -13,13 +13,13 @@ import java.io.File
 interface PhraseApi {
 
     //Projects
-    @RequestLine("GET /v2/projects")
+    @RequestLine("GET /api/v2/projects")
     fun projects(): Response
 
-    @RequestLine("GET /v2/projects/{projectId}")
+    @RequestLine("GET /api/v2/projects/{projectId}")
     fun project(@Param("projectId") projectId: String): Response
 
-    @RequestLine("POST /v2/projects")
+    @RequestLine("POST /api/v2/projects")
     @Headers(
         "Content-Type: multipart/form-data"
     )
@@ -32,7 +32,7 @@ interface PhraseApi {
         @Param("account_id") accountId: String?
     ): Response
 
-    @RequestLine("PUT /v2/projects/{projectId}")
+    @RequestLine("PUT /api/v2/projects/{projectId}")
     @Headers(
         "Content-Type: multipart/form-data"
     )
@@ -46,40 +46,40 @@ interface PhraseApi {
         @Param("account_id") accountId: String?
     ): Response
 
-    @RequestLine("DELETE /v2/projects/{projectId}")
+    @RequestLine("DELETE /api/v2/projects/{projectId}")
     fun deleteProject(@Param("projectId") projectId: String): Response
 
     //Locales
-    @RequestLine("GET /v2/projects/{projectId}/locales")
+    @RequestLine("GET /api/v2/projects/{projectId}/locales")
     fun locales(@Param("projectId") projectId: String): Response
 
-    @RequestLine("POST /v2/projects/{projectId}/locales")
+    @RequestLine("POST /api/v2/projects/{projectId}/locales")
     fun createLocale(
         @Param("projectId") projectId: String,
         locale: CreatePhraseLocale
     ): Response
 
-    @RequestLine("PUT /v2/projects/{projectId}/locales/{localeId}")
+    @RequestLine("PUT /api/v2/projects/{projectId}/locales/{localeId}")
     fun updateLocale(
         @Param("projectId") projectId: String,
         @Param("localeId") localeId: String,
         locale: CreatePhraseLocale
     ): Response
 
-    @RequestLine("GET /v2/projects/{projectId}/locales/{localeId}")
+    @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}")
     fun locale(
         @Param("projectId") projectId: String,
         @Param("localeId") localeId: String
     ): Response
 
-    @RequestLine("DELETE /v2/projects/{projectId}/locales/{localeId}")
+    @RequestLine("DELETE /api/v2/projects/{projectId}/locales/{localeId}")
     fun deleteLocale(
         @Param("projectId") projectId: String,
         @Param("localeId") localeId: String
     ): Response
 
 
-    @RequestLine("GET /v2/projects/{projectId}/locales/{localeId}/download?file_format=json")
+    @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}/download?file_format=json")
     fun downloadLocale(
         @Param("projectId") projectId: String,
         @Param("localeId") localeId: String
@@ -87,7 +87,7 @@ interface PhraseApi {
 
 
     //Translations
-    @RequestLine("GET /v2/projects/{projectId}/locales/{localeId}/translations")
+    @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}/translations")
     fun translations(
         @Param("projectId") projectId: String,
         @Param("localeId") localeId: String
