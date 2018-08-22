@@ -79,7 +79,6 @@ class PhraseApiClientTest {
             StandardCharsets.UTF_8
         )
 
-
         val responseSecond = Response.create(
             304,
             "OK",
@@ -112,7 +111,7 @@ class PhraseApiClientTest {
         val projectId = UUID.randomUUID().toString()
         val localeId = UUID.randomUUID().toString()
         val localeName = UUID.randomUUID().toString()
-        val localeCode =  Locale.CANADA.toLanguageTag()
+        val localeCode = Locale.CANADA.toLanguageTag()
 
         val listLocales = PhraseLocales()
         listLocales.add(PhraseLocale(localeId, localeName, localeCode))
@@ -144,7 +143,7 @@ class PhraseApiClientTest {
         val projectId = UUID.randomUUID().toString()
         val localeId = UUID.randomUUID().toString()
         val localeName = UUID.randomUUID().toString()
-        val localeCode =  Locale.CANADA.toLanguageTag()
+        val localeCode = Locale.CANADA.toLanguageTag()
 
         val listLocales = PhraseLocales()
         listLocales.add(PhraseLocale(localeId, localeName, localeCode))
@@ -167,7 +166,6 @@ class PhraseApiClientTest {
             listLocalesString,
             StandardCharsets.UTF_8
         )
-
 
         val responseSecond = Response.create(
             304,
@@ -254,7 +252,6 @@ class PhraseApiClientTest {
             messagesString,
             StandardCharsets.UTF_8
         )
-
 
         val responseSecond = Response.create(
             304,

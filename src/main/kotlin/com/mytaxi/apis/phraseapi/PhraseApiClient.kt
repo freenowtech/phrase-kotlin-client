@@ -33,7 +33,7 @@ class PhraseApiClient {
 
     companion object {
         private val eTagCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, String>() // key : url, value : eTag
-        private val responseCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, Any>() // key eTag, value : Response
+        private val responseCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, Any>() // key url, value : Response
     }
 
     constructor(client: PhraseApi) {
@@ -46,19 +46,23 @@ class PhraseApiClient {
 
     fun projects(): PhraseProjects? {
         val response = client.projects()
+        LOG.debug("Get projects")
         return processResponse("GET/api/v2/projects", response)
     }
 
     fun project(projectId: String): PhraseProject? {
         val response = client.project(projectId)
+        LOG.debug("Get project [$projectId]")
         return processResponse("GET/api/v2/projects/$projectId", response)
     }
 
     fun deleteProject(projectId: String): Boolean {
+        LOG.debug("Delete project [$projectId]")
         return client.deleteProject(projectId).status() == HttpStatus.SC_NO_CONTENT
     }
 
     fun createProject(phraseProject: CreatePhraseProject): PhraseProject? {
+        LOG.debug("Create project [$phraseProject]")
         val response = client.createProject(
             phraseProject.name,
             phraseProject.project_image,
@@ -71,6 +75,7 @@ class PhraseApiClient {
     }
 
     fun updateProject(projectId: String, phraseProject: UpdatePhraseProject): PhraseProject? {
+        LOG.debug("Update project [$phraseProject]")
         val response = client.updateProject(
             projectId,
             phraseProject.name,
@@ -84,32 +89,34 @@ class PhraseApiClient {
     }
 
     fun locales(projectId: String): PhraseLocales? {
+        LOG.debug("Get locales for project [$projectId]")
         val response = client.locales(projectId)
         return processResponse("GET/api/v2/projects/$projectId/locales", response)
     }
 
     fun createLocale(projectId: String, locale: CreatePhraseLocale): PhraseLocale? {
+        LOG.debug("Create locale [$locale] for project [$projectId]")
         val response =  client.createLocale(projectId, locale)
         return processResponse("POST/api/v2/projects/$projectId/locales", response)
     }
 
     fun downloadLocale(projectId: String, localeId: String): PhraseLocaleMessages? {
+        LOG.debug("Download locale [$localeId] for project [$projectId]")
         val response = client.downloadLocale(projectId, localeId)
         return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
     }
 
     fun translations(project: PhraseProject, locale: PhraseLocale): Translations? {
+        LOG.debug("Get translations for locale [${locale.id}] for project [${project.id}]")
         val response = client.translations(project.id, locale.id)
         return processResponse("GET/api/v2/projects/${project.id}/locales/${locale.id}/translationsn", response)
     }
 
     private fun getETag(key: String, response: Response): String? {
-        val eTagHeader = response.headers().entries.find { it.key.equals(HttpHeaders.ETAG, true)}
-        val eTag = eTagHeader?.value?.first()
-        if (eTag != null) {
-            eTagCache.put(key, eTag)
-        }
-        return eTag
+        val eTagHeader = response.headers()
+            .entries
+            .find { it.key.equals(HttpHeaders.ETAG, true)}
+        return eTagHeader?.value?.first()
     }
 
     private inline fun <reified T> processResponse(key: String, response: Response): T? {
@@ -120,15 +127,18 @@ class PhraseApiClient {
             throw PhraseAppApiException(message)
         }
 
-        val eTag = getETag(key, response)
         return if (response.status() == HttpStatus.SC_NOT_MODIFIED) {
-            responseCache.getIfPresent(eTag!!) as T
+            val cacheResponse = responseCache.getIfPresent(key) as T
+            LOG.debug("Cached response : $cacheResponse")
+            cacheResponse
         } else {
             val responseObject: T = getObject(response)
+            responseCache.put(key, responseObject)
+            val eTag = getETag(key, response)
             if (eTag != null) {
-                responseCache.put(eTag, responseObject)
+                eTagCache.put(key, eTag)
             }
-            return responseObject
+            responseObject
         }
     }
 
