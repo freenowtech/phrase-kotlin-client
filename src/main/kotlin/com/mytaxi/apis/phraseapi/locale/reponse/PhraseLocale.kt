@@ -1,6 +1,6 @@
 package com.mytaxi.apis.phraseapi.locale.reponse
 
-import java.util.Locale
+import java.util.Date
 
 data class PhraseLocale(
     val id: String,
@@ -9,22 +9,12 @@ data class PhraseLocale(
     val default: Boolean? = null,
     val mail: Boolean? = null,
     val rtl: Boolean? = null,
-    val source_locale_id: String? = null,
-    val unverify_new_translations: String? = null,
-    val unverify_updated_translations: String? = null,
-    val autotranslate: String? = null
-)
-
-data class CreatePhraseLocale(
-    val name: String,
-    val code: Locale,
-    val default: Boolean? = null,
-    val mail: Boolean? = null,
-    val rtl: Boolean? = null,
-    val source_locale_id: String? = null,
-    val unverify_new_translations: String? = null,
-    val unverify_updated_translations: String? = null,
-    val autotranslate: String? = null
+    val sourceLocaleId: String? = null,
+    val unverifyNewTranslations: String? = null,
+    val unverifyUpdatedTranslations: String? = null,
+    val autotranslate: String? = null,
+    val createdAt: Date? = null,
+    val updatedAt: Date? = null
 )
 
 

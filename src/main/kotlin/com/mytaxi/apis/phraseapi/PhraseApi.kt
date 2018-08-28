@@ -1,11 +1,12 @@
 package com.mytaxi.apis.phraseapi
 
-import com.mytaxi.apis.phraseapi.locale.reponse.CreatePhraseLocale
+import com.mytaxi.apis.phraseapi.locale.request.CreatePhraseLocale
 import feign.Headers
 import feign.Param
 import feign.RequestLine
 import feign.Response
 import java.io.File
+import java.util.Locale
 
 @Headers(
     "Content-Type: application/json"
@@ -56,14 +57,32 @@ interface PhraseApi {
     @RequestLine("POST /api/v2/projects/{projectId}/locales")
     fun createLocale(
         @Param("projectId") projectId: String,
-        locale: CreatePhraseLocale
+        @Param("name")  name: String,
+        @Param("code")  code: String,
+        @Param("branch")  branch: String?,
+        @Param("default")  default: Boolean?,
+        @Param("mail")  mail: Boolean?,
+        @Param("rtl")  rtl: Boolean?,
+        @Param("source_locale_id")  sourceLocaleId: String?,
+        @Param("unverify_new_translations")  unverifyNewTranslations: String?,
+        @Param("unverify_updated_translations")  unverifyUpdatedTranslations: String?,
+        @Param("autotranslate")  autotranslate: String?
     ): Response
 
     @RequestLine("PUT /api/v2/projects/{projectId}/locales/{localeId}")
     fun updateLocale(
         @Param("projectId") projectId: String,
         @Param("localeId") localeId: String,
-        locale: CreatePhraseLocale
+        @Param("name")  name: String,
+        @Param("code")  code: String,
+        @Param("branch")  branch: String?,
+        @Param("default")  default: Boolean?,
+        @Param("mail")  mail: Boolean?,
+        @Param("rtl")  rtl: Boolean?,
+        @Param("source_locale_id")  sourceLocaleId: String?,
+        @Param("unverify_new_translations")  unverifyNewTranslations: String?,
+        @Param("unverify_updated_translations")  unverifyUpdatedTranslations: String?,
+        @Param("autotranslate")  autotranslate: String?
     ): Response
 
     @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}")

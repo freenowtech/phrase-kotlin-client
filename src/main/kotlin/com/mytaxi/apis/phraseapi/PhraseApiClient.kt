@@ -2,8 +2,9 @@ package com.mytaxi.apis.phraseapi
 
 import com.google.common.cache.CacheBuilder
 import com.google.common.net.HttpHeaders
-import com.google.gson.Gson
-import com.mytaxi.apis.phraseapi.locale.reponse.CreatePhraseLocale
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.GsonBuilder
+import com.mytaxi.apis.phraseapi.locale.request.CreatePhraseLocale
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocale
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocaleMessages
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocales
@@ -26,10 +27,12 @@ import org.apache.commons.httpclient.HttpStatus
 
 class PhraseApiClient {
 
-    private var LOG = LoggerFactory.getLogger(PhraseApiClient::class.java.name)
+    private var log = LoggerFactory.getLogger(PhraseApiClient::class.java.name)
 
     private val client: PhraseApi
-    private val gson = Gson()
+    private val gson = GsonBuilder()
+        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+        .create()
 
     companion object {
         private val eTagCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, String>() // key : url, value : eTag
@@ -46,68 +49,85 @@ class PhraseApiClient {
 
     fun projects(): PhraseProjects? {
         val response = client.projects()
-        LOG.debug("Get projects")
+        log.debug("Get projects")
         return processResponse("GET/api/v2/projects", response)
     }
 
     fun project(projectId: String): PhraseProject? {
         val response = client.project(projectId)
-        LOG.debug("Get project [$projectId]")
+        log.debug("Get project [$projectId]")
         return processResponse("GET/api/v2/projects/$projectId", response)
     }
 
     fun deleteProject(projectId: String): Boolean {
-        LOG.debug("Delete project [$projectId]")
+        log.debug("Delete project [$projectId]")
         return client.deleteProject(projectId).status() == HttpStatus.SC_NO_CONTENT
     }
 
     fun createProject(phraseProject: CreatePhraseProject): PhraseProject? {
-        LOG.debug("Create project [$phraseProject]")
+        log.debug("Create project [$phraseProject]")
         val response = client.createProject(
             phraseProject.name,
-            phraseProject.project_image,
-            phraseProject.main_format,
+            phraseProject.projectImage,
+            phraseProject.mainFormat,
             phraseProject.sharesTranslationMemory,
-            phraseProject.remove_project_image,
-            phraseProject.account_id
+            phraseProject.removeProjectImage,
+            phraseProject.accountId
         )
         return processResponse("POST/api/v2/projects", response)
     }
 
     fun updateProject(projectId: String, phraseProject: UpdatePhraseProject): PhraseProject? {
-        LOG.debug("Update project [$phraseProject]")
+        log.debug("Update project [$phraseProject]")
         val response = client.updateProject(
             projectId,
             phraseProject.name,
-            phraseProject.project_image,
-            phraseProject.main_format,
+            phraseProject.projectImage,
+            phraseProject.mainFormat,
             phraseProject.sharesTranslationMemory,
-            phraseProject.remove_project_image,
-            phraseProject.account_id
+            phraseProject.removeProjectImage,
+            phraseProject.accountId
         )
         return processResponse("PUT/api/v2/projects/$projectId", response)
     }
 
     fun locales(projectId: String): PhraseLocales? {
-        LOG.debug("Get locales for project [$projectId]")
+        log.debug("Get locales for project [$projectId]")
         val response = client.locales(projectId)
         return processResponse("GET/api/v2/projects/$projectId/locales", response)
     }
 
     fun createLocale(projectId: String, locale: CreatePhraseLocale): PhraseLocale? {
-        LOG.debug("Create locale [$locale] for project [$projectId]")
-        val response =  client.createLocale(projectId, locale)
+        log.debug("Create locale [$locale] for project [$projectId]")
+        val response = client.createLocale(
+            projectId,
+            locale.name,
+            locale.code,
+            null,
+            locale.default,
+            locale.mail,
+            locale.rtl,
+            locale.sourceLocaleId,
+            locale.unverifyNewTranslations,
+            locale.unverifyUpdatedTranslations,
+            locale.autotranslate
+        )
         return processResponse("POST/api/v2/projects/$projectId/locales", response)
     }
 
     fun downloadLocale(projectId: String, localeId: String): PhraseLocaleMessages? {
-        LOG.debug("Download locale [$localeId] for project [$projectId]")
+        log.debug("Download locale [$localeId] for project [$projectId]")
         val response = client.downloadLocale(projectId, localeId)
         return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
     }
 
+    fun deleteLocale(projectId: String, localeId: String) {
+        log.debug("Delete locale [$localeId] for project [$projectId]")
+        client.deleteLocale(projectId, localeId)
+    }
+
     fun translations(project: PhraseProject, locale: PhraseLocale): Translations? {
-        LOG.debug("Get translations for locale [${locale.id}] for project [${project.id}]")
+        log.debug("Get translations for locale [${locale.id}] for project [${project.id}]")
         val response = client.translations(project.id, locale.id)
         return processResponse("GET/api/v2/projects/${project.id}/locales/${locale.id}/translationsn", response)
     }
@@ -115,21 +135,21 @@ class PhraseApiClient {
     private fun getETag(key: String, response: Response): String? {
         val eTagHeader = response.headers()
             .entries
-            .find { it.key.equals(HttpHeaders.ETAG, true)}
+            .find { it.key.equals(HttpHeaders.ETAG, true) }
         return eTagHeader?.value?.first()
     }
 
     private inline fun <reified T> processResponse(key: String, response: Response): T? {
-        LOG.debug("Response : status [${response.status()}] \n headers [${response.headers()}]")
+        log.debug("Response : status [${response.status()}] \n headers [${response.headers()}]")
         if (response.status() !in HttpStatus.SC_OK..HttpStatus.SC_BAD_REQUEST) {
             val message = response.body().asReader().readText()
-            LOG.warn(message)
+            log.warn(message)
             throw PhraseAppApiException(message)
         }
 
         return if (response.status() == HttpStatus.SC_NOT_MODIFIED) {
             val cacheResponse = responseCache.getIfPresent(key) as T
-            LOG.debug("Cached response : $cacheResponse")
+            log.debug("Cached response : $cacheResponse")
             cacheResponse
         } else {
             val responseObject: T = getObject(response)
@@ -145,10 +165,10 @@ class PhraseApiClient {
     private inline fun <reified T> getObject(response: Response): T {
         try {
             val responseObject = gson.fromJson(response.body().asReader(), T::class.java)
-            LOG.debug("Response object : $responseObject")
+            log.debug("Response object : $responseObject")
             return responseObject
         } catch (ex: Exception) {
-            LOG.error(ex.message)
+            log.error(ex.message)
             throw PhraseAppApiException("Error during parsing response", ex)
         }
     }
@@ -225,9 +245,34 @@ class PhraseApiClient {
 
         override fun downloadLocale(projectId: String, localeId: String): Response = target.downloadLocale(projectId, localeId)
 
-        override fun createLocale(projectId: String, locale: CreatePhraseLocale): Response = target.createLocale(projectId, locale)
+        override fun createLocale(
+            projectId: String,
+            name: String,
+            code: String,
+            branch: String?,
+            default: Boolean?,
+            mail: Boolean?,
+            rtl: Boolean?,
+            sourceLocaleId: String?,
+            unverifyNewTranslations: String?,
+            unverifyUpdatedTranslations: String?,
+            autotranslate: String?
+        ): Response = target.createLocale(projectId, name, code, branch, default, mail, rtl, sourceLocaleId, unverifyNewTranslations, unverifyUpdatedTranslations, autotranslate)
 
-        override fun updateLocale(projectId: String, localeId: String, locale: CreatePhraseLocale): Response = target.updateLocale(projectId, localeId, locale)
+        override fun updateLocale(
+            projectId: String,
+            localeId: String,
+            name: String,
+            code: String,
+            branch: String?,
+            default: Boolean?,
+            mail: Boolean?,
+            rtl: Boolean?,
+            sourceLocaleId: String?,
+            unverifyNewTranslations: String?,
+            unverifyUpdatedTranslations: String?,
+            autotranslate: String?
+        ): Response = target.updateLocale(projectId, localeId, name, code, branch, default, mail, rtl, sourceLocaleId, unverifyNewTranslations, unverifyUpdatedTranslations, autotranslate)
 
         override fun deleteLocale(projectId: String, localeId: String): Response = target.deleteLocale(projectId, localeId)
 

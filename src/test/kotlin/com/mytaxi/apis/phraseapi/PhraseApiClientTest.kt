@@ -5,6 +5,7 @@ import com.mytaxi.apis.phraseapi.locale.reponse.Message
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocale
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocaleMessages
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocales
+import com.mytaxi.apis.phraseapi.locale.request.CreatePhraseLocale
 import com.mytaxi.apis.phraseapi.project.reponse.PhraseProject
 import feign.Response
 import org.junit.Test
@@ -274,6 +275,24 @@ class PhraseApiClientTest {
         assertNotNull(actualLocalesFileSecond)
         assertEquals(actualLocalesFileFirst, messages)
         assertEquals(actualLocalesFileSecond, messages)
+    }
+
+    @Test
+    fun test() {
+        val client = PhraseApiClient("https://api.phraseapp.com", "5e06060fe2f870082c3e4f02485d84e820b3f2123f2d5aa24973463dad6b8f08")
+
+        val project = client.projects()!!.first()
+
+        val createPhraseLocale = CreatePhraseLocale(
+            name = "Olol2o",
+            code = "en-GB",
+            sourceLocaleId = "ololo"
+        )
+        val createdLocale = client.createLocale(project.id, createPhraseLocale)
+
+        println(createdLocale)
+
+        client.deleteLocale(projectId = project.id, localeId = createdLocale!!.id)
     }
 
 }
