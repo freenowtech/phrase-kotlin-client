@@ -143,7 +143,7 @@ class PhraseApiClient {
         log.debug("Response : status [${response.status()}] \n headers [${response.headers()}]")
         if (response.status() !in HttpStatus.SC_OK..HttpStatus.SC_BAD_REQUEST) {
             val message = response.body()?.asReader()?.readText()
-            log.warn("Response : status [${response.status()}] \n headers [${response.headers()}] \n body [$message]")
+            log.error("Response : status [${response.status()}] \n headers [${response.headers()}] \n body [$message]")
             throw PhraseAppApiException(response.status(), HttpStatus.getStatusText(response.status()))
         }
 
