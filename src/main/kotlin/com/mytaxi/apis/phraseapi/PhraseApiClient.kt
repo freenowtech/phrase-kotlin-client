@@ -142,9 +142,9 @@ class PhraseApiClient {
     private inline fun <reified T> processResponse(key: String, response: Response): T? {
         log.debug("Response : status [${response.status()}] \n headers [${response.headers()}]")
         if (response.status() !in HttpStatus.SC_OK..HttpStatus.SC_BAD_REQUEST) {
-            val message = response.body().asReader().readText()
-            log.warn(message)
-            throw PhraseAppApiException(message)
+            val message = response.body()?.asReader()?.readText()
+            log.warn("Response : status [${response.status()}] \n headers [${response.headers()}] \n body [$message]")
+            throw PhraseAppApiException(response.status(), HttpStatus.getStatusText(response.status()))
         }
 
         return if (response.status() == HttpStatus.SC_NOT_MODIFIED) {
@@ -283,6 +283,6 @@ class PhraseApiClient {
 }
 
 class PhraseAppApiException : RuntimeException {
-    constructor(message: String) : super(message)
+    constructor(httpStatus: Int, message: String) : super("Code [$httpStatus] : $message")
     constructor(message: String, throwable: Throwable) : super(message, throwable)
 }
