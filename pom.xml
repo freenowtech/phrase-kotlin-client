@@ -4,8 +4,10 @@
 
     <groupId>com.mytaxi.apis</groupId>
     <artifactId>phrase-kotlin-client</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>phrase-api-kotlin</name>
+    <packaging>jar</packaging>
+
     <description>
         This projects contains of services to handle the translations from [PhraseApp API v2](http://docs.phraseapp.com/api/v2/).
         It's supposed to expose Phrase translations as POJO or as File within the Kotlin world.
