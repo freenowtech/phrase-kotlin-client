@@ -98,10 +98,11 @@ interface PhraseApi {
     ): Response
 
 
-    @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}/download?file_format=json")
+    @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}/download?file_format={fileFormat}")
     fun downloadLocale(
         @Param("projectId") projectId: String,
-        @Param("localeId") localeId: String
+        @Param("localeId") localeId: String,
+        @Param("fileFormat") fileFormat: String
     ): Response
 
 

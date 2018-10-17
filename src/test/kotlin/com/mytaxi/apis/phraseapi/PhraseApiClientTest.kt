@@ -1,5 +1,6 @@
 package com.mytaxi.apis.phraseapi
 
+import com.google.common.net.MediaType
 import com.google.gson.Gson
 import com.mytaxi.apis.phraseapi.locale.reponse.Message
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocale
@@ -23,7 +24,7 @@ class PhraseApiClientTest {
     private var phraseApiClient: PhraseApiClient
 
     init {
-        phraseApiClient = PhraseApiClient(client)
+        phraseApiClient = PhraseApiClientImpl(client)
     }
 
     @Test
@@ -35,10 +36,14 @@ class PhraseApiClientTest {
         val expectedProject = PhraseProject(projectId, projectName)
         val projectString = Gson().toJson(expectedProject)
 
+        val headers = mapOf(
+            "content-type" to listOf(MediaType.JSON_UTF_8.toString())
+        )
+
         val response = Response.create(
             200,
             "OK",
-            HashMap(),
+            headers,
             projectString,
             StandardCharsets.UTF_8
         )
@@ -65,10 +70,8 @@ class PhraseApiClientTest {
         val eTag = UUID.randomUUID().toString()
 
         val headers = mapOf(
-            Pair(
-                "etag",
-                listOf(eTag)
-            )
+            "etag" to listOf(eTag),
+            "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 
         val responseFirst = Response.create(
@@ -117,11 +120,14 @@ class PhraseApiClientTest {
         listLocales.add(PhraseLocale(localeId, localeName, localeCode))
 
         val listLocalesString = Gson().toJson(listLocales)
+        val headers = mapOf(
+            "content-type" to listOf(MediaType.JSON_UTF_8.toString())
+        )
 
         val response = Response.create(
             200,
             "OK",
-            HashMap(),
+            headers,
             listLocalesString,
             StandardCharsets.UTF_8
         )
@@ -153,10 +159,8 @@ class PhraseApiClientTest {
         val eTag = UUID.randomUUID().toString()
 
         val headers = mapOf(
-            Pair(
-                "etag",
-                listOf(eTag)
-            )
+            "etag" to listOf(eTag),
+            "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 
         val responseFirst = Response.create(
@@ -203,16 +207,17 @@ class PhraseApiClientTest {
         messages[messageKey] = Message(message, null)
 
         val messagesString = Gson().toJson(messages)
+        val headers = mapOf("content-type" to listOf(MediaType.JSON_UTF_8.toString()))
 
         val response = Response.create(
             200,
             "OK",
-            HashMap(),
+            headers,
             messagesString,
             StandardCharsets.UTF_8
         )
 
-        `when`(client.downloadLocale(projectId, localeId)).thenReturn(response)
+        `when`(client.downloadLocale(projectId, localeId, "json")).thenReturn(response)
 
         //WHEN
         val actualMessages = phraseApiClient.downloadLocale(projectId, localeId)
@@ -239,10 +244,8 @@ class PhraseApiClientTest {
         val eTag = UUID.randomUUID().toString()
 
         val headers = mapOf(
-            Pair(
-                "etag",
-                listOf(eTag)
-            )
+            "etag" to listOf(eTag),
+            "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 
         val responseFirst = Response.create(
@@ -262,11 +265,11 @@ class PhraseApiClientTest {
         )
 
         //WHEN
-        `when`(client.downloadLocale(projectId, localeId)).thenReturn(responseFirst)
+        `when`(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
         val actualLocalesFileFirst = phraseApiClient.downloadLocale(projectId, localeId)
 
         //WHEN
-        `when`(client.downloadLocale(projectId, localeId)).thenReturn(responseSecond)
+        `when`(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseSecond)
         val actualLocalesFileSecond = phraseApiClient.downloadLocale(projectId, localeId)
 
         //THEN
