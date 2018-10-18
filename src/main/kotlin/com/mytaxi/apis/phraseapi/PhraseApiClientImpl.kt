@@ -5,6 +5,8 @@ import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonIOException
+import com.google.gson.JsonSyntaxException
 import com.mytaxi.apis.phraseapi.locale.request.CreatePhraseLocale
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocale
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocaleMessages
@@ -26,19 +28,17 @@ import org.slf4j.LoggerFactory
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.commons.io.IOUtils
 
-
+@Suppress("MaxLineLength", "TooManyFunctions")
 class PhraseApiClientImpl : PhraseApiClient {
 
     private var log = LoggerFactory.getLogger(PhraseApiClient::class.java.name)
 
     private val client: PhraseApi
-    private val gson = GsonBuilder()
-        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-        .create()
 
     companion object {
         private val eTagCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, String>() // key : url, value : eTag
         private val responseCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, Any>() // key url, value : Response
+        private val GSON = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
     }
 
     constructor(client: PhraseApi) {
@@ -63,7 +63,9 @@ class PhraseApiClientImpl : PhraseApiClient {
 
     override fun deleteProject(projectId: String): Boolean {
         log.debug("Delete project [$projectId]")
-        return client.deleteProject(projectId).status() == HttpStatus.SC_NO_CONTENT
+        val response = client.deleteProject(projectId)
+        processResponse<Void>("DELETE/api/v2/projects/$projectId", response)
+        return response.status() == HttpStatus.SC_NO_CONTENT
     }
 
     override fun createProject(phraseProject: CreatePhraseProject): PhraseProject? {
@@ -149,6 +151,7 @@ class PhraseApiClientImpl : PhraseApiClient {
 
     private inline fun <reified T> processResponse(key: String, response: Response): T? {
         log.debug("Response : status [${response.status()}] \n headers [${response.headers()}]")
+
         if (response.status() !in HttpStatus.SC_OK..HttpStatus.SC_BAD_REQUEST) {
             val message = response.body()?.asReader()?.readText()
             log.error("Response : status [${response.status()}] \n headers [${response.headers()}] \n body [$message]")
@@ -163,28 +166,26 @@ class PhraseApiClientImpl : PhraseApiClient {
 
             val contentType = response.headers()
                 .asSequence()
-                .firstOrNull { it -> it.key!!.contentEquals("content-type") }
+                .firstOrNull { it -> HttpHeaders.CONTENT_TYPE.equals(it.key, true) }
                 ?.value
-                ?.first()
+                ?.first() ?: throw RuntimeException("Content type is NULL")
 
-            val responseObject = when(contentType) {
-                MediaType.JSON_UTF_8.toString() -> {
+            val mediaType = MediaType.parse(contentType)
+            val responseObject = when(mediaType.type()) {
+                MediaType.JSON_UTF_8.type() -> {
                     getObject(response)
                 }
-                "application/octet-stream; charset=iso-8859-1" -> {
+                MediaType.OCTET_STREAM.type() -> {
                     IOUtils.toByteArray(response.body().asInputStream()) as T
-                }
-                null -> {
-                    throw RuntimeException("Content type is NULL")
                 }
                 else -> {
                     throw RuntimeException("Content Type $contentType is not supported")
                 }
             }
 
-            responseCache.put(key, responseObject)
             val eTag = getETag(key, response)
             if (eTag != null) {
+                responseCache.put(key, responseObject)
                 eTagCache.put(key, eTag)
             }
             responseObject
@@ -193,15 +194,19 @@ class PhraseApiClientImpl : PhraseApiClient {
 
     private inline fun <reified T> getObject(response: Response): T {
         try {
-            val responseObject = gson.fromJson(response.body().asReader(), T::class.java)
+            val responseObject = GSON.fromJson(response.body().asReader(), T::class.java)
             log.debug("Response object : $responseObject")
             return responseObject
-        } catch (ex: Exception) {
+        } catch (ex: JsonSyntaxException ) {
+            log.error(ex.message)
+            throw PhraseAppApiException("Error during parsing response", ex)
+        } catch (ex: JsonIOException) {
             log.error(ex.message)
             throw PhraseAppApiException("Error during parsing response", ex)
         }
     }
 
+    @Suppress("TooManyFunctions")
     private class PhraseApiImpl(
         val authKey: String,
         url: String

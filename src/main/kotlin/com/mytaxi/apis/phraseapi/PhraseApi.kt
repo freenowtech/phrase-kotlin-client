@@ -8,6 +8,7 @@ import feign.Response
 import java.io.File
 import java.util.Locale
 
+@Suppress("LongParameterList", "TooManyFunctions")
 @Headers(
     "Content-Type: application/json"
 )

@@ -6,7 +6,7 @@ import java.util.Date
 data class PhraseProject(
     val id: String,
     val name: String,
-    val main_format: String? = null,
+    val mainFormat: String? = null,
     val sharesTranslationMemory: String? = null,
     val projectImageUrl: String? = null,
     val removeProjectImage: Boolean? = null,

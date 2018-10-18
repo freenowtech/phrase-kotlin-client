@@ -28,37 +28,6 @@ class PhraseApiClientTest {
     }
 
     @Test
-    fun `Should return project when project exist`() {
-
-        //GIVEN
-        val projectId = UUID.randomUUID().toString()
-        val projectName = UUID.randomUUID().toString()
-        val expectedProject = PhraseProject(projectId, projectName)
-        val projectString = Gson().toJson(expectedProject)
-
-        val headers = mapOf(
-            "content-type" to listOf(MediaType.JSON_UTF_8.toString())
-        )
-
-        val response = Response.create(
-            200,
-            "OK",
-            headers,
-            projectString,
-            StandardCharsets.UTF_8
-        )
-
-        `when`(client.project(projectId)).thenReturn(response)
-
-        //WHEN
-        val actualProject = phraseApiClient.project(projectId)
-
-        //THEN
-        assertNotNull(actualProject)
-        assertEquals(actualProject, expectedProject)
-    }
-
-    @Test
     fun `Should return project locales from cache when locale exist and bean already called`() {
 
         //GIVEN

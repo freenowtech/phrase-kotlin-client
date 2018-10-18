@@ -10,6 +10,7 @@ import com.mytaxi.apis.phraseapi.project.reponse.PhraseProjects
 import com.mytaxi.apis.phraseapi.project.reponse.UpdatePhraseProject
 import com.mytaxi.apis.phraseapi.translation.responce.Translations
 
+@Suppress("TooManyFunctions")
 interface PhraseApiClient {
 
     fun projects(): PhraseProjects?
