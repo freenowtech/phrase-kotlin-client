@@ -10,4 +10,5 @@ addons:
       secure: "1828601096b006c057a09f668b3f9a97e6278e2c"
 
 script:
+  - mvn clean verify
   - sonar-scanner
