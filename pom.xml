@@ -33,7 +33,7 @@
         <javaVersion>1.8</javaVersion>
         <scm.connection>scm:git:git@github.com:mytaxi/phrase-kotlin-client.git</scm.connection>
         <scm.url>https://github.com/mytaxi/phrase-kotlin-client</scm.url>
-        <kotlin.version>1.2.60</kotlin.version>
+        <kotlin.version>1.2.71</kotlin.version>
 
         <feign.version>8.18.0</feign.version>
     </properties>
@@ -196,11 +196,13 @@
                         </goals>
                     </execution>
                     <execution>
-                        <id>post-unit-test</id>
+                        <id>report</id>
+                        <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
+
                 </executions>
             </plugin>
         </plugins>
