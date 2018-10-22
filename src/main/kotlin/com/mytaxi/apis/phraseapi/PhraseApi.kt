@@ -14,6 +14,10 @@ import java.util.Locale
 )
 interface PhraseApi {
 
+    fun putETag(key: String, eTag: String)
+
+    fun getETag(key: String): String?
+
     //Projects
     @RequestLine("GET /api/v2/projects")
     fun projects(): Response
