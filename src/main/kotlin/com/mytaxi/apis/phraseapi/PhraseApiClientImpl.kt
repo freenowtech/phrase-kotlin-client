@@ -131,7 +131,7 @@ class PhraseApiClientImpl : PhraseApiClient {
         return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
     }
 
-    override  fun deleteLocale(projectId: String, localeId: String) {
+    override fun deleteLocale(projectId: String, localeId: String) {
         log.debug("Delete locale [$localeId] for project [$projectId]")
         client.deleteLocale(projectId, localeId)
     }
@@ -154,7 +154,12 @@ class PhraseApiClientImpl : PhraseApiClient {
 
         if (response.status() !in HttpStatus.SC_OK..HttpStatus.SC_BAD_REQUEST) {
             val message = response.body()?.asReader()?.readText()
-            log.error("Response : status [${response.status()}] \n headers [${response.headers()}] \n body [$message]")
+            val errorMessage = key.plus("\n")
+                .plus("Response : \n")
+                .plus("Status : ${response.status()} \n")
+                .plus("Headers : \n ${response.headers().map { it -> it.toString().plus("\n") }}")
+                .plus("Body : $message")
+            log.error(errorMessage)
             throw PhraseAppApiException(response.status(), HttpStatus.getStatusText(response.status()))
         }
 
@@ -171,7 +176,7 @@ class PhraseApiClientImpl : PhraseApiClient {
                 ?.first() ?: throw RuntimeException("Content type is NULL")
 
             val mediaType = MediaType.parse(contentType)
-            val responseObject = when(mediaType.type()) {
+            val responseObject = when (mediaType.type()) {
                 MediaType.JSON_UTF_8.type() -> {
                     getObject(response)
                 }
@@ -197,7 +202,7 @@ class PhraseApiClientImpl : PhraseApiClient {
             val responseObject = GSON.fromJson(response.body().asReader(), T::class.java)
             log.debug("Response object : $responseObject")
             return responseObject
-        } catch (ex: JsonSyntaxException ) {
+        } catch (ex: JsonSyntaxException) {
             log.error(ex.message)
             throw PhraseAppApiException("Error during parsing response", ex)
         } catch (ex: JsonIOException) {
