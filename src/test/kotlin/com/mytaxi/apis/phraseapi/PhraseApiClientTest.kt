@@ -1,5 +1,6 @@
 package com.mytaxi.apis.phraseapi
 
+import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
 import com.google.gson.Gson
 import com.mytaxi.apis.phraseapi.locale.reponse.Message
@@ -39,7 +40,7 @@ class PhraseApiClientTest {
         val eTag = UUID.randomUUID().toString()
 
         val headers = mapOf(
-            "etag" to listOf(eTag),
+            HttpHeaders.ETAG to listOf(eTag),
             "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 
@@ -128,7 +129,7 @@ class PhraseApiClientTest {
         val eTag = UUID.randomUUID().toString()
 
         val headers = mapOf(
-            "etag" to listOf(eTag),
+            HttpHeaders.ETAG to listOf(eTag),
             "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 
@@ -213,7 +214,7 @@ class PhraseApiClientTest {
         val eTag = UUID.randomUUID().toString()
 
         val headers = mapOf(
-            "etag" to listOf(eTag),
+            HttpHeaders.ETAG to listOf(eTag),
             "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 

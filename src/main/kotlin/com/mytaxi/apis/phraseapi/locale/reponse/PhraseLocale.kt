@@ -24,5 +24,5 @@ class PhraseLocaleMessages : HashMap<String, Message>()
 
 data class Message(
     val message: String,
-    val description: String?
+    val description: String? = null
 )
