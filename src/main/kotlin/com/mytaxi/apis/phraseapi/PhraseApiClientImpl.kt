@@ -27,16 +27,22 @@ import java.util.concurrent.TimeUnit
 import org.slf4j.LoggerFactory
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.commons.io.IOUtils
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 @Suppress("MaxLineLength", "TooManyFunctions")
 class PhraseApiClientImpl : PhraseApiClient {
 
-    private var log = LoggerFactory.getLogger(PhraseApiClient::class.java.name)
+    private var log = LoggerFactory.getLogger(PhraseApiClientImpl::class.java.name)
 
     private val client: PhraseApi
 
     private val responseCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, Any>() // key url, value : Response
     private val GSON = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
+
+    companion object {
+        private const val CLEAN_UP_FARE_RATE = 60 * 60 * 1000L // one hour
+    }
 
     constructor(client: PhraseApi) {
         this.client = client
@@ -44,6 +50,18 @@ class PhraseApiClientImpl : PhraseApiClient {
 
     constructor(url: String, authKey: String) {
         client = PhraseApiImpl(authKey, url)
+    }
+
+    init {
+        Timer("responseCache", true).schedule(CLEAN_UP_FARE_RATE) {
+            try {
+                log.debug("CleanUp of responses cache started")
+                responseCache.cleanUp()
+                log.debug("CleanUp of responses cache finished")
+            } catch (ex : Exception) {
+                log.debug("Error during responses cleanup", ex)
+            }
+        }
     }
 
     override fun projects(): PhraseProjects? {
@@ -220,6 +238,8 @@ class PhraseApiClientImpl : PhraseApiClient {
         url: String
     ) : PhraseApi {
 
+        private var log = LoggerFactory.getLogger(PhraseApiImpl::class.java.name)
+
         private val target: PhraseApi
         private val eTagCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, String>() // key : url, value : eTag
 
@@ -229,6 +249,16 @@ class PhraseApiClientImpl : PhraseApiClient {
                 .decoder(GsonDecoder())
                 .encoder(FormEncoder(GsonEncoder()))
                 .target(PhraseApi::class.java, url)
+
+            Timer("eTagCache", true).schedule(CLEAN_UP_FARE_RATE) {
+                try {
+                    log.debug("CleanUp of eTags cache started")
+                    eTagCache.cleanUp()
+                    log.debug("CleanUp of eTags cache finished")
+                } catch (ex : Exception) {
+                    log.debug("Error during eTags cleanup", ex)
+                }
+            }
         }
 
         private fun getInterceptor() = RequestInterceptor {
