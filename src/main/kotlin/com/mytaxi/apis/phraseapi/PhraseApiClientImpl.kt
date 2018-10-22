@@ -160,7 +160,7 @@ class PhraseApiClientImpl : PhraseApiClient {
                 .plus("Headers : \n ${response.headers().map { it -> it.toString().plus("\n") }}")
                 .plus("Body : $message")
             log.error(errorMessage)
-            throw PhraseAppApiException(response.status(), HttpStatus.getStatusText(response.status()))
+            throw PhraseAppApiException(response.status(), message)
         }
 
         return if (response.status() == HttpStatus.SC_NOT_MODIFIED) {
@@ -323,6 +323,6 @@ class PhraseApiClientImpl : PhraseApiClient {
 }
 
 class PhraseAppApiException : RuntimeException {
-    constructor(httpStatus: Int, message: String) : super("Code [$httpStatus] : $message")
+    constructor(httpStatus: Int, message: String?) : super("Code [$httpStatus] : $message")
     constructor(message: String, throwable: Throwable) : super(message, throwable)
 }
