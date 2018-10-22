@@ -35,11 +35,8 @@ class PhraseApiClientImpl : PhraseApiClient {
 
     private val client: PhraseApi
 
-    companion object {
-        private val eTagCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, String>() // key : url, value : eTag
-        private val responseCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, Any>() // key url, value : Response
-        private val GSON = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
-    }
+    private val responseCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, Any>() // key url, value : Response
+    private val GSON = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 
     constructor(client: PhraseApi) {
         this.client = client
@@ -148,24 +145,17 @@ class PhraseApiClientImpl : PhraseApiClient {
         return processResponse("GET/api/v2/projects/${project.id}/locales/${locale.id}/translationsn", response)
     }
 
-    private fun getETag(key: String, response: Response): String? {
-        val eTagHeader = response.headers()
-            .entries
-            .find { it.key.equals(HttpHeaders.ETAG, true) }
-        return eTagHeader?.value?.first()
-    }
-
     private inline fun <reified T> processResponse(key: String, response: Response): T? {
         log.debug("Response : status [${response.status()}] \n headers [${response.headers()}]")
 
         if (response.status() !in HttpStatus.SC_OK..HttpStatus.SC_BAD_REQUEST) {
             val message = response.body()?.asReader()?.readText()
-            val errorMessage = key.plus("\n")
+            val warningMessage = key.plus("\n")
                 .plus("Response : \n")
                 .plus("Status : ${response.status()} \n")
                 .plus("Headers : \n ${response.headers().map { it -> it.toString().plus("\n") }}")
                 .plus("Body : $message")
-            log.error(errorMessage)
+            log.warn(warningMessage)
             throw PhraseAppApiException(response.status(), message)
         }
 
@@ -194,11 +184,11 @@ class PhraseApiClientImpl : PhraseApiClient {
                 }
             }
 
-            val eTag = getETag(key, response)
-            if (eTag != null) {
+            getETag(response)?.also {
                 responseCache.put(key, responseObject)
-                eTagCache.put(key, eTag)
+                client.putETag(key, it)
             }
+
             responseObject
         }
     }
@@ -209,12 +199,19 @@ class PhraseApiClientImpl : PhraseApiClient {
             log.debug("Response object : $responseObject")
             return responseObject
         } catch (ex: JsonSyntaxException) {
-            log.error(ex.message)
+            log.warn(ex.message)
             throw PhraseAppApiException("Error during parsing response", ex)
         } catch (ex: JsonIOException) {
-            log.error(ex.message)
+            log.warn(ex.message)
             throw PhraseAppApiException("Error during parsing response", ex)
         }
+    }
+
+    private fun getETag(response: Response): String? {
+        val eTagHeader = response.headers()
+            .entries
+            .find { it.key.equals(HttpHeaders.ETAG, true) }
+        return eTagHeader?.value?.first()
     }
 
     @Suppress("TooManyFunctions")
@@ -224,6 +221,7 @@ class PhraseApiClientImpl : PhraseApiClient {
     ) : PhraseApi {
 
         private val target: PhraseApi
+        private val eTagCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, String>() // key : url, value : eTag
 
         init {
             target = Feign.builder()
@@ -235,11 +233,16 @@ class PhraseApiClientImpl : PhraseApiClient {
 
         private fun getInterceptor() = RequestInterceptor {
             apply {
-                it.header(HttpHeaders.IF_NONE_MATCH, eTagCache.getIfPresent(it.request().method() + it.request().url()))
+                it.header(HttpHeaders.IF_NONE_MATCH, getETag(it.request().method() + it.request().url()))
                 it.header(HttpHeaders.AUTHORIZATION, "token $authKey")
             }
         }
 
+        override fun putETag(key: String, eTag: String) {
+            eTagCache.put(key, eTag)
+        }
+
+        override fun getETag(key: String): String? = eTagCache.getIfPresent(key)
 
         //PROJECT
         override fun projects(): Response = target.projects()
