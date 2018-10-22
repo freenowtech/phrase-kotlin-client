@@ -95,6 +95,12 @@ class PhraseApiClientImpl : PhraseApiClient {
         return processResponse("PUT/api/v2/projects/$projectId", response)
     }
 
+    override fun locales(projectId: String, localeId: String): PhraseLocale? {
+        log.debug("Get locale [$localeId] for project [$projectId]")
+        val response = client.locale(projectId, localeId)
+        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId", response)
+    }
+
     override fun locales(projectId: String): PhraseLocales? {
         log.debug("Get locales for project [$projectId]")
         val response = client.locales(projectId)

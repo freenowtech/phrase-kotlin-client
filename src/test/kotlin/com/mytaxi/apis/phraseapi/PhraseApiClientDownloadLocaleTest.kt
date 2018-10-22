@@ -139,9 +139,6 @@ class PhraseApiClientDownloadLocaleTest {
         val expectedLocaleMessages = PhraseLocaleMessages()
         expectedLocaleMessages[messageKey] = Message(message, description)
 
-        val projectsJSON = Gson().toJson(expectedLocaleMessages)
-
-
         val responseFirst = Response.create(
            429,
             "Not Ok",
@@ -203,10 +200,6 @@ class PhraseApiClientDownloadLocaleTest {
             HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val messageKey = UUID.randomUUID().toString()
-        val message = UUID.randomUUID().toString()
-        val description = UUID.randomUUID().toString()
-
         val expectedLocaleMessages = "property = value".toByteArray()
 
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
@@ -256,16 +249,6 @@ class PhraseApiClientDownloadLocaleTest {
             HttpHeaders.ETAG to listOf(eTag),
             HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
         )
-
-        val messageKey = UUID.randomUUID().toString()
-        val message = UUID.randomUUID().toString()
-        val description = UUID.randomUUID().toString()
-
-        val expectedLocaleMessages = PhraseLocaleMessages()
-        expectedLocaleMessages[messageKey] = Message(message, description)
-
-        val projectsJSON = Gson().toJson(expectedLocaleMessages)
-
 
         val responseFirst = Response.create(
             429,
