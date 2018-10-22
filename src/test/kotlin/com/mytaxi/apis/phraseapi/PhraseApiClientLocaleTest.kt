@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.mytaxi.apis.phraseapi.locale.reponse.Message
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocale
 import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocaleMessages
+import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocales
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
@@ -39,13 +40,12 @@ class PhraseApiClientLocaleTest {
         )
 
         val expectedLocale = PhraseLocale(
-            id = UUID.randomUUID().toString(),
+            id = localeId,
             code = Locale.US.toLanguageTag(),
             name = UUID.randomUUID().toString()
         )
 
         val projectsJSON = Gson().toJson(expectedLocale)
-
 
         val response = Response.create(
             HttpStatus.SC_OK,
@@ -58,10 +58,56 @@ class PhraseApiClientLocaleTest {
         Mockito.`when`(client.locale(projectId, localeId)).thenReturn(response)
 
         //WHEN
-        val actualLocaleMessages = phraseApiClient.locales(projectId, localeId)
+        val actualLocale = phraseApiClient.locales(projectId, localeId)
 
         //THEN
-        assertNotNull(actualLocaleMessages)
-        assertEquals(expectedLocale, actualLocaleMessages)
+        assertNotNull(actualLocale)
+        assertEquals(expectedLocale, actualLocale)
+    }
+
+    @Test
+    fun `Should return locales`() {
+
+        //GIVEN
+        val projectId = UUID.randomUUID().toString()
+
+        val headers = mapOf(
+            HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
+        )
+
+        val expectedLocales = PhraseLocales()
+        expectedLocales.add(
+            PhraseLocale(
+                id = UUID.randomUUID().toString(),
+                code = Locale.US.toLanguageTag(),
+                name = UUID.randomUUID().toString()
+            )
+        )
+        expectedLocales.add(
+            PhraseLocale(
+                id = UUID.randomUUID().toString(),
+                code = Locale.US.toLanguageTag(),
+                name = UUID.randomUUID().toString()
+            )
+        )
+
+        val projectsJSON = Gson().toJson(expectedLocales)
+
+        val response = Response.create(
+            HttpStatus.SC_OK,
+            "OK",
+            headers,
+            projectsJSON,
+            StandardCharsets.UTF_8
+        )
+
+        Mockito.`when`(client.locales(projectId)).thenReturn(response)
+
+        //WHEN
+        val actualLocales = phraseApiClient.locales(projectId)
+
+        //THEN
+        assertNotNull(actualLocales)
+        assertEquals(expectedLocales, actualLocales)
     }
 }
