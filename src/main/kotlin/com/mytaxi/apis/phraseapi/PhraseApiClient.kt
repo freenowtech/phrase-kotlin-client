@@ -23,6 +23,8 @@ interface PhraseApiClient {
 
     fun updateProject(projectId: String, phraseProject: UpdatePhraseProject): PhraseProject?
 
+    fun locales(projectId: String, localeId: String): PhraseLocale?
+
     fun locales(projectId: String): PhraseLocales?
 
     fun createLocale(projectId: String, locale: CreatePhraseLocale): PhraseLocale?
