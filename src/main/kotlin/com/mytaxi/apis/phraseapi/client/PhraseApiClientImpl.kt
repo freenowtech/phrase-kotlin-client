@@ -169,9 +169,10 @@ class PhraseApiClientImpl : PhraseApiClient {
         if (response.status() !in HttpStatus.SC_OK..HttpStatus.SC_BAD_REQUEST) {
             val message = response.body()?.asReader()?.readText()
             val warningMessage = key.plus("\n")
-                .plus("Response : \n")
-                .plus("Status : ${response.status()} \n")
+                .plus("Status : ${response.status()}")
+                .plus("\n")
                 .plus("Headers : \n ${response.headers().map { it -> it.toString().plus("\n") }}")
+                .plus("\n")
                 .plus("Body : $message")
             log.warn(warningMessage)
             throw PhraseAppApiException(response.status(), message)
