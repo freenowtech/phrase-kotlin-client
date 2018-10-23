@@ -1,14 +1,15 @@
-package com.mytaxi.apis.phraseapi
+package com.mytaxi.apis.phraseapi.client
 
 import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
 import com.google.gson.Gson
-import com.mytaxi.apis.phraseapi.locale.reponse.Message
-import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocaleMessages
+import com.mytaxi.apis.phraseapi.client.model.Message
+import com.mytaxi.apis.phraseapi.client.model.PhraseLocaleMessages
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.withSettings
 import java.nio.charset.StandardCharsets
 import java.util.Arrays
 import java.util.UUID
@@ -17,7 +18,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class PhraseApiClientDownloadLocaleTest {
-    private var client: PhraseApi = Mockito.mock(PhraseApi::class.java)
+    private var client: PhraseApi = Mockito.mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
     private var phraseApiClient: PhraseApiClient
 
@@ -177,10 +178,10 @@ class PhraseApiClientDownloadLocaleTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.downloadLocale(projectId, localeId, "properties")).thenReturn(response)
+        Mockito.`when`(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(response)
 
         //WHEN
-        val actualLocaleMessages = phraseApiClient.downloadLocaleAsProperties(projectId, localeId)
+        val actualLocaleMessages = phraseApiClient.downloadLocaleAsProperties(projectId, localeId, true)
 
         //THEN
         assertNotNull(actualLocaleMessages)
@@ -213,8 +214,8 @@ class PhraseApiClientDownloadLocaleTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseFirst)
-        val actualLocaleMessages = phraseApiClient.downloadLocaleAsProperties(projectId, localeId)
+        Mockito.`when`(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(responseFirst)
+        val actualLocaleMessages = phraseApiClient.downloadLocaleAsProperties(projectId, localeId, true)
 
 
         val responseSecond = Response.create(
@@ -227,7 +228,7 @@ class PhraseApiClientDownloadLocaleTest {
 
         Mockito.`when`(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseSecond)
         //WHEN
-        val actualLocaleMessagesCached = phraseApiClient.downloadLocaleAsProperties(projectId, localeId)
+        val actualLocaleMessagesCached = phraseApiClient.downloadLocaleAsProperties(projectId, localeId, false)
 
         //THEN
         assertNotNull(actualLocaleMessages)
@@ -260,6 +261,6 @@ class PhraseApiClientDownloadLocaleTest {
 
         Mockito.`when`(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseFirst)
         //WHEN
-        phraseApiClient.downloadLocaleAsProperties(projectId, localeId)
+        phraseApiClient.downloadLocaleAsProperties(projectId, localeId, false)
     }
 }

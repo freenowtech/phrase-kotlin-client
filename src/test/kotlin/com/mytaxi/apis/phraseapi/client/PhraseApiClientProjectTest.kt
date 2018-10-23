@@ -1,11 +1,11 @@
-package com.mytaxi.apis.phraseapi
+package com.mytaxi.apis.phraseapi.client
 
 import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
 import com.google.gson.Gson
-import com.mytaxi.apis.phraseapi.project.reponse.CreatePhraseProject
-import com.mytaxi.apis.phraseapi.project.reponse.PhraseProject
-import com.mytaxi.apis.phraseapi.project.reponse.UpdatePhraseProject
+import com.mytaxi.apis.phraseapi.client.model.CreatePhraseProject
+import com.mytaxi.apis.phraseapi.client.model.PhraseProject
+import com.mytaxi.apis.phraseapi.client.model.UpdatePhraseProject
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
@@ -18,7 +18,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class PhraseApiClientProjectTest {
-    private var client: PhraseApi = Mockito.mock(PhraseApi::class.java)
+    private var client: PhraseApi = Mockito.mock(PhraseApi::class.java, Mockito.withSettings().extraInterfaces(CacheApi::class.java))
 
     private var phraseApiClient: PhraseApiClient
 

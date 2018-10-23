@@ -1,4 +1,4 @@
-package com.mytaxi.apis.phraseapi.project.reponse
+package com.mytaxi.apis.phraseapi.client.model
 
 import java.io.File
 import java.util.Date

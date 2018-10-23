@@ -1,22 +1,16 @@
-package com.mytaxi.apis.phraseapi
+package com.mytaxi.apis.phraseapi.client
 
-import com.mytaxi.apis.phraseapi.locale.request.CreatePhraseLocale
 import feign.Headers
 import feign.Param
 import feign.RequestLine
 import feign.Response
 import java.io.File
-import java.util.Locale
 
 @Suppress("LongParameterList", "TooManyFunctions")
 @Headers(
     "Content-Type: application/json"
 )
 interface PhraseApi {
-
-    fun putETag(key: String, eTag: String)
-
-    fun getETag(key: String): String?
 
     //Projects
     @RequestLine("GET /api/v2/projects")
@@ -103,11 +97,12 @@ interface PhraseApi {
     ): Response
 
 
-    @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}/download?file_format={fileFormat}")
+    @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}/download?file_format={fileFormat}&format_options[escape_single_quotes]={escapeSingleQuotes}")
     fun downloadLocale(
         @Param("projectId") projectId: String,
         @Param("localeId") localeId: String,
-        @Param("fileFormat") fileFormat: String
+        @Param("fileFormat") fileFormat: String,
+        @Param("escapeSingleQuotes") escapeSingleQuotes: Boolean? = false
     ): Response
 
 
@@ -117,5 +112,13 @@ interface PhraseApi {
         @Param("projectId") projectId: String,
         @Param("localeId") localeId: String
     ): Response
+
+}
+
+interface CacheApi {
+
+    fun putETag(key: String, eTag: String)
+
+    fun getETag(key: String): String?
 
 }
