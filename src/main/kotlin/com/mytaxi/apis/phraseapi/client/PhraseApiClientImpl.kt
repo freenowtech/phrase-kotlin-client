@@ -1,4 +1,4 @@
-package com.mytaxi.apis.phraseapi
+package com.mytaxi.apis.phraseapi.client
 
 import com.google.common.cache.CacheBuilder
 import com.google.common.net.HttpHeaders
@@ -7,27 +7,27 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonIOException
 import com.google.gson.JsonSyntaxException
-import com.mytaxi.apis.phraseapi.locale.request.CreatePhraseLocale
-import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocale
-import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocaleMessages
-import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocales
-import com.mytaxi.apis.phraseapi.project.reponse.CreatePhraseProject
-import com.mytaxi.apis.phraseapi.project.reponse.PhraseProject
-import com.mytaxi.apis.phraseapi.project.reponse.PhraseProjects
-import com.mytaxi.apis.phraseapi.project.reponse.UpdatePhraseProject
-import com.mytaxi.apis.phraseapi.translation.responce.Translations
+import com.mytaxi.apis.phraseapi.client.model.CreatePhraseLocale
+import com.mytaxi.apis.phraseapi.client.model.CreatePhraseProject
+import com.mytaxi.apis.phraseapi.client.model.PhraseLocale
+import com.mytaxi.apis.phraseapi.client.model.PhraseLocaleMessages
+import com.mytaxi.apis.phraseapi.client.model.PhraseLocales
+import com.mytaxi.apis.phraseapi.client.model.PhraseProject
+import com.mytaxi.apis.phraseapi.client.model.PhraseProjects
+import com.mytaxi.apis.phraseapi.client.model.Translations
+import com.mytaxi.apis.phraseapi.client.model.UpdatePhraseProject
 import feign.Feign
 import feign.RequestInterceptor
 import feign.Response
 import feign.form.FormEncoder
 import feign.gson.GsonDecoder
 import feign.gson.GsonEncoder
-import java.io.File
-import java.util.concurrent.TimeUnit
-import org.slf4j.LoggerFactory
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.commons.io.IOUtils
+import org.slf4j.LoggerFactory
+import java.io.File
 import java.util.Timer
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.schedule
 
 @Suppress("MaxLineLength", "TooManyFunctions")
@@ -146,9 +146,9 @@ class PhraseApiClientImpl : PhraseApiClient {
         return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
     }
 
-    override fun downloadLocaleAsProperties(projectId: String, localeId: String): ByteArray? {
+    override fun downloadLocaleAsProperties(projectId: String, localeId: String, escapeSingleQuotes: Boolean): ByteArray? {
         log.debug("Download locale [$localeId] for project [$projectId]")
-        val response = client.downloadLocale(projectId, localeId, "properties")
+        val response = client.downloadLocale(projectId, localeId, "properties", escapeSingleQuotes)
         return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
     }
 
@@ -204,7 +204,7 @@ class PhraseApiClientImpl : PhraseApiClient {
 
             getETag(response)?.also {
                 responseCache.put(key, responseObject)
-                client.putETag(key, it)
+                (client as CacheApi).putETag(key, it)
             }
 
             responseObject
@@ -236,7 +236,7 @@ class PhraseApiClientImpl : PhraseApiClient {
     private class PhraseApiImpl(
         val authKey: String,
         url: String
-    ) : PhraseApi {
+    ) : PhraseApi, CacheApi {
 
         private var log = LoggerFactory.getLogger(PhraseApiImpl::class.java.name)
 
@@ -321,8 +321,8 @@ class PhraseApiClientImpl : PhraseApiClient {
 
         override fun locale(projectId: String, localeId: String): Response = target.locale(projectId, localeId)
 
-        override fun downloadLocale(projectId: String, localeId: String, fileFormat: String):
-            Response = target.downloadLocale(projectId, localeId, fileFormat)
+        override fun downloadLocale(projectId: String, localeId: String, fileFormat: String, escapeSingleQuotes: Boolean?):
+            Response = target.downloadLocale(projectId, localeId, fileFormat, escapeSingleQuotes)
 
         override fun createLocale(
             projectId: String,

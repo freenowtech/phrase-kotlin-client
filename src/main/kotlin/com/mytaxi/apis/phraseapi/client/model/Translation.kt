@@ -1,6 +1,4 @@
-package com.mytaxi.apis.phraseapi.translation.responce
-
-import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocale
+package com.mytaxi.apis.phraseapi.client.model
 
 class Translations: ArrayList<Translation>()
 

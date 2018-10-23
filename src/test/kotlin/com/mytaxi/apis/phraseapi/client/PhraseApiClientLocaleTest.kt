@@ -1,26 +1,22 @@
-package com.mytaxi.apis.phraseapi
+package com.mytaxi.apis.phraseapi.client
 
 import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
 import com.google.gson.Gson
-import com.mytaxi.apis.phraseapi.locale.reponse.Message
-import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocale
-import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocaleMessages
-import com.mytaxi.apis.phraseapi.locale.reponse.PhraseLocales
+import com.mytaxi.apis.phraseapi.client.model.PhraseLocale
+import com.mytaxi.apis.phraseapi.client.model.PhraseLocales
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
 import org.mockito.Mockito
 import java.nio.charset.StandardCharsets
-import java.util.Arrays
 import java.util.Locale
 import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class PhraseApiClientLocaleTest {
-    private var client: PhraseApi = Mockito.mock(PhraseApi::class.java)
+    private var client: PhraseApi = Mockito.mock(PhraseApi::class.java, Mockito.withSettings().extraInterfaces(CacheApi::class.java))
 
     private var phraseApiClient: PhraseApiClient
 
