@@ -190,11 +190,11 @@ class PhraseApiClientImpl : PhraseApiClient {
                 ?.first() ?: throw RuntimeException("Content type is NULL")
 
             val mediaType = MediaType.parse(contentType)
-            val responseObject = when (mediaType.type()) {
-                MediaType.JSON_UTF_8.type() -> {
+            val responseObject = when (mediaType.subtype()) {
+                MediaType.JSON_UTF_8.subtype() -> {
                     getObject(response)
                 }
-                MediaType.OCTET_STREAM.type() -> {
+                MediaType.OCTET_STREAM.subtype() -> {
                     IOUtils.toByteArray(response.body().asInputStream()) as T
                 }
                 else -> {

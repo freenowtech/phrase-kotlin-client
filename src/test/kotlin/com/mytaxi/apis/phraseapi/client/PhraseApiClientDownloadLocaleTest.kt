@@ -162,20 +162,16 @@ class PhraseApiClientDownloadLocaleTest {
         val localeId = UUID.randomUUID().toString()
 
         val headers = mapOf(
-            HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
+            HttpHeaders.CONTENT_TYPE to listOf(MediaType.OCTET_STREAM.toString())
         )
 
         val expectedLocaleMessages = "property = value".toByteArray()
-
-        val projectsJSON = Gson().toJson(expectedLocaleMessages)
-
 
         val response = Response.create(
             HttpStatus.SC_OK,
             "OK",
             headers,
-            projectsJSON,
-            StandardCharsets.UTF_8
+            expectedLocaleMessages
         )
 
         Mockito.`when`(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(response)
@@ -198,20 +194,17 @@ class PhraseApiClientDownloadLocaleTest {
 
         val headers = mapOf(
             HttpHeaders.ETAG to listOf(eTag),
-            HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
+            HttpHeaders.CONTENT_TYPE to listOf(MediaType.OCTET_STREAM.toString())
         )
 
         val expectedLocaleMessages = "property = value".toByteArray()
-
-        val projectsJSON = Gson().toJson(expectedLocaleMessages)
 
 
         val responseFirst = Response.create(
             HttpStatus.SC_OK,
             "OK",
             headers,
-            projectsJSON,
-            StandardCharsets.UTF_8
+            expectedLocaleMessages
         )
 
         Mockito.`when`(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(responseFirst)
@@ -248,7 +241,7 @@ class PhraseApiClientDownloadLocaleTest {
 
         val headers = mapOf(
             HttpHeaders.ETAG to listOf(eTag),
-            HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
+            HttpHeaders.CONTENT_TYPE to listOf(MediaType.OCTET_STREAM.toString())
         )
 
         val responseFirst = Response.create(
