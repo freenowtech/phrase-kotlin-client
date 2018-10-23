@@ -5,7 +5,7 @@
 
     <groupId>com.mytaxi.apis</groupId>
     <artifactId>phrase-kotlin-client</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.4-SNAPSHOT</version>
     <name>phrase-api-kotlin</name>
     <packaging>jar</packaging>
 
@@ -201,7 +201,7 @@
                 <configuration>
                     <excludes>
                         <exclude>
-                            com/mytaxi/apis/phraseapi/PhraseApiClientImpl$*.*
+                            com/mytaxi/apis/phraseapi/client/PhraseApiClientImpl$*.*
                         </exclude>
                     </excludes>
                 </configuration>
