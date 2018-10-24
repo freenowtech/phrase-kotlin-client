@@ -9,6 +9,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
+@Suppress("TooGenericExceptionCaught")
 class PhraseAppSyncTask(
     url: String,
     authKey: String,
@@ -52,7 +53,7 @@ class PhraseAppSyncTask(
                 }
             log.info("Phrase App sync finished")
         } catch (ex: Exception) {
-            log.warn("PhraseApp sync failed")
+            log.warn("PhraseApp sync failed", ex)
         }
     }
 
