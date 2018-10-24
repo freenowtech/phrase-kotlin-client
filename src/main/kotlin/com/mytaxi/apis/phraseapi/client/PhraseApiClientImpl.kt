@@ -30,7 +30,7 @@ import java.util.Timer
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.schedule
 
-@Suppress("MaxLineLength", "TooManyFunctions")
+@Suppress("MaxLineLength", "TooManyFunctions", "TooGenericExceptionCaught")
 class PhraseApiClientImpl : PhraseApiClient {
 
     private var log = LoggerFactory.getLogger(PhraseApiClientImpl::class.java.name)
@@ -38,7 +38,7 @@ class PhraseApiClientImpl : PhraseApiClient {
     private val client: PhraseApi
 
     private val responseCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, Any>() // key url, value : Response
-    private val GSON = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
+    private val gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 
     companion object {
         private const val CLEAN_UP_FARE_RATE = 60 * 60 * 1000L // one hour
@@ -188,7 +188,7 @@ class PhraseApiClientImpl : PhraseApiClient {
                 .asSequence()
                 .firstOrNull { it -> HttpHeaders.CONTENT_TYPE.equals(it.key, true) }
                 ?.value
-                ?.first() ?: throw RuntimeException("Content type is NULL")
+                ?.first() ?: throw PhraseAppApiException("Content type is NULL")
 
             val mediaType = MediaType.parse(contentType)
             val responseObject = when (mediaType.subtype()) {
@@ -199,7 +199,7 @@ class PhraseApiClientImpl : PhraseApiClient {
                     IOUtils.toByteArray(response.body().asInputStream()) as T
                 }
                 else -> {
-                    throw RuntimeException("Content Type $contentType is not supported")
+                    throw PhraseAppApiException("Content Type $contentType is not supported")
                 }
             }
 
@@ -214,7 +214,7 @@ class PhraseApiClientImpl : PhraseApiClient {
 
     private inline fun <reified T> getObject(response: Response): T {
         try {
-            val responseObject = GSON.fromJson(response.body().asReader(), T::class.java)
+            val responseObject = gson.fromJson(response.body().asReader(), T::class.java)
             log.debug("Response object : $responseObject")
             return responseObject
         } catch (ex: JsonSyntaxException) {
@@ -363,6 +363,7 @@ class PhraseApiClientImpl : PhraseApiClient {
 }
 
 class PhraseAppApiException : RuntimeException {
+    constructor(message: String): super(message)
     constructor(httpStatus: Int, message: String?) : super("Code [$httpStatus] : $message")
     constructor(message: String, throwable: Throwable) : super(message, throwable)
 }
