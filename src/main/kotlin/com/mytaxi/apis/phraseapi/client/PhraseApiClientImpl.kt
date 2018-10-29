@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.Timer
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.schedule
+import kotlin.concurrent.scheduleAtFixedRate
 
 @Suppress("MaxLineLength", "TooManyFunctions", "TooGenericExceptionCaught")
 class PhraseApiClientImpl : PhraseApiClient {
@@ -53,7 +53,7 @@ class PhraseApiClientImpl : PhraseApiClient {
     }
 
     init {
-        Timer("responseCache", true).schedule(CLEAN_UP_FARE_RATE) {
+        Timer("responseCache", true).scheduleAtFixedRate(CLEAN_UP_FARE_RATE,CLEAN_UP_FARE_RATE) {
             try {
                 log.debug("CleanUp of responses cache started")
                 responseCache.cleanUp()
@@ -251,7 +251,7 @@ class PhraseApiClientImpl : PhraseApiClient {
                 .encoder(FormEncoder(GsonEncoder()))
                 .target(PhraseApi::class.java, url)
 
-            Timer("eTagCache", true).schedule(CLEAN_UP_FARE_RATE) {
+            Timer("eTagCache", true).scheduleAtFixedRate(CLEAN_UP_FARE_RATE,CLEAN_UP_FARE_RATE){
                 try {
                     log.debug("CleanUp of eTags cache started")
                     eTagCache.cleanUp()
