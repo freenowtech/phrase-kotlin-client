@@ -36,13 +36,13 @@ class PhraseAppSyncTask(
 
     override fun run() {
         try {
-            log.info("Phrase App sync started")
+            log.debug("Phrase App sync started")
             client.locales(config.projectId)
                 .orEmpty()
                 .forEach {
                     updateLocaleFile(it)
                 }
-            log.info("Phrase App sync finished")
+            log.debug("Phrase App sync finished")
         } catch (ex: Exception) {
             log.warn("PhraseApp sync failed", ex)
         }
@@ -50,7 +50,7 @@ class PhraseAppSyncTask(
 
     private fun updateLocaleFile(locale: PhraseLocale) {
         try {
-            val byteArray = client.downloadLocaleAsProperties(config.projectId, locale.id, false)
+            val byteArray = client.downloadLocaleAsProperties(config.projectId, locale.id, config.escapeSingleQuotes)
             if (byteArray != null) {
                 val fileName = createFileName(locale.code)
                 val path = messagesDirectory.resolve(fileName)
@@ -76,5 +76,6 @@ data class PhraseAppSyncTaskConfig(
     val generatedResourcesFolder: String = "generated-resources/",
     val messagesFolder: String = "messages/",
     val messagesFilePostfix: String = ".properties",
-    val messagesFilePrefix: String = "messages_"
+    val messagesFilePrefix: String = "messages_",
+    val escapeSingleQuotes: Boolean = false
 )
