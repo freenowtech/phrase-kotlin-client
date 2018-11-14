@@ -1,5 +1,6 @@
 package com.mytaxi.apis.phraseapi.client
 
+import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
@@ -36,29 +37,41 @@ class PhraseApiClientImpl : PhraseApiClient {
     private var log = LoggerFactory.getLogger(PhraseApiClientImpl::class.java.name)
 
     private val client: PhraseApi
+    private val config: PhraseApiClientConfig
+    private val responseCache: Cache<String, Any> // key url, value
 
-    private val responseCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, Any>() // key url, value : Response
+    // Response
     private val gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 
-    companion object {
-        private const val CLEAN_UP_FARE_RATE = 60 * 60 * 1000L // one hour
-    }
-
     constructor(client: PhraseApi) {
+        config = PhraseApiClientConfig(
+            authKey = ""
+        )
         this.client = client
+        responseCache = CacheBuilder.newBuilder()
+            .expireAfterWrite(config.responseCacheExpireAfterWriteMilliseconds, TimeUnit.MILLISECONDS)
+            .build<String, Any>()
+        runCleaningTimer()
     }
 
-    constructor(url: String, authKey: String) {
-        client = PhraseApiImpl(authKey, url)
+    constructor(config: PhraseApiClientConfig) {
+        this.config = config
+        client = PhraseApiImpl(config)
+        responseCache = CacheBuilder.newBuilder()
+            .expireAfterWrite(config.responseCacheExpireAfterWriteMilliseconds, TimeUnit.MILLISECONDS)
+            .build<String, Any>()
+        runCleaningTimer()
     }
 
-    init {
-        Timer("responseCache", true).scheduleAtFixedRate(CLEAN_UP_FARE_RATE,CLEAN_UP_FARE_RATE) {
+    constructor(url: String, authKey: String): this(PhraseApiClientConfig(url, authKey))
+
+    private fun runCleaningTimer() {
+        Timer("responseCache", true).scheduleAtFixedRate(config.cleanUpFareRateMilliseconds, config.cleanUpFareRateMilliseconds) {
             try {
                 log.debug("CleanUp of responses cache started")
                 responseCache.cleanUp()
                 log.debug("CleanUp of responses cache finished")
-            } catch (ex : Exception) {
+            } catch (ex: Exception) {
                 log.debug("Error during responses cleanup", ex)
             }
         }
@@ -235,8 +248,7 @@ class PhraseApiClientImpl : PhraseApiClient {
 
     @Suppress("TooManyFunctions")
     private class PhraseApiImpl(
-        val authKey: String,
-        url: String
+        val config: PhraseApiClientConfig
     ) : PhraseApi, CacheApi {
 
         private var log = LoggerFactory.getLogger(PhraseApiImpl::class.java.name)
@@ -249,14 +261,14 @@ class PhraseApiClientImpl : PhraseApiClient {
                 .requestInterceptor(getInterceptor())
                 .decoder(GsonDecoder())
                 .encoder(FormEncoder(GsonEncoder()))
-                .target(PhraseApi::class.java, url)
+                .target(PhraseApi::class.java, config.url)
 
-            Timer("eTagCache", true).scheduleAtFixedRate(CLEAN_UP_FARE_RATE,CLEAN_UP_FARE_RATE){
+            Timer("eTagCache", true).scheduleAtFixedRate(config.cleanUpFareRateMilliseconds, config.cleanUpFareRateMilliseconds) {
                 try {
                     log.debug("CleanUp of eTags cache started")
                     eTagCache.cleanUp()
                     log.debug("CleanUp of eTags cache finished")
-                } catch (ex : Exception) {
+                } catch (ex: Exception) {
                     log.debug("Error during eTags cleanup", ex)
                 }
             }
@@ -265,7 +277,7 @@ class PhraseApiClientImpl : PhraseApiClient {
         private fun getInterceptor() = RequestInterceptor {
             apply {
                 it.header(HttpHeaders.IF_NONE_MATCH, getETag(it.request().method() + it.request().url()))
-                it.header(HttpHeaders.AUTHORIZATION, "token $authKey")
+                it.header(HttpHeaders.AUTHORIZATION, "token ${config.authKey}")
             }
         }
 
@@ -363,7 +375,7 @@ class PhraseApiClientImpl : PhraseApiClient {
 }
 
 class PhraseAppApiException : RuntimeException {
-    constructor(message: String): super(message)
+    constructor(message: String) : super(message)
     constructor(httpStatus: Int, message: String?) : super("Code [$httpStatus] : $message")
     constructor(message: String, throwable: Throwable) : super(message, throwable)
 }

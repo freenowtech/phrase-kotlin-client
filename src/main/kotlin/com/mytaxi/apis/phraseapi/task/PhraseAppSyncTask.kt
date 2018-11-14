@@ -11,32 +11,23 @@ import java.nio.file.Paths
 
 @Suppress("TooGenericExceptionCaught")
 class PhraseAppSyncTask(
-    url: String,
-    authKey: String,
-    private val projectId: String
+    private val config: PhraseAppSyncTaskConfig
 ) : Runnable {
 
     private var log = LoggerFactory.getLogger(PhraseAppSyncTask::class.java.name)
-
-    companion object {
-        private const val MESSAGE_FILE_PREFIX = "messages_"
-        private const val MESSAGE_FILE_POSTFIX = ".properties"
-        private const val GENERATED_RESOURCES_FOLDER = "generated-resources/"
-        private const val MESSAGES_FOLDER = "messages/"
-    }
 
     private var messagesDirectory: Path
 
     private val client: PhraseApiClient
 
     init {
-        client = PhraseApiClientImpl(url, authKey)
+        client = PhraseApiClientImpl(config.url, config.authKey)
 
         try {
             val classPathResource = ClassPathResource("/").file.path
-            messagesDirectory = Paths.get("$classPathResource/$MESSAGES_FOLDER")
+            messagesDirectory = Paths.get("$classPathResource/${config.messagesFolder}")
         } catch (e: Exception) {
-            messagesDirectory = Paths.get(GENERATED_RESOURCES_FOLDER + MESSAGES_FOLDER)
+            messagesDirectory = Paths.get(config.generatedResourcesFolder + config.messagesFolder)
             log.error("could not get default ClassPathResource. use /generated-resources/ instead")
         }
 
@@ -46,7 +37,7 @@ class PhraseAppSyncTask(
     override fun run() {
         try {
             log.info("Phrase App sync started")
-            client.locales(projectId)
+            client.locales(config.projectId)
                 .orEmpty()
                 .forEach {
                     updateLocaleFile(it)
@@ -59,7 +50,7 @@ class PhraseAppSyncTask(
 
     private fun updateLocaleFile(locale: PhraseLocale) {
         try {
-            val byteArray = client.downloadLocaleAsProperties(projectId, locale.id, false)
+            val byteArray = client.downloadLocaleAsProperties(config.projectId, locale.id, false)
             if (byteArray != null) {
                 val fileName = createFileName(locale.code)
                 val path = messagesDirectory.resolve(fileName)
@@ -74,6 +65,16 @@ class PhraseAppSyncTask(
     }
 
     private fun createFileName(code: String): String {
-        return MESSAGE_FILE_PREFIX + code.replace("-", "_") + MESSAGE_FILE_POSTFIX
+        return config.messagesFilePrefix + code.replace("-", "_") + config.messagesFilePostfix
     }
 }
+
+data class PhraseAppSyncTaskConfig(
+    val url: String,
+    val authKey: String,
+    val projectId: String,
+    val generatedResourcesFolder: String = "generated-resources/",
+    val messagesFolder: String = "messages/",
+    val messagesFilePostfix: String = ".properties",
+    val messagesFilePrefix: String = "messages_"
+)
