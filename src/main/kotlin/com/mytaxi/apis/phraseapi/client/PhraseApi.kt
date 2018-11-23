@@ -96,8 +96,8 @@ interface PhraseApi {
         @Param("localeId") localeId: String
     ): Response
 
-
-    @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}/download?file_format={fileFormat}&format_options[escape_single_quotes]={escapeSingleQuotes}")
+    @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}/download?file_format={fileFormat}" +
+        "&format_options[escape_single_quotes]={escapeSingleQuotes}")
     fun downloadLocale(
         @Param("projectId") projectId: String,
         @Param("localeId") localeId: String,
