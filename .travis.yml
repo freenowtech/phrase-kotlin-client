@@ -1,14 +1,7 @@
 dist: trusty
-language: java
+language: kotlin
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
-addons:
-  sonarcloud:
-    organization: "sadovnikov94-github"
-    token:
-      secure: "1828601096b006c057a09f668b3f9a97e6278e2c"
-
 script:
   - mvn clean verify
-  - sonar-scanner
