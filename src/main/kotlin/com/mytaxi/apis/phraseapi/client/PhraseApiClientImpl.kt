@@ -1,6 +1,5 @@
 package com.mytaxi.apis.phraseapi.client
 
-import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
