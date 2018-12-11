@@ -5,7 +5,7 @@
 
     <groupId>com.mytaxi.apis</groupId>
     <artifactId>phrase-kotlin-client</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.5-SNAPSHOT</version>
     <name>phrase-api-kotlin</name>
     <packaging>jar</packaging>
 
