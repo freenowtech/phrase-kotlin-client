@@ -67,7 +67,7 @@ class PhraseAppSyncTask(
     }
 }
 
-data class PhraseAppSyncTaskConfig(
+data class PhraseAppSyncTaskConfig @JvmOverloads constructor(
     val url: String,
     val authKey: String,
     val projectId: String,
