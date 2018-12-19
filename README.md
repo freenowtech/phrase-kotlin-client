@@ -9,8 +9,8 @@ It's supposed to expose Phrase Core within the kotlin world.
 
 [travis-image]: https://travis-ci.org/mytaxi/phrase-kotlin-client.svg?branch=master
 [travis-url-main]: https://travis-ci.org/mytaxi/phrase-kotlin-client
-[codecov-project-url]: https://codecov.io/gh/Sadovnikov94/phrase-kotlin-client
-[codecov-badge-url]: https://codecov.io/gh/Sadovnikov94/phrase-kotlin-client/branch/master/graph/badge.svg
+[codecov-project-url]: https://codecov.io/gh/mytaxi/phrase-kotlin-client
+[codecov-badge-url]: https://codecov.io/gh/mytaxi/phrase-kotlin-client/branch/master/graph/badge.svg
 
 ## How to use it
 
