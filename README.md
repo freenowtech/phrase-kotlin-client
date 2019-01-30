@@ -37,3 +37,9 @@ val phraseApiClient = PhraseApiClientImpl(config)
   * Get locale by id
   * Delete locale
   * Download locale translations
+  
+* Translation
+  * Create translation
+
+* Key
+  * Create key
