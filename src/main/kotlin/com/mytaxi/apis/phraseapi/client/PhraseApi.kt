@@ -113,6 +113,36 @@ interface PhraseApi {
         @Param("localeId") localeId: String
     ): Response
 
+    @RequestLine("POST /api/v2/projects/{project_id}/translations")
+    fun createTranslation(
+        @Param("project_id") projectId: String,
+        @Param("locale_id") localeId: String,
+        @Param("key_id") keyId: String,
+        @Param("content") content: String
+    ): Response
+
+
+    //Keys
+    @RequestLine("POST /api/v2/projects/{project_id}/keys")
+    fun createKey(
+        @Param("project_id") projectId: String,
+        @Param("name") name: String,
+        @Param("tags") tags: ArrayList<String>? = null,
+        @Param("description") description: String? = null,
+        @Param("branch") branch: String? = null,
+        @Param("plural") plural: Boolean? = null,
+        @Param("name_plural") namePlural: String? = null,
+        @Param("data_type") dataType: String? = null,
+        @Param("max_characters_allowed") maxCharactersAllowed: Number? = null,
+        @Param("screenshot") screenshot: File? = null,
+        @Param("remove_screenshot") removeScreenshot: Boolean? = null,
+        @Param("unformatted") unformatted: Boolean? = null,
+        @Param("xml_space_preserve") xmlSpacePreserve: Boolean? = null,
+        @Param("original_file") originalFile: String? = null,
+        @Param("localized_format_string") localizedFormatString: String? = null,
+        @Param("localized_format_key") localizedFormatKey: String? = null
+    ): Response
+
 }
 
 interface CacheApi {

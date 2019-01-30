@@ -8,13 +8,17 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonIOException
 import com.google.gson.JsonSyntaxException
+import com.mytaxi.apis.phraseapi.client.model.CreateKey
 import com.mytaxi.apis.phraseapi.client.model.CreatePhraseLocale
 import com.mytaxi.apis.phraseapi.client.model.CreatePhraseProject
+import com.mytaxi.apis.phraseapi.client.model.CreateTranslation
+import com.mytaxi.apis.phraseapi.client.model.Key
 import com.mytaxi.apis.phraseapi.client.model.PhraseLocale
 import com.mytaxi.apis.phraseapi.client.model.PhraseLocaleMessages
 import com.mytaxi.apis.phraseapi.client.model.PhraseLocales
 import com.mytaxi.apis.phraseapi.client.model.PhraseProject
 import com.mytaxi.apis.phraseapi.client.model.PhraseProjects
+import com.mytaxi.apis.phraseapi.client.model.Translation
 import com.mytaxi.apis.phraseapi.client.model.Translations
 import com.mytaxi.apis.phraseapi.client.model.UpdatePhraseProject
 import feign.Feign
@@ -33,7 +37,6 @@ import kotlin.concurrent.scheduleAtFixedRate
 
 @Suppress("MaxLineLength", "TooManyFunctions", "TooGenericExceptionCaught")
 class PhraseApiClientImpl : PhraseApiClient {
-
     private var log = LoggerFactory.getLogger(PhraseApiClientImpl::class.java.name)
 
     private val client: PhraseApi
@@ -173,7 +176,37 @@ class PhraseApiClientImpl : PhraseApiClient {
     override fun translations(project: PhraseProject, locale: PhraseLocale): Translations? {
         log.debug("Get translations for locale [${locale.id}] for project [${project.id}]")
         val response = client.translations(project.id, locale.id)
-        return processResponse("GET/api/v2/projects/${project.id}/locales/${locale.id}/translationsn", response)
+        return processResponse("GET/api/v2/projects/${project.id}/locales/${locale.id}/translations", response)
+    }
+
+    override fun createTranslation(projectId: String, createTranslation: CreateTranslation): Translation? {
+        log.debug("Creating the translation [${createTranslation.content}] for locale [${createTranslation.localeId}] " +
+            "for project [$projectId] for key [${createTranslation.keyId}]")
+        val response = client.createTranslation(projectId, createTranslation.localeId, createTranslation.keyId, createTranslation.content)
+        return processResponse("POST/api/v2/projects/$projectId/translations", response)
+    }
+
+    override fun createKey(projectId: String, createKey: CreateKey): Key? {
+        log.debug("Creating keys [${createKey.name}] for project [$projectId]")
+        val response = client.createKey(
+            projectId,
+            createKey.name,
+            createKey.tags,
+            createKey.description,
+            createKey.branch,
+            createKey.plural,
+            createKey.namePlural,
+            createKey.dataType,
+            createKey.maxCharactersAllowed,
+            createKey.screenshot,
+            createKey.removeScreenshot,
+            createKey.unformatted,
+            createKey.xmlSpacePreserve,
+            createKey.originalFile,
+            createKey.localizedFormatString,
+            createKey.localizedFormatKey
+        )
+        return processResponse("POST/api/v2/projects/$projectId/keys", response)
     }
 
     private inline fun <reified T> processResponse(key: String, response: Response): T? {
@@ -371,6 +404,30 @@ class PhraseApiClientImpl : PhraseApiClient {
 
         //TRANSLATION
         override fun translations(projectId: String, localeId: String): Response = target.translations(projectId, localeId)
+
+        override fun createTranslation(projectId: String, localeId: String, keyId: String, content: String): Response = target.createTranslation(projectId, localeId, keyId, content)
+
+
+        //KEYS
+        override fun createKey(
+            projectId: String,
+            name: String,
+            tags: ArrayList<String>?,
+            description: String?,
+            branch: String?,
+            plural: Boolean?,
+            namePlural: String?,
+            dataType: String?,
+            maxCharactersAllowed: Number?,
+            screenshot: File?,
+            removeScreenshot: Boolean?,
+            unformatted: Boolean?,
+            xmlSpacePreserve: Boolean?,
+            originalFile: String?,
+            localizedFormatString: String?,
+            localizedFormatKey: String?
+        ): Response = target.createKey(projectId, name, tags, description, branch, plural, namePlural, dataType, maxCharactersAllowed, screenshot, removeScreenshot, unformatted,
+            xmlSpacePreserve, originalFile, localizedFormatString, localizedFormatKey)
     }
 }
 
