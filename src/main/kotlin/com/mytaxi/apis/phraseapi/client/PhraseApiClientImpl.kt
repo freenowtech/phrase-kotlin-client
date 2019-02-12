@@ -13,6 +13,7 @@ import com.mytaxi.apis.phraseapi.client.model.CreatePhraseLocale
 import com.mytaxi.apis.phraseapi.client.model.CreatePhraseProject
 import com.mytaxi.apis.phraseapi.client.model.CreateTranslation
 import com.mytaxi.apis.phraseapi.client.model.Key
+import com.mytaxi.apis.phraseapi.client.model.Keys
 import com.mytaxi.apis.phraseapi.client.model.PhraseLocale
 import com.mytaxi.apis.phraseapi.client.model.PhraseLocaleMessages
 import com.mytaxi.apis.phraseapi.client.model.PhraseLocales
@@ -220,6 +221,20 @@ class PhraseApiClientImpl : PhraseApiClient {
         log.debug("Creating keys [$name] for project [$projectId]")
         val response = client.createKey(projectId, name, tags)
         return processResponse("POST/api/v2/projects/$projectId/keys", response)
+    }
+
+
+    override fun searchKey(projectId: String, localeId: String?, q: String?): Keys? {
+        log.debug("Searching keys for project [$projectId] - locale [$localeId] - query [$q]")
+        val response = client.searchKey(projectId, localeId, q)
+        return processResponse("POST/api/v2/projects/$projectId/keys/search", response)
+    }
+
+    override fun deleteKey(projectId: String, keyId: String): Boolean {
+        log.debug("Deleting key [$keyId] for project [$projectId]")
+        val response = client.deleteKey(projectId, keyId)
+        processResponse<Void>("DELETE/api/v2/projects/$projectId/keys/$keyId", response)
+        return response.status() == HttpStatus.SC_NO_CONTENT
     }
 
     private inline fun <reified T> processResponse(key: String, response: Response): T? {
@@ -443,6 +458,10 @@ class PhraseApiClientImpl : PhraseApiClient {
             xmlSpacePreserve, originalFile, localizedFormatString, localizedFormatKey)
 
         override fun createKey(projectId: String, name: String, tags: ArrayList<String>?): Response = target.createKey(projectId, name, tags)
+
+        override fun searchKey(projectId: String, localeId: String?, q: String?): Response = target.searchKey(projectId, localeId, q)
+
+        override fun deleteKey(projectId: String, keyId: String): Response = target.deleteKey(projectId, keyId)
     }
 }
 

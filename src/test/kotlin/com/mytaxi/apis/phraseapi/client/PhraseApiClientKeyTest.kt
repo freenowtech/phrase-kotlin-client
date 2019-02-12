@@ -92,4 +92,62 @@ class PhraseApiClientKeyTest {
         assertNotNull(actualResponse)
         assertEquals(actualResponse!!.name, expectedKey.name)
     }
+
+
+    @Test
+    fun `Should search for a key`() {
+
+        //GIVEN
+        val projectId = UUID.randomUUID().toString()
+        val localeId = UUID.randomUUID().toString()
+        val keyName = UUID.randomUUID().toString()
+        val q = UUID.randomUUID().toString()
+
+        val headers = mapOf(
+            HttpHeaders.CONTENT_TYPE to listOf(JSON_UTF_8.toString())
+        )
+
+        val expectedKey = Key(id = UUID.randomUUID().toString(), name = keyName)
+        val keys = Keys()
+        keys.add(expectedKey)
+
+        val keysJSON = Gson().toJson(keys)
+
+        val response = Response.create(HttpStatus.SC_OK, "OK", headers, keysJSON, StandardCharsets.UTF_8)
+
+        `when`(client.searchKey(projectId, localeId, q)).thenReturn(response)
+
+
+        //WHEN
+        val actualResponse = phraseApiClient.searchKey(projectId, localeId, q)
+
+        //THEN
+        assertNotNull(actualResponse)
+        assertEquals(actualResponse!!.get(0).name, expectedKey.name)
+    }
+
+
+    @Test
+    fun `Should delete a key`() {
+
+        //GIVEN
+        val projectId = UUID.randomUUID().toString()
+        val keyId = UUID.randomUUID().toString()
+
+        val headers = mapOf(
+            HttpHeaders.CONTENT_TYPE to listOf(JSON_UTF_8.toString())
+        )
+
+        val response = Response.create(HttpStatus.SC_NO_CONTENT, "OK", headers, "{}", StandardCharsets.UTF_8)
+
+        `when`(client.deleteKey(projectId, keyId)).thenReturn(response)
+
+
+        //WHEN
+        val actualResponse = phraseApiClient.deleteKey(projectId, keyId)
+
+        //THEN
+        assertTrue(actualResponse)
+    }
+
 }
