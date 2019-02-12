@@ -8,7 +8,9 @@ import com.mytaxi.apis.phraseapi.client.model.PhraseLocales
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
-import org.mockito.Mockito
+import org.mockito.Mockito.`when` as on
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.withSettings
 import java.nio.charset.StandardCharsets
 import java.util.Locale
 import java.util.UUID
@@ -16,7 +18,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class PhraseApiClientLocaleTest {
-    private var client: PhraseApi = Mockito.mock(PhraseApi::class.java, Mockito.withSettings().extraInterfaces(CacheApi::class.java))
+    private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
     private var phraseApiClient: PhraseApiClient
 
@@ -51,7 +53,7 @@ class PhraseApiClientLocaleTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.locale(projectId, localeId)).thenReturn(response)
+        on(client.locale(projectId, localeId)).thenReturn(response)
 
         //WHEN
         val actualLocale = phraseApiClient.locales(projectId, localeId)
@@ -97,7 +99,7 @@ class PhraseApiClientLocaleTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.locales(projectId)).thenReturn(response)
+        on(client.locales(projectId)).thenReturn(response)
 
         //WHEN
         val actualLocales = phraseApiClient.locales(projectId)

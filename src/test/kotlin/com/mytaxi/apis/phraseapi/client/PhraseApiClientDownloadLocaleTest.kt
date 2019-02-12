@@ -8,7 +8,8 @@ import com.mytaxi.apis.phraseapi.client.model.PhraseLocaleMessages
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
-import org.mockito.Mockito
+import org.mockito.Mockito.`when` as on
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
 import java.nio.charset.StandardCharsets
 import java.util.Arrays
@@ -18,7 +19,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class PhraseApiClientDownloadLocaleTest {
-    private var client: PhraseApi = Mockito.mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+    private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
     private var phraseApiClient: PhraseApiClient
 
@@ -55,7 +56,7 @@ class PhraseApiClientDownloadLocaleTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.downloadLocale(projectId, localeId, "json")).thenReturn(response)
+        on(client.downloadLocale(projectId, localeId, "json")).thenReturn(response)
 
         //WHEN
         val actualLocaleMessages = phraseApiClient.downloadLocale(projectId, localeId)
@@ -96,7 +97,7 @@ class PhraseApiClientDownloadLocaleTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
+        on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
         val actualLocaleMessages = phraseApiClient.downloadLocale(projectId, localeId)
 
 
@@ -108,7 +109,7 @@ class PhraseApiClientDownloadLocaleTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseSecond)
+        on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseSecond)
         //WHEN
         val actualLocaleMessagesCached = phraseApiClient.downloadLocale(projectId, localeId)
 
@@ -148,7 +149,7 @@ class PhraseApiClientDownloadLocaleTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
+        on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
 
         //WHEN
         phraseApiClient.downloadLocale(projectId, localeId)
@@ -174,7 +175,7 @@ class PhraseApiClientDownloadLocaleTest {
             expectedLocaleMessages
         )
 
-        Mockito.`when`(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(response)
+        on(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(response)
 
         //WHEN
         val actualLocaleMessages = phraseApiClient.downloadLocaleAsProperties(projectId, localeId, true)
@@ -207,7 +208,7 @@ class PhraseApiClientDownloadLocaleTest {
             expectedLocaleMessages
         )
 
-        Mockito.`when`(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(responseFirst)
+        on(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(responseFirst)
         val actualLocaleMessages = phraseApiClient.downloadLocaleAsProperties(projectId, localeId, true)
 
 
@@ -219,7 +220,7 @@ class PhraseApiClientDownloadLocaleTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseSecond)
+        on(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseSecond)
         //WHEN
         val actualLocaleMessagesCached = phraseApiClient.downloadLocaleAsProperties(projectId, localeId, false)
 
@@ -252,7 +253,7 @@ class PhraseApiClientDownloadLocaleTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseFirst)
+        on(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseFirst)
         //WHEN
         phraseApiClient.downloadLocaleAsProperties(projectId, localeId, false)
     }

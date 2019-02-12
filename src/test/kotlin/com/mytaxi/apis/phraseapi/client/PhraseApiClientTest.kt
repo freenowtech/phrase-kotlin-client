@@ -10,8 +10,9 @@ import com.mytaxi.apis.phraseapi.client.model.PhraseLocales
 import com.mytaxi.apis.phraseapi.client.model.PhraseProject
 import feign.Response
 import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.`when` as on
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.withSettings
 import java.nio.charset.StandardCharsets
 import java.util.Locale
 import java.util.UUID
@@ -20,7 +21,7 @@ import kotlin.test.assertNotNull
 
 class PhraseApiClientTest {
 
-    private var client: PhraseApi = Mockito.mock(PhraseApi::class.java, Mockito.withSettings().extraInterfaces(CacheApi::class.java))
+    private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
     private var phraseApiClient: PhraseApiClient
 
@@ -61,11 +62,11 @@ class PhraseApiClientTest {
         )
 
         //WHEN
-        `when`(client.project(projectId)).thenReturn(responseFirst)
+        on(client.project(projectId)).thenReturn(responseFirst)
         val actualProjectFirst = phraseApiClient.project(projectId)
 
         //WHEN
-        `when`(client.project(projectId)).thenReturn(responseSecond)
+        on(client.project(projectId)).thenReturn(responseSecond)
         val actualProjectSecond = phraseApiClient.project(projectId)
 
         //THEN
@@ -102,7 +103,7 @@ class PhraseApiClientTest {
             StandardCharsets.UTF_8
         )
 
-        `when`(client.locales(projectId)).thenReturn(response)
+        on(client.locales(projectId)).thenReturn(response)
 
         //WHEN
         val projectLocales = phraseApiClient.locales(projectId)
@@ -150,11 +151,11 @@ class PhraseApiClientTest {
         )
 
         //WHEN
-        `when`(client.locales(projectId)).thenReturn(responseFirst)
+        on(client.locales(projectId)).thenReturn(responseFirst)
         val actualLocalesFirst = phraseApiClient.locales(projectId)
 
         //WHEN
-        `when`(client.locales(projectId)).thenReturn(responseSecond)
+        on(client.locales(projectId)).thenReturn(responseSecond)
         val actualLocalesSecond = phraseApiClient.locales(projectId)
 
         //THEN
@@ -187,7 +188,7 @@ class PhraseApiClientTest {
             StandardCharsets.UTF_8
         )
 
-        `when`(client.downloadLocale(projectId, localeId, "json")).thenReturn(response)
+        on(client.downloadLocale(projectId, localeId, "json")).thenReturn(response)
 
         //WHEN
         val actualMessages = phraseApiClient.downloadLocale(projectId, localeId)
@@ -235,11 +236,11 @@ class PhraseApiClientTest {
         )
 
         //WHEN
-        `when`(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
+        on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
         val actualLocalesFileFirst = phraseApiClient.downloadLocale(projectId, localeId)
 
         //WHEN
-        `when`(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseSecond)
+        on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseSecond)
         val actualLocalesFileSecond = phraseApiClient.downloadLocale(projectId, localeId)
 
         //THEN

@@ -9,7 +9,7 @@ import com.mytaxi.apis.phraseapi.client.model.Keys
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
 import java.nio.charset.StandardCharsets
@@ -45,7 +45,7 @@ class PhraseApiClientKeyTest {
 
         val response = Response.create(HttpStatus.SC_CREATED, "OK", headers, keyJSON, StandardCharsets.UTF_8)
 
-        `when`(client.createKey(
+        on(client.createKey(
             projectId = projectId,
             name = keyName,
             tags = tags,
@@ -82,7 +82,7 @@ class PhraseApiClientKeyTest {
 
         val response = Response.create(HttpStatus.SC_CREATED, "OK", headers, keyJSON, StandardCharsets.UTF_8)
 
-        `when`(client.createKey(projectId = projectId, name = keyName)).thenReturn(response)
+        on(client.createKey(projectId = projectId, name = keyName)).thenReturn(response)
 
 
         //WHEN
@@ -115,7 +115,7 @@ class PhraseApiClientKeyTest {
 
         val response = Response.create(HttpStatus.SC_OK, "OK", headers, keysJSON, StandardCharsets.UTF_8)
 
-        `when`(client.searchKey(projectId, localeId, q)).thenReturn(response)
+        on(client.searchKey(projectId, localeId, q)).thenReturn(response)
 
 
         //WHEN
@@ -140,7 +140,7 @@ class PhraseApiClientKeyTest {
 
         val response = Response.create(HttpStatus.SC_NO_CONTENT, "OK", headers, "{}", StandardCharsets.UTF_8)
 
-        `when`(client.deleteKey(projectId, keyId)).thenReturn(response)
+        on(client.deleteKey(projectId, keyId)).thenReturn(response)
 
 
         //WHEN
