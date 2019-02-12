@@ -43,6 +43,10 @@ interface PhraseApiClient {
 
     fun createTranslation(projectId: String, createTranslation: CreateTranslation): Translation?
 
+    fun createTranslation(projectId: String, localeId: String, keyId: String, content: String): Translation?
+
     fun createKey(project: String, createKey: CreateKey): Key?
+
+    fun createKey(project: String, name: String, tags: ArrayList<String>?): Key?
 
 }

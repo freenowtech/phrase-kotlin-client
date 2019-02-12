@@ -143,6 +143,12 @@ interface PhraseApi {
         @Param("localized_format_key") localizedFormatKey: String? = null
     ): Response
 
+    @RequestLine("POST /api/v2/projects/{project_id}/keys")
+    fun createKey(
+        @Param("project_id") projectId: String,
+        @Param("name") name: String,
+        @Param("tags") tags: ArrayList<String>? = null
+    ): Response
 }
 
 interface CacheApi {

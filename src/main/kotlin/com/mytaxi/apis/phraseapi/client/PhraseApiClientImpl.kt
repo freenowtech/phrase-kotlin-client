@@ -186,6 +186,13 @@ class PhraseApiClientImpl : PhraseApiClient {
         return processResponse("POST/api/v2/projects/$projectId/translations", response)
     }
 
+    override fun createTranslation(projectId: String, localeId: String, keyId: String, content: String): Translation? {
+        log.debug("Creating the translation [$content] for locale [$localeId] " +
+                "for project [$projectId] for key [$keyId]")
+        val response = client.createTranslation(projectId, localeId, keyId, content)
+        return processResponse("POST/api/v2/projects/$projectId/translations", response)
+    }
+
     override fun createKey(projectId: String, createKey: CreateKey): Key? {
         log.debug("Creating keys [${createKey.name}] for project [$projectId]")
         val response = client.createKey(
@@ -206,6 +213,12 @@ class PhraseApiClientImpl : PhraseApiClient {
             createKey.localizedFormatString,
             createKey.localizedFormatKey
         )
+        return processResponse("POST/api/v2/projects/$projectId/keys", response)
+    }
+
+    override fun createKey(projectId: String, name: String, tags: ArrayList<String>?): Key? {
+        log.debug("Creating keys [$name] for project [$projectId]")
+        val response = client.createKey(projectId, name, tags)
         return processResponse("POST/api/v2/projects/$projectId/keys", response)
     }
 
@@ -428,6 +441,8 @@ class PhraseApiClientImpl : PhraseApiClient {
             localizedFormatKey: String?
         ): Response = target.createKey(projectId, name, tags, description, branch, plural, namePlural, dataType, maxCharactersAllowed, screenshot, removeScreenshot, unformatted,
             xmlSpacePreserve, originalFile, localizedFormatString, localizedFormatKey)
+
+        override fun createKey(projectId: String, name: String, tags: ArrayList<String>?): Response = target.createKey(projectId, name, tags)
     }
 }
 
