@@ -38,6 +38,7 @@ import kotlin.concurrent.scheduleAtFixedRate
 
 @Suppress("MaxLineLength", "TooManyFunctions", "TooGenericExceptionCaught")
 class PhraseApiClientImpl : PhraseApiClient {
+
     private var log = LoggerFactory.getLogger(PhraseApiClientImpl::class.java.name)
 
     private val client: PhraseApi
