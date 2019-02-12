@@ -9,7 +9,9 @@ import com.mytaxi.apis.phraseapi.client.model.UpdatePhraseProject
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
-import org.mockito.Mockito
+import org.mockito.Mockito.`when` as on
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.withSettings
 import java.nio.charset.StandardCharsets
 import java.util.UUID
 import kotlin.test.assertEquals
@@ -18,7 +20,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class PhraseApiClientProjectTest {
-    private var client: PhraseApi = Mockito.mock(PhraseApi::class.java, Mockito.withSettings().extraInterfaces(CacheApi::class.java))
+    private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
     private var phraseApiClient: PhraseApiClient
 
@@ -47,7 +49,7 @@ class PhraseApiClientProjectTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.project(projectId)).thenReturn(response)
+        on(client.project(projectId)).thenReturn(response)
 
         //WHEN
         val actualProject = phraseApiClient.project(projectId)
@@ -83,7 +85,7 @@ class PhraseApiClientProjectTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.projects()).thenReturn(response)
+        on(client.projects()).thenReturn(response)
 
         //WHEN
         val actualProjects = phraseApiClient.projects()
@@ -112,7 +114,7 @@ class PhraseApiClientProjectTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.deleteProject(projectId)).thenReturn(response)
+        on(client.deleteProject(projectId)).thenReturn(response)
 
         //WHEN
         val actualResponse = phraseApiClient.deleteProject(projectId)
@@ -149,7 +151,7 @@ class PhraseApiClientProjectTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.createProject(
+        on(client.createProject(
             name = projectName,
             projectImage = null,
             mainFormat = null,
@@ -210,7 +212,7 @@ class PhraseApiClientProjectTest {
             StandardCharsets.UTF_8
         )
 
-        Mockito.`when`(client.updateProject(
+        on(client.updateProject(
             projectId = projectId,
             name = projectName,
             projectImage = null,

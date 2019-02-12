@@ -3,6 +3,8 @@ package com.mytaxi.apis.phraseapi.client.model
 import java.io.File
 import java.util.Date
 
+class Keys: ArrayList<Key>()
+
 data class Key(
     val id: String,
     val name: String,

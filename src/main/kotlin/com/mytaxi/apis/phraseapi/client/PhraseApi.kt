@@ -143,6 +143,26 @@ interface PhraseApi {
         @Param("localized_format_key") localizedFormatKey: String? = null
     ): Response
 
+    @RequestLine("POST /api/v2/projects/{project_id}/keys")
+    fun createKey(
+        @Param("project_id") projectId: String,
+        @Param("name") name: String,
+        @Param("tags") tags: ArrayList<String>? = null
+    ): Response
+
+    @RequestLine("POST /api/v2/projects/{project_id}/keys/search")
+    fun searchKey(
+        @Param("project_id") projectId: String,
+        @Param("locale_id") localeId: String?,
+        @Param("q") q: String? = null
+    ): Response
+
+    @RequestLine("DELETE /api/v2/projects/{projectId}/keys/{keyId}")
+    fun deleteKey(
+        @Param("projectId") projectId: String,
+        @Param("keyId") keyId: String
+    ): Response
+
 }
 
 interface CacheApi {
