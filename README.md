@@ -43,3 +43,5 @@ val phraseApiClient = PhraseApiClientImpl(config)
 
 * Key
   * Create key
+  * Search key
+  * Delete key
