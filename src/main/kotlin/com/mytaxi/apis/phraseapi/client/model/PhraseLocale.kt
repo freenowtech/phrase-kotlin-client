@@ -5,6 +5,7 @@ import java.util.Date
 data class CreatePhraseLocale(
     val name: String,
     val code: String,
+    val branch: String? = null,
     val default: Boolean? = null,
     val mail: Boolean? = null,
     val rtl: Boolean? = null,

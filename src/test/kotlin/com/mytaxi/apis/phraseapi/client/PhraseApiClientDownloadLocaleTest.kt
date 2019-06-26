@@ -142,7 +142,7 @@ class PhraseApiClientDownloadLocaleTest {
         expectedLocaleMessages[messageKey] = Message(message, description)
 
         val responseFirst = Response.create(
-           429,
+            429,
             "Not Ok",
             headers,
             "{\"message\":\"Rate limit exceeded\",\"documentation_url\":\"https://developers.phraseapp.com/api/#rate-limit\"}",
