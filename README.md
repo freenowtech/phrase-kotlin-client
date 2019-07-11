@@ -7,10 +7,10 @@ It's supposed to expose Phrase Core within the kotlin world.
 [![Build Status][travis-image]][travis-url-main]
 [![codecov][codecov-badge-url]][codecov-project-url]
 
-[travis-image]: https://travis-ci.org/mytaxi/phrase-kotlin-client.svg?branch=master
-[travis-url-main]: https://travis-ci.org/mytaxi/phrase-kotlin-client
-[codecov-project-url]: https://codecov.io/gh/mytaxi/phrase-kotlin-client
-[codecov-badge-url]: https://codecov.io/gh/mytaxi/phrase-kotlin-client/branch/master/graph/badge.svg
+[travis-image]: https://travis-ci.org/freenowtech/phrase-kotlin-client.svg?branch=master
+[travis-url-main]: https://travis-ci.org/freenowtech/phrase-kotlin-client
+[codecov-project-url]: https://codecov.io/gh/freenowtech/phrase-kotlin-client
+[codecov-badge-url]: https://codecov.io/gh/freenowtech/phrase-kotlin-client/branch/master/graph/badge.svg
 
 ## How to use it
 

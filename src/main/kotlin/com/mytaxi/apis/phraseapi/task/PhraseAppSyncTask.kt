@@ -15,44 +15,57 @@ class PhraseAppSyncTask(
 ) : Runnable {
 
     private var log = LoggerFactory.getLogger(PhraseAppSyncTask::class.java.name)
-    private var messagesDirectory: Path
+    private var rootMessagesDirectory: Path
     private val client: PhraseApiClient
+
+    private val defaultBranch = "master"
 
     init {
         client = PhraseApiClientImpl(config.url, config.authKey)
 
         try {
             val classPathResource = ClassPathResource("/").file.path
-            messagesDirectory = Paths.get("$classPathResource/${config.messagesFolder}")
+            rootMessagesDirectory = Paths.get("$classPathResource")
         } catch (e: Exception) {
             log.error("could not get default ClassPathResource. use /generated-resources/ instead")
-            messagesDirectory = Paths.get(config.generatedResourcesFolder + config.messagesFolder)
+            rootMessagesDirectory = Paths.get(config.generatedResourcesFolder)
         }
 
-        Files.createDirectories(messagesDirectory)
+        Files.createDirectories(rootMessagesDirectory)
     }
 
     override fun run() {
         try {
             log.debug("Phrase App sync started")
-            client.locales(config.projectId)
-                .orEmpty()
-                .forEach {
-                    updateLocaleFile(it)
-                }
+
+            config.branches.forEach { branch ->
+                client.locales(config.projectId, branch)
+                    .orEmpty()
+                    .forEach {
+                        updateLocaleFile(it, branch)
+                    }
+            }
             log.debug("Phrase App sync finished")
         } catch (ex: Exception) {
             log.warn("PhraseApp sync failed", ex)
         }
     }
 
-    private fun updateLocaleFile(locale: PhraseLocale) {
+
+    private fun handleBranchPath(branch: String): Path = when (defaultBranch == branch)
+    {
+        true -> rootMessagesDirectory.resolve(config.messagesFolder)
+        false -> rootMessagesDirectory.resolve("${config.messagesFolder}_$branch")
+    }
+
+    private fun updateLocaleFile(locale: PhraseLocale, branch: String) {
         try {
-            val byteArray = client.downloadLocaleAsProperties(config.projectId, locale.id, config.escapeSingleQuotes)
+            val byteArray = client.downloadLocaleAsProperties(config.projectId, locale.id, config.escapeSingleQuotes, branch)
             if (byteArray != null) {
                 val fileName = createFileName(locale.code)
-                val path = messagesDirectory.resolve(fileName)
+                val path = handleBranchPath(branch).resolve(fileName)
                 if (!Files.exists(path)) {
+                    Files.createDirectories(path.parent)
                     Files.createFile(path)
                 }
                 Files.write(path, byteArray)
@@ -71,8 +84,9 @@ data class PhraseAppSyncTaskConfig @JvmOverloads constructor(
     val url: String,
     val authKey: String,
     val projectId: String,
+    val branches: List<String> = listOf("master"),
     val generatedResourcesFolder: String = "generated-resources/",
-    val messagesFolder: String = "messages/",
+    val messagesFolder: String = "messages",
     val messagesFilePostfix: String = ".properties",
     val messagesFilePrefix: String = "messages_",
     val escapeSingleQuotes: Boolean = false
