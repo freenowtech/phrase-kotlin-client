@@ -39,7 +39,7 @@ class PhraseAppSyncTask(
             log.debug("Phrase App sync started")
 
             config.branches.forEach { branch ->
-                client.branchLocales(config.projectId, branch)
+                client.locales(config.projectId, branch)
                     .orEmpty()
                     .forEach {
                         updateLocaleFile(it, branch)

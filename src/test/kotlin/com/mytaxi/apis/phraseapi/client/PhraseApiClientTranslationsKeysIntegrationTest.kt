@@ -9,6 +9,7 @@ import org.junit.Assume.assumeFalse
 import org.junit.Test
 import kotlin.test.*
 
+@Ignore
 class PhraseApiClientTranslationsKeysIntegrationTest {
 
     private val cfg = ConfigFactory.create(TestConfig::class.java, System.getenv(), System.getProperties())

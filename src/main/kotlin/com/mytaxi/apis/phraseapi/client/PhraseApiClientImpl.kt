@@ -128,27 +128,15 @@ class PhraseApiClientImpl : PhraseApiClient {
         return processResponse("PUT/api/v2/projects/$projectId", response)
     }
 
-    override fun locales(projectId: String, localeId: String): PhraseLocale? {
-        log.debug("Get locale [$localeId] for master branch of project [$projectId]")
-        val response = client.locale(projectId, localeId)
-        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId", response)
-    }
-
-    override fun locale(projectId: String, localeId: String, branch: String): PhraseLocale? {
+    override fun locale(projectId: String, localeId: String, branch: String?): PhraseLocale? {
         log.debug("Get locale [$localeId] for the [$branch] branch of project [$projectId]")
         val response = client.locale(projectId, localeId, branch)
         return processResponse("GET/api/v2/projects/$projectId/locales/$localeId?branch=$branch", response)
     }
 
-    override fun locales(projectId: String): PhraseLocales? {
-        log.debug("Get locales for the master branch of the project [$projectId]")
-        val response = client.locales(projectId)
-        return processResponse("GET/api/v2/projects/$projectId/locales", response)
-    }
-
-    override fun branchLocales(projectId: String, branch: String): PhraseLocales? {
+    override fun locales(projectId: String, branch: String?): PhraseLocales? {
         log.debug("Get locales for the [$branch] branch of project [$projectId]")
-        val response = client.branchLocales(projectId, branch)
+        val response = client.locales(projectId, branch)
         return processResponse("GET/api/v2/projects/$projectId/locales?branch=$branch", response)
     }
 
@@ -416,9 +404,7 @@ class PhraseApiClientImpl : PhraseApiClient {
 
 
         //LOCALE
-        override fun locales(projectId: String): Response = target.locales(projectId)
-
-        override fun branchLocales(projectId: String, branch: String): Response = target.branchLocales(projectId, branch)
+        override fun locales(projectId: String, branch: String?): Response = target.locales(projectId, branch)
 
         override fun locale(projectId: String, localeId: String, branch: String?): Response = target.locale(projectId, localeId, branch)
 

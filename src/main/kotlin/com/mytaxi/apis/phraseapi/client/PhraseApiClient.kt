@@ -28,13 +28,9 @@ interface PhraseApiClient {
 
     fun updateProject(projectId: String, phraseProject: UpdatePhraseProject): PhraseProject?
 
-    fun locales(projectId: String, localeId: String): PhraseLocale?
+    fun locale(projectId: String, localeId: String, branch: String? = null): PhraseLocale?
 
-    fun locale(projectId: String, localeId: String, branch: String): PhraseLocale?
-
-    fun locales(projectId: String): PhraseLocales?
-
-    fun branchLocales(projectId: String, branch: String): PhraseLocales?
+    fun locales(projectId: String, branch: String? = null): PhraseLocales?
 
     fun createLocale(projectId: String, locale: CreatePhraseLocale): PhraseLocale?
 

@@ -56,7 +56,7 @@ class PhraseApiClientLocaleTest {
         on(client.locale(projectId, localeId)).thenReturn(response)
 
         //WHEN
-        val actualLocale = phraseApiClient.locales(projectId, localeId)
+        val actualLocale = phraseApiClient.locale(projectId, localeId)
 
         //THEN
         assertNotNull(actualLocale)

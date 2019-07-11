@@ -50,13 +50,9 @@ interface PhraseApi {
     fun deleteProject(@Param("projectId") projectId: String): Response
 
     //Locales
-    @RequestLine("GET /api/v2/projects/{projectId}/locales")
-    fun locales(@Param("projectId") projectId: String): Response
-
     @RequestLine("GET /api/v2/projects/{projectId}/locales?branch={branch}")
-    fun branchLocales(
-        @Param("projectId") projectId: String,
-        @Param("branch") branch: String): Response
+    fun locales(@Param("projectId") projectId: String,
+                @Param("branch") branch: String? = null): Response
 
     @RequestLine("POST /api/v2/projects/{projectId}/locales")
     fun createLocale(
