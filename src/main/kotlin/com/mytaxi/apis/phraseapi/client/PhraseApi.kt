@@ -97,12 +97,16 @@ interface PhraseApi {
     ): Response
 
     @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}/download?file_format={fileFormat}" +
-        "&format_options[escape_single_quotes]={escapeSingleQuotes}")
+        "&format_options[escape_single_quotes]={escapeSingleQuotes}" +
+        "&fallback_locale_id={fallbackLocaleId}&include_empty_translations={includeEmptyTranslations}"
+    )
     fun downloadLocale(
         @Param("projectId") projectId: String,
         @Param("localeId") localeId: String,
         @Param("fileFormat") fileFormat: String,
-        @Param("escapeSingleQuotes") escapeSingleQuotes: Boolean? = false
+        @Param("escapeSingleQuotes") escapeSingleQuotes: Boolean? = false,
+        @Param("includeEmptyTranslations") includeEmptyTranslations: Boolean? = false,
+        @Param("fallbackLocaleId") fallbackLocaleId: String? = null
     ): Response
 
 
