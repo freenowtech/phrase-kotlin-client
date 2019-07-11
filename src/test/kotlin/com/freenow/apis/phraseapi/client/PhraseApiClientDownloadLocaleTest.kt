@@ -1,10 +1,11 @@
-package com.mytaxi.apis.phraseapi.client
+package com.freenow.apis.phraseapi.client
 
 import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
 import com.google.gson.Gson
-import com.mytaxi.apis.phraseapi.client.model.Message
-import com.mytaxi.apis.phraseapi.client.model.PhraseLocaleMessages
+import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocale
+import com.freenow.apis.phraseapi.client.model.Message
+import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
@@ -41,6 +42,14 @@ class PhraseApiClientDownloadLocaleTest {
         val messageKey = UUID.randomUUID().toString()
         val message = UUID.randomUUID().toString()
         val description = UUID.randomUUID().toString()
+        val fallbackLocaleId = UUID.randomUUID().toString()
+        val branch = "branch"
+        val downloadLocale = DownloadPhraseLocale(
+            escapeSingleQuotes = true,
+            includeEmptyTranslations = true,
+            fallbackLocaleId = fallbackLocaleId,
+            branch = branch
+        )
 
         val expectedLocaleMessages = PhraseLocaleMessages()
         expectedLocaleMessages[messageKey] = Message(message, description)
@@ -56,10 +65,10 @@ class PhraseApiClientDownloadLocaleTest {
             StandardCharsets.UTF_8
         )
 
-        on(client.downloadLocale(projectId, localeId, "json")).thenReturn(response)
+        on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch)).thenReturn(response)
 
         //WHEN
-        val actualLocaleMessages = phraseApiClient.downloadLocale(projectId, localeId)
+        val actualLocaleMessages = phraseApiClient.downloadLocale(projectId, localeId, downloadLocale)
 
         //THEN
         assertNotNull(actualLocaleMessages)

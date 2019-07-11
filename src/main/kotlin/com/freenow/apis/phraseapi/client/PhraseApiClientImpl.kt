@@ -1,4 +1,4 @@
-package com.mytaxi.apis.phraseapi.client
+package com.freenow.apis.phraseapi.client
 
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
@@ -8,7 +8,7 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonIOException
 import com.google.gson.JsonSyntaxException
-import com.mytaxi.apis.phraseapi.client.model.*
+import com.freenow.apis.phraseapi.client.model.*
 import feign.Feign
 import feign.RequestInterceptor
 import feign.Response
@@ -170,12 +170,12 @@ class PhraseApiClientImpl : PhraseApiClient {
         client.deleteLocale(projectId, localeId, branch)
     }
 
-    override fun translations(project: PhraseProject, locale: PhraseLocale, branch: String?): Translations? {
+    override fun translations(projectId: PhraseProject, locale: PhraseLocale, branch: String?): Translations? {
         log.debug("Get translations for locale [${locale.id}] for " +
                 "[${processBranchNameForLog(branch)}] branch of " +
-                "project [${project.id}]")
-        val response = client.translations(project.id, locale.id, branch)
-        return processResponse("GET/api/v2/projects/${project.id}/locales/${locale.id}/translations?branch=$branch", response)
+                "project [${projectId.id}]")
+        val response = client.translations(projectId.id, locale.id, branch)
+        return processResponse("GET/api/v2/projects/${projectId.id}/locales/${locale.id}/translations?branch=$branch", response)
     }
 
     override fun createTranslation(projectId: String, createTranslation: CreateTranslation): Translation? {

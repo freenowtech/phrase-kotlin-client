@@ -1,6 +1,20 @@
-package com.mytaxi.apis.phraseapi.client
+package com.freenow.apis.phraseapi.client
 
-import com.mytaxi.apis.phraseapi.client.model.*
+import com.freenow.apis.phraseapi.client.model.CreateKey
+import com.freenow.apis.phraseapi.client.model.CreatePhraseLocale
+import com.freenow.apis.phraseapi.client.model.CreatePhraseProject
+import com.freenow.apis.phraseapi.client.model.CreateTranslation
+import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocale
+import com.freenow.apis.phraseapi.client.model.Key
+import com.freenow.apis.phraseapi.client.model.Keys
+import com.freenow.apis.phraseapi.client.model.PhraseLocale
+import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
+import com.freenow.apis.phraseapi.client.model.PhraseLocales
+import com.freenow.apis.phraseapi.client.model.PhraseProject
+import com.freenow.apis.phraseapi.client.model.PhraseProjects
+import com.freenow.apis.phraseapi.client.model.Translation
+import com.freenow.apis.phraseapi.client.model.Translations
+import com.freenow.apis.phraseapi.client.model.UpdatePhraseProject
 
 @Suppress("TooManyFunctions")
 interface PhraseApiClient {
@@ -28,7 +42,7 @@ interface PhraseApiClient {
 
     fun deleteLocale(projectId: String, localeId: String, branch: String? = null)
 
-    fun translations(project: PhraseProject, locale: PhraseLocale, branch: String? = null): Translations?
+    fun translations(projectId: PhraseProject, locale: PhraseLocale, branch: String? = null): Translations?
 
     fun createTranslation(projectId: String, createTranslation: CreateTranslation): Translation?
 
@@ -36,9 +50,9 @@ interface PhraseApiClient {
                           keyId: String, content: String,
                           branch: String? = null): Translation?
 
-    fun createKey(project: String, createKey: CreateKey): Key?
+    fun createKey(projectId: String, createKey: CreateKey): Key?
 
-    fun createKey(project: String, name: String, tags: ArrayList<String>?, branch: String? = null): Key?
+    fun createKey(projectId: String, name: String, tags: ArrayList<String>?, branch: String? = null): Key?
 
     fun searchKey(projectId: String, localeId: String?, q: String?, branch: String? = null): Keys?
 

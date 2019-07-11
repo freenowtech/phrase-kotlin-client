@@ -1,11 +1,11 @@
-package com.mytaxi.apis.phraseapi.client
+package com.freenow.apis.phraseapi.client
 
 import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
 import com.google.gson.Gson
-import com.mytaxi.apis.phraseapi.client.model.CreatePhraseProject
-import com.mytaxi.apis.phraseapi.client.model.PhraseProject
-import com.mytaxi.apis.phraseapi.client.model.UpdatePhraseProject
+import com.freenow.apis.phraseapi.client.model.CreatePhraseProject
+import com.freenow.apis.phraseapi.client.model.PhraseProject
+import com.freenow.apis.phraseapi.client.model.UpdatePhraseProject
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test

@@ -1,4 +1,4 @@
-package com.mytaxi.apis.phraseapi.client.model
+package com.freenow.apis.phraseapi.client.model
 
 class Translations: ArrayList<Translation>()
 
