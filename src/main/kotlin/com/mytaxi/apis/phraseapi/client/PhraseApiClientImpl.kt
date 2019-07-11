@@ -128,16 +128,16 @@ class PhraseApiClientImpl : PhraseApiClient {
         return processResponse("PUT/api/v2/projects/$projectId", response)
     }
 
-    override fun locales(projectId: String, localeId: String): PhraseLocale? {
-        log.debug("Get locale [$localeId] for project [$projectId]")
-        val response = client.locale(projectId, localeId)
-        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId", response)
+    override fun locale(projectId: String, localeId: String, branch: String?): PhraseLocale? {
+        log.debug("Get locale [$localeId] for the [$branch] branch of project [$projectId]")
+        val response = client.locale(projectId, localeId, branch)
+        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId?branch=$branch", response)
     }
 
-    override fun locales(projectId: String): PhraseLocales? {
-        log.debug("Get locales for project [$projectId]")
-        val response = client.locales(projectId)
-        return processResponse("GET/api/v2/projects/$projectId/locales", response)
+    override fun locales(projectId: String, branch: String?): PhraseLocales? {
+        log.debug("Get locales for the [$branch] branch of project [$projectId]")
+        val response = client.locales(projectId, branch)
+        return processResponse("GET/api/v2/projects/$projectId/locales?branch=$branch", response)
     }
 
     override fun createLocale(projectId: String, locale: CreatePhraseLocale): PhraseLocale? {
@@ -146,7 +146,7 @@ class PhraseApiClientImpl : PhraseApiClient {
             projectId,
             locale.name,
             locale.code,
-            null,
+            locale.branch,
             locale.default,
             locale.mail,
             locale.rtl,
@@ -158,45 +158,52 @@ class PhraseApiClientImpl : PhraseApiClient {
         return processResponse("POST/api/v2/projects/$projectId/locales", response)
     }
 
-    override fun downloadLocale(projectId: String, localeId: String): PhraseLocaleMessages? {
-        log.debug("Download locale [$localeId] for project [$projectId]")
-        val response = client.downloadLocale(projectId, localeId, "json")
-        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
+    override fun downloadLocale(projectId: String, localeId: String, branch: String?): PhraseLocaleMessages? {
+        log.debug("Download locale [$localeId] for [${processBranchNameForLog(branch)}] branch of project [$projectId]")
+        val response = client.downloadLocale(projectId, localeId, "json", branch = branch)
+        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json?branch={branch}", response)
     }
 
-    override fun downloadLocaleAsProperties(projectId: String, localeId: String, escapeSingleQuotes: Boolean): ByteArray? {
-        log.debug("Download locale [$localeId] for project [$projectId]")
-        val response = client.downloadLocale(projectId, localeId, "properties", escapeSingleQuotes)
-        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
+    override fun downloadLocaleAsProperties(projectId: String, localeId: String, escapeSingleQuotes: Boolean, branch: String?): ByteArray? {
+        log.debug("Download locale [$localeId] for [${processBranchNameForLog(branch)}] branch of project [$projectId]")
+        val response = client.downloadLocale(projectId, localeId, "properties", escapeSingleQuotes, branch)
+        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?branch=$branch&file_format=json", response)
     }
 
-    override fun deleteLocale(projectId: String, localeId: String) {
-        log.debug("Delete locale [$localeId] for project [$projectId]")
-        client.deleteLocale(projectId, localeId)
+    override fun deleteLocale(projectId: String, localeId: String, branch: String?) {
+        log.debug("Delete locale [$localeId] for [${processBranchNameForLog(branch)}] branch of project [$projectId]")
+        client.deleteLocale(projectId, localeId, branch)
     }
 
-    override fun translations(project: PhraseProject, locale: PhraseLocale): Translations? {
-        log.debug("Get translations for locale [${locale.id}] for project [${project.id}]")
-        val response = client.translations(project.id, locale.id)
-        return processResponse("GET/api/v2/projects/${project.id}/locales/${locale.id}/translations", response)
+    override fun translations(project: PhraseProject, locale: PhraseLocale, branch: String?): Translations? {
+        log.debug("Get translations for locale [${locale.id}] for " +
+                "[${processBranchNameForLog(branch)}] branch of " +
+                "project [${project.id}]")
+        val response = client.translations(project.id, locale.id, branch)
+        return processResponse("GET/api/v2/projects/${project.id}/locales/${locale.id}/translations?branch=$branch", response)
     }
 
     override fun createTranslation(projectId: String, createTranslation: CreateTranslation): Translation? {
-        log.debug("Creating the translation [${createTranslation.content}] for locale [${createTranslation.localeId}] " +
-            "for project [$projectId] for key [${createTranslation.keyId}]")
-        val response = client.createTranslation(projectId, createTranslation.localeId, createTranslation.keyId, createTranslation.content)
+        log.debug("Creating the translation [${createTranslation.content}] for " +
+                "locale [${createTranslation.localeId}] for " +
+                "project [$projectId] for " +
+                "key [${createTranslation.keyId}] for " +
+                "branch [${processBranchNameForLog(createTranslation.branch)}]")
+        val response = client.createTranslation(projectId, createTranslation.localeId, createTranslation.keyId, createTranslation.content, createTranslation.branch)
         return processResponse("POST/api/v2/projects/$projectId/translations", response)
     }
 
-    override fun createTranslation(projectId: String, localeId: String, keyId: String, content: String): Translation? {
+    override fun createTranslation(projectId: String, localeId: String, keyId: String, content: String, branch: String?): Translation? {
         log.debug("Creating the translation [$content] for locale [$localeId] " +
-                "for project [$projectId] for key [$keyId]")
-        val response = client.createTranslation(projectId, localeId, keyId, content)
+                "for project [$projectId] for key [$keyId] for branch [${processBranchNameForLog(branch)}]")
+        val response = client.createTranslation(projectId, localeId, keyId, content, branch)
         return processResponse("POST/api/v2/projects/$projectId/translations", response)
     }
 
     override fun createKey(projectId: String, createKey: CreateKey): Key? {
-        log.debug("Creating keys [${createKey.name}] for project [$projectId]")
+        log.debug("Creating keys [${createKey.name}] for " +
+                "[${processBranchNameForLog(createKey.branch)}] branch of " +
+                "project [$projectId]")
         val response = client.createKey(
             projectId,
             createKey.name,
@@ -218,23 +225,26 @@ class PhraseApiClientImpl : PhraseApiClient {
         return processResponse("POST/api/v2/projects/$projectId/keys", response)
     }
 
-    override fun createKey(projectId: String, name: String, tags: ArrayList<String>?): Key? {
-        log.debug("Creating keys [$name] for project [$projectId]")
-        val response = client.createKey(projectId, name, tags)
+    override fun createKey(projectId: String, name: String, tags: ArrayList<String>?, branch: String?): Key? {
+        log.debug("Creating keys [$name] for [${processBranchNameForLog(branch)}] branch of project [$projectId]")
+        val response = client.createKey(projectId, name, branch, tags)
         return processResponse("POST/api/v2/projects/$projectId/keys", response)
     }
 
-
-    override fun searchKey(projectId: String, localeId: String?, q: String?): Keys? {
-        log.debug("Searching keys for project [$projectId] - locale [$localeId] - query [$q]")
-        val response = client.searchKey(projectId, localeId, q)
+    override fun searchKey(projectId: String, localeId: String?, q: String?, branch: String?): Keys? {
+        log.debug("Searching keys for " +
+                "[${processBranchNameForLog(branch)}] branch of " +
+                "project [$projectId] - " +
+                "locale [$localeId] - " +
+                "query [$q]")
+        val response = client.searchKey(projectId, localeId, q, branch)
         return processResponse("POST/api/v2/projects/$projectId/keys/search", response)
     }
 
-    override fun deleteKey(projectId: String, keyId: String): Boolean {
-        log.debug("Deleting key [$keyId] for project [$projectId]")
-        val response = client.deleteKey(projectId, keyId)
-        processResponse<Void>("DELETE/api/v2/projects/$projectId/keys/$keyId", response)
+    override fun deleteKey(projectId: String, keyId: String, branch: String?): Boolean {
+        log.debug("Deleting key [$keyId] for [${processBranchNameForLog(branch)}] branch of project [$projectId]")
+        val response = client.deleteKey(projectId, keyId, branch)
+        //processResponse<Void>("DELETE/api/v2/projects/$projectId/keys/$keyId", response)
         return response.status() == HttpStatus.SC_NO_CONTENT
     }
 
@@ -307,6 +317,8 @@ class PhraseApiClientImpl : PhraseApiClient {
             .find { it.key.equals(HttpHeaders.ETAG, true) }
         return eTagHeader?.value?.first()
     }
+
+    private fun processBranchNameForLog(branch: String?) = if (branch.isNullOrBlank()) "master" else branch
 
     @Suppress("TooManyFunctions")
     private class PhraseApiImpl(
@@ -392,12 +404,12 @@ class PhraseApiClientImpl : PhraseApiClient {
 
 
         //LOCALE
-        override fun locales(projectId: String): Response = target.locales(projectId)
+        override fun locales(projectId: String, branch: String?): Response = target.locales(projectId, branch)
 
-        override fun locale(projectId: String, localeId: String): Response = target.locale(projectId, localeId)
+        override fun locale(projectId: String, localeId: String, branch: String?): Response = target.locale(projectId, localeId, branch)
 
-        override fun downloadLocale(projectId: String, localeId: String, fileFormat: String, escapeSingleQuotes: Boolean?):
-            Response = target.downloadLocale(projectId, localeId, fileFormat, escapeSingleQuotes)
+        override fun downloadLocale(projectId: String, localeId: String, fileFormat: String, escapeSingleQuotes: Boolean?, branch: String?):
+            Response = target.downloadLocale(projectId, localeId, fileFormat, escapeSingleQuotes, branch)
 
         override fun createLocale(
             projectId: String,
@@ -428,13 +440,14 @@ class PhraseApiClientImpl : PhraseApiClient {
             autotranslate: String?
         ): Response = target.updateLocale(projectId, localeId, name, code, branch, default, mail, rtl, sourceLocaleId, unverifyNewTranslations, unverifyUpdatedTranslations, autotranslate)
 
-        override fun deleteLocale(projectId: String, localeId: String): Response = target.deleteLocale(projectId, localeId)
+        override fun deleteLocale(projectId: String, localeId: String, branch: String?): Response = target.deleteLocale(projectId, localeId, branch)
 
 
         //TRANSLATION
-        override fun translations(projectId: String, localeId: String): Response = target.translations(projectId, localeId)
+        override fun translations(projectId: String, localeId: String, branch: String?): Response = target.translations(projectId, localeId, branch)
 
-        override fun createTranslation(projectId: String, localeId: String, keyId: String, content: String): Response = target.createTranslation(projectId, localeId, keyId, content)
+        override fun createTranslation(projectId: String, localeId: String, keyId: String, content: String, branch: String?): Response = target.createTranslation(projectId,
+            localeId, keyId, content, branch)
 
 
         //KEYS
@@ -458,11 +471,11 @@ class PhraseApiClientImpl : PhraseApiClient {
         ): Response = target.createKey(projectId, name, tags, description, branch, plural, namePlural, dataType, maxCharactersAllowed, screenshot, removeScreenshot, unformatted,
             xmlSpacePreserve, originalFile, localizedFormatString, localizedFormatKey)
 
-        override fun createKey(projectId: String, name: String, tags: ArrayList<String>?): Response = target.createKey(projectId, name, tags)
+        override fun createKey(projectId: String, name: String, branch: String?, tags: ArrayList<String>?): Response = target.createKey(projectId, name, branch, tags)
 
-        override fun searchKey(projectId: String, localeId: String?, q: String?): Response = target.searchKey(projectId, localeId, q)
+        override fun searchKey(projectId: String, localeId: String?, q: String?, branch: String?): Response = target.searchKey(projectId, localeId, q, branch)
 
-        override fun deleteKey(projectId: String, keyId: String): Response = target.deleteKey(projectId, keyId)
+        override fun deleteKey(projectId: String, keyId: String, branch: String?): Response = target.deleteKey(projectId, keyId, branch)
     }
 }
 

@@ -114,7 +114,11 @@
             <version>5.1.2.RELEASE</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.aeonbits.owner</groupId>
+            <artifactId>owner</artifactId>
+            <version>1.0.10</version>
+        </dependency>
     </dependencies>
 
     <scm>
