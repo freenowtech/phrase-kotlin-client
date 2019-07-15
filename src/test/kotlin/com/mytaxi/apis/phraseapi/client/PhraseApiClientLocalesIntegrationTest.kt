@@ -34,7 +34,7 @@ class PhraseApiClientLocalesIntegrationTest {
         phraseApiClient = PhraseApiClientImpl(clientConfig)
         projectId = cfg.projectId()
         branch = cfg.branch()
-        downloadLocale = cfg.downloadLocale()
+        downloadLocale = DownloadPhraseLocale(true, true, null, branch)
         localeIdDe = cfg.localeIdDe()
         localeIdDeBranch = cfg.localeIdDeBranch()
     }
