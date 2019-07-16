@@ -2,6 +2,7 @@ package com.mytaxi.apis.phraseapi.client
 
 import com.mytaxi.apis.phraseapi.client.config.TestConfig
 import com.mytaxi.apis.phraseapi.client.model.CreatePhraseLocale
+import com.mytaxi.apis.phraseapi.client.model.DownloadPhraseLocale
 import org.aeonbits.owner.ConfigFactory
 import org.junit.Assume.assumeFalse
 import org.junit.Ignore
@@ -17,10 +18,10 @@ class PhraseApiClientLocalesIntegrationTest {
     private var phraseApiClient: PhraseApiClient
     private var clientConfig: PhraseApiClientConfig
     private var branch: String
+    private var downloadLocale: DownloadPhraseLocale
     private var projectId: String
     private var localeIdDe: String
     private var localeIdDeBranch: String
-
 
     init {
         //GIVEN
@@ -33,6 +34,7 @@ class PhraseApiClientLocalesIntegrationTest {
         phraseApiClient = PhraseApiClientImpl(clientConfig)
         projectId = cfg.projectId()
         branch = cfg.branch()
+        downloadLocale = DownloadPhraseLocale(true, true, null, branch)
         localeIdDe = cfg.localeIdDe()
         localeIdDeBranch = cfg.localeIdDeBranch()
     }
@@ -69,7 +71,7 @@ class PhraseApiClientLocalesIntegrationTest {
 
         //WHEN
         val masterLocaleMessages = phraseApiClient.downloadLocale(projectId, localeIdDe)
-        val branchLocaleMessages = phraseApiClient.downloadLocale(projectId, localeIdDeBranch, branch)
+        val branchLocaleMessages = phraseApiClient.downloadLocale(projectId, localeIdDeBranch, downloadLocale)
 
         //THEN
         assertNotNull(branchLocaleMessages)

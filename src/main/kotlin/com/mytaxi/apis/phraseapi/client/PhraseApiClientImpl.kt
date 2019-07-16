@@ -8,20 +8,7 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonIOException
 import com.google.gson.JsonSyntaxException
-import com.mytaxi.apis.phraseapi.client.model.CreateKey
-import com.mytaxi.apis.phraseapi.client.model.CreatePhraseLocale
-import com.mytaxi.apis.phraseapi.client.model.CreatePhraseProject
-import com.mytaxi.apis.phraseapi.client.model.CreateTranslation
-import com.mytaxi.apis.phraseapi.client.model.Key
-import com.mytaxi.apis.phraseapi.client.model.Keys
-import com.mytaxi.apis.phraseapi.client.model.PhraseLocale
-import com.mytaxi.apis.phraseapi.client.model.PhraseLocaleMessages
-import com.mytaxi.apis.phraseapi.client.model.PhraseLocales
-import com.mytaxi.apis.phraseapi.client.model.PhraseProject
-import com.mytaxi.apis.phraseapi.client.model.PhraseProjects
-import com.mytaxi.apis.phraseapi.client.model.Translation
-import com.mytaxi.apis.phraseapi.client.model.Translations
-import com.mytaxi.apis.phraseapi.client.model.UpdatePhraseProject
+import com.mytaxi.apis.phraseapi.client.model.*
 import feign.Feign
 import feign.RequestInterceptor
 import feign.Response
@@ -158,15 +145,23 @@ class PhraseApiClientImpl : PhraseApiClient {
         return processResponse("POST/api/v2/projects/$projectId/locales", response)
     }
 
-    override fun downloadLocale(projectId: String, localeId: String, branch: String?): PhraseLocaleMessages? {
-        log.debug("Download locale [$localeId] for [${processBranchNameForLog(branch)}] branch of project [$projectId]")
-        val response = client.downloadLocale(projectId, localeId, "json", branch = branch)
-        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json?branch={branch}", response)
+    override fun downloadLocale(projectId: String, localeId: String, downloadLocale: DownloadPhraseLocale?): PhraseLocaleMessages? {
+        log.debug("Download locale [$localeId] for project [$projectId]")
+        val response = client.downloadLocale(
+            projectId,
+            localeId,
+            "json",
+            downloadLocale?.escapeSingleQuotes ?: false,
+            downloadLocale?.includeEmptyTranslations ?: false,
+            downloadLocale?.fallbackLocaleId,
+            downloadLocale?.branch
+        )
+        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
     }
 
     override fun downloadLocaleAsProperties(projectId: String, localeId: String, escapeSingleQuotes: Boolean, branch: String?): ByteArray? {
         log.debug("Download locale [$localeId] for [${processBranchNameForLog(branch)}] branch of project [$projectId]")
-        val response = client.downloadLocale(projectId, localeId, "properties", escapeSingleQuotes, branch)
+        val response = client.downloadLocale(projectId, localeId, "properties", escapeSingleQuotes, false, null, branch)
         return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?branch=$branch&file_format=json", response)
     }
 
@@ -408,8 +403,15 @@ class PhraseApiClientImpl : PhraseApiClient {
 
         override fun locale(projectId: String, localeId: String, branch: String?): Response = target.locale(projectId, localeId, branch)
 
-        override fun downloadLocale(projectId: String, localeId: String, fileFormat: String, escapeSingleQuotes: Boolean?, branch: String?):
-            Response = target.downloadLocale(projectId, localeId, fileFormat, escapeSingleQuotes, branch)
+        override fun downloadLocale(
+            projectId: String,
+            localeId: String,
+            fileFormat: String,
+            escapeSingleQuotes: Boolean?,
+            includeEmptyTranslations: Boolean?,
+            fallbackLocaleId: String?,
+            branch: String?
+        ): Response = target.downloadLocale(projectId, localeId, fileFormat, escapeSingleQuotes, includeEmptyTranslations, fallbackLocaleId, branch)
 
         override fun createLocale(
             projectId: String,

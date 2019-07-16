@@ -1,19 +1,6 @@
 package com.mytaxi.apis.phraseapi.client
 
-import com.mytaxi.apis.phraseapi.client.model.CreateKey
-import com.mytaxi.apis.phraseapi.client.model.CreatePhraseLocale
-import com.mytaxi.apis.phraseapi.client.model.CreatePhraseProject
-import com.mytaxi.apis.phraseapi.client.model.CreateTranslation
-import com.mytaxi.apis.phraseapi.client.model.Key
-import com.mytaxi.apis.phraseapi.client.model.Keys
-import com.mytaxi.apis.phraseapi.client.model.PhraseLocale
-import com.mytaxi.apis.phraseapi.client.model.PhraseLocaleMessages
-import com.mytaxi.apis.phraseapi.client.model.PhraseLocales
-import com.mytaxi.apis.phraseapi.client.model.PhraseProject
-import com.mytaxi.apis.phraseapi.client.model.PhraseProjects
-import com.mytaxi.apis.phraseapi.client.model.Translation
-import com.mytaxi.apis.phraseapi.client.model.Translations
-import com.mytaxi.apis.phraseapi.client.model.UpdatePhraseProject
+import com.mytaxi.apis.phraseapi.client.model.*
 
 @Suppress("TooManyFunctions")
 interface PhraseApiClient {
@@ -34,7 +21,7 @@ interface PhraseApiClient {
 
     fun createLocale(projectId: String, locale: CreatePhraseLocale): PhraseLocale?
 
-    fun downloadLocale(projectId: String, localeId: String, branch: String? = null): PhraseLocaleMessages?
+    fun downloadLocale(projectId: String, localeId: String, downloadLocale: DownloadPhraseLocale? = null): PhraseLocaleMessages?
 
     fun downloadLocaleAsProperties(projectId: String, localeId: String,
                                    escapeSingleQuotes: Boolean, branch: String? = null): ByteArray?

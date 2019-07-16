@@ -99,14 +99,17 @@ interface PhraseApi {
         @Param("branch") branch: String? = null
     ): Response
 
-    @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}/download?branch={branch}" +
-            "&file_format={fileFormat}" +
-            "&format_options[escape_single_quotes]={escapeSingleQuotes}")
+    @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}/download?file_format={fileFormat}" +
+        "&format_options[escape_single_quotes]={escapeSingleQuotes}&branch={branch}" +
+        "&fallback_locale_id={fallbackLocaleId}&include_empty_translations={includeEmptyTranslations}"
+    )
     fun downloadLocale(
         @Param("projectId") projectId: String,
         @Param("localeId") localeId: String,
         @Param("fileFormat") fileFormat: String,
         @Param("escapeSingleQuotes") escapeSingleQuotes: Boolean? = false,
+        @Param("includeEmptyTranslations") includeEmptyTranslations: Boolean? = false,
+        @Param("fallbackLocaleId") fallbackLocaleId: String? = null,
         @Param("branch") branch: String? = null
     ): Response
 
