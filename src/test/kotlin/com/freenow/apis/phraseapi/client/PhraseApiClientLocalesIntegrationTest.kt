@@ -25,7 +25,7 @@ class PhraseApiClientLocalesIntegrationTest {
 
     init {
         //GIVEN
-        assumeFalse(System.getenv("TRAVIS")?.let { it.toBoolean() } ?: false)
+        assumeFalse(System.getenv("TRAVIS")?.toBoolean() ?: false)
 
         assertNotNull(cfg.authToken())
         assertNotNull(cfg.host())
@@ -34,7 +34,7 @@ class PhraseApiClientLocalesIntegrationTest {
         phraseApiClient = PhraseApiClientImpl(clientConfig)
         projectId = cfg.projectId()
         branch = cfg.branch()
-        downloadLocale = cfg.downloadLocale()
+        downloadLocale = DownloadPhraseLocale(true, true, null, branch)
         localeIdDe = cfg.localeIdDe()
         localeIdDeBranch = cfg.localeIdDeBranch()
     }
@@ -61,9 +61,9 @@ class PhraseApiClientLocalesIntegrationTest {
 
         //THEN
         assertNotNull(masterLocale)
-        assertNotNull(masterLocale!!.id)
+        assertNotNull(masterLocale.id)
         assertNotNull(branchLocale)
-        assertNotNull(branchLocale!!.id)
+        assertNotNull(branchLocale.id)
     }
 
     @Test
@@ -99,9 +99,9 @@ class PhraseApiClientLocalesIntegrationTest {
 
         //AND
         assertNotNull(masterLocale)
-        assertNotNull(masterLocale!!.id)
+        assertNotNull(masterLocale.id)
         assertNotNull(branchLocale)
-        assertNotNull(branchLocale!!.id)
+        assertNotNull(branchLocale.id)
 
         //WHEN
         phraseApiClient.deleteLocale(projectId, masterLocale.id)
