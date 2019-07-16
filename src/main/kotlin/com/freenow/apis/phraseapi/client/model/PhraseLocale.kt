@@ -15,7 +15,7 @@ data class CreatePhraseLocale(
     val autotranslate: String? = null
 )
 
-data class DownloadPhraseLocale(
+data class DownloadPhraseLocaleProperties(
     val escapeSingleQuotes: Boolean,
     val includeEmptyTranslations: Boolean,
     val fallbackLocaleId: String?,

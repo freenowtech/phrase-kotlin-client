@@ -12,7 +12,7 @@ import com.freenow.apis.phraseapi.client.model.CreateKey
 import com.freenow.apis.phraseapi.client.model.CreatePhraseLocale
 import com.freenow.apis.phraseapi.client.model.CreatePhraseProject
 import com.freenow.apis.phraseapi.client.model.CreateTranslation
-import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocale
+import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocaleProperties
 import com.freenow.apis.phraseapi.client.model.Key
 import com.freenow.apis.phraseapi.client.model.Keys
 import com.freenow.apis.phraseapi.client.model.PhraseLocale
@@ -157,16 +157,16 @@ class PhraseApiClientImpl : PhraseApiClient {
         return processResponse("POST/api/v2/projects/$projectId/locales", response)
     }
 
-    override fun downloadLocale(projectId: String, localeId: String, downloadLocale: DownloadPhraseLocale?): PhraseLocaleMessages? {
+    override fun downloadLocale(projectId: String, localeId: String, properties: DownloadPhraseLocaleProperties?): PhraseLocaleMessages? {
         log.debug("Download locale [$localeId] for project [$projectId]")
         val response = client.downloadLocale(
             projectId,
             localeId,
             "json",
-            downloadLocale?.escapeSingleQuotes ?: false,
-            downloadLocale?.includeEmptyTranslations ?: false,
-            downloadLocale?.fallbackLocaleId,
-            downloadLocale?.branch
+            properties?.escapeSingleQuotes ?: false,
+            properties?.includeEmptyTranslations ?: false,
+            properties?.fallbackLocaleId,
+            properties?.branch
         )
         return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
     }

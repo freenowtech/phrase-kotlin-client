@@ -4,7 +4,7 @@ import com.freenow.apis.phraseapi.client.model.CreateKey
 import com.freenow.apis.phraseapi.client.model.CreatePhraseLocale
 import com.freenow.apis.phraseapi.client.model.CreatePhraseProject
 import com.freenow.apis.phraseapi.client.model.CreateTranslation
-import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocale
+import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocaleProperties
 import com.freenow.apis.phraseapi.client.model.Key
 import com.freenow.apis.phraseapi.client.model.Keys
 import com.freenow.apis.phraseapi.client.model.PhraseLocale
@@ -35,7 +35,7 @@ interface PhraseApiClient {
 
     fun createLocale(projectId: String, locale: CreatePhraseLocale): PhraseLocale?
 
-    fun downloadLocale(projectId: String, localeId: String, downloadLocale: DownloadPhraseLocale? = null): PhraseLocaleMessages?
+    fun downloadLocale(projectId: String, localeId: String, properties: DownloadPhraseLocaleProperties? = null): PhraseLocaleMessages?
 
     fun downloadLocaleAsProperties(projectId: String, localeId: String,
                                    escapeSingleQuotes: Boolean, branch: String? = null): ByteArray?
