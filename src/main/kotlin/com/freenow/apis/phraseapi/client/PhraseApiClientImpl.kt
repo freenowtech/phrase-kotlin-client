@@ -1,13 +1,5 @@
 package com.freenow.apis.phraseapi.client
 
-import com.google.common.cache.Cache
-import com.google.common.cache.CacheBuilder
-import com.google.common.net.HttpHeaders
-import com.google.common.net.MediaType
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonIOException
-import com.google.gson.JsonSyntaxException
 import com.freenow.apis.phraseapi.client.model.CreateKey
 import com.freenow.apis.phraseapi.client.model.CreatePhraseLocale
 import com.freenow.apis.phraseapi.client.model.CreatePhraseProject
@@ -23,6 +15,14 @@ import com.freenow.apis.phraseapi.client.model.PhraseProjects
 import com.freenow.apis.phraseapi.client.model.Translation
 import com.freenow.apis.phraseapi.client.model.Translations
 import com.freenow.apis.phraseapi.client.model.UpdatePhraseProject
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
+import com.google.common.net.HttpHeaders
+import com.google.common.net.MediaType
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonIOException
+import com.google.gson.JsonSyntaxException
 import feign.Feign
 import feign.RequestInterceptor
 import feign.Response
@@ -182,12 +182,12 @@ class PhraseApiClientImpl : PhraseApiClient {
         client.deleteLocale(projectId, localeId, branch)
     }
 
-    override fun translations(projectId: PhraseProject, locale: PhraseLocale, branch: String?): Translations? {
+    override fun translations(project: PhraseProject, locale: PhraseLocale, branch: String?): Translations? {
         log.debug("Get translations for locale [${locale.id}] for " +
                 "[${processBranchNameForLog(branch)}] branch of " +
-                "project [${projectId.id}]")
-        val response = client.translations(projectId.id, locale.id, branch)
-        return processResponse("GET/api/v2/projects/${projectId.id}/locales/${locale.id}/translations?branch=$branch", response)
+                "project [${project.id}]")
+        val response = client.translations(project.id, locale.id, branch)
+        return processResponse("GET/api/v2/projects/${project.id}/locales/${locale.id}/translations?branch=$branch", response)
     }
 
     override fun createTranslation(projectId: String, createTranslation: CreateTranslation): Translation? {

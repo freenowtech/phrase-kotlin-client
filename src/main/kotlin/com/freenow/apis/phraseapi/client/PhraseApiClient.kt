@@ -42,7 +42,7 @@ interface PhraseApiClient {
 
     fun deleteLocale(projectId: String, localeId: String, branch: String? = null)
 
-    fun translations(projectId: PhraseProject, locale: PhraseLocale, branch: String? = null): Translations?
+    fun translations(project: PhraseProject, locale: PhraseLocale, branch: String? = null): Translations?
 
     fun createTranslation(projectId: String, createTranslation: CreateTranslation): Translation?
 
