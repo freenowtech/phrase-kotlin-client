@@ -1,8 +1,8 @@
-package com.mytaxi.apis.phraseapi.client
+package com.freenow.apis.phraseapi.client
 
-import com.mytaxi.apis.phraseapi.client.config.TestConfig
-import com.mytaxi.apis.phraseapi.client.model.CreatePhraseLocale
-import com.mytaxi.apis.phraseapi.client.model.DownloadPhraseLocale
+import com.freenow.apis.phraseapi.client.config.TestConfig
+import com.freenow.apis.phraseapi.client.model.CreatePhraseLocale
+import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocaleProperties
 import org.aeonbits.owner.ConfigFactory
 import org.junit.Assume.assumeFalse
 import org.junit.Ignore
@@ -18,14 +18,14 @@ class PhraseApiClientLocalesIntegrationTest {
     private var phraseApiClient: PhraseApiClient
     private var clientConfig: PhraseApiClientConfig
     private var branch: String
-    private var downloadLocale: DownloadPhraseLocale
+    private var properties: DownloadPhraseLocaleProperties
     private var projectId: String
     private var localeIdDe: String
     private var localeIdDeBranch: String
 
     init {
         //GIVEN
-        assumeFalse(System.getenv("TRAVIS")?.let { it.toBoolean() } ?: false)
+        assumeFalse(System.getenv("TRAVIS")?.toBoolean() ?: false)
 
         assertNotNull(cfg.authToken())
         assertNotNull(cfg.host())
@@ -34,7 +34,7 @@ class PhraseApiClientLocalesIntegrationTest {
         phraseApiClient = PhraseApiClientImpl(clientConfig)
         projectId = cfg.projectId()
         branch = cfg.branch()
-        downloadLocale = DownloadPhraseLocale(true, true, null, branch)
+        properties = DownloadPhraseLocaleProperties(true, true, null, branch)
         localeIdDe = cfg.localeIdDe()
         localeIdDeBranch = cfg.localeIdDeBranch()
     }
@@ -61,9 +61,9 @@ class PhraseApiClientLocalesIntegrationTest {
 
         //THEN
         assertNotNull(masterLocale)
-        assertNotNull(masterLocale!!.id)
+        assertNotNull(masterLocale.id)
         assertNotNull(branchLocale)
-        assertNotNull(branchLocale!!.id)
+        assertNotNull(branchLocale.id)
     }
 
     @Test
@@ -71,7 +71,7 @@ class PhraseApiClientLocalesIntegrationTest {
 
         //WHEN
         val masterLocaleMessages = phraseApiClient.downloadLocale(projectId, localeIdDe)
-        val branchLocaleMessages = phraseApiClient.downloadLocale(projectId, localeIdDeBranch, downloadLocale)
+        val branchLocaleMessages = phraseApiClient.downloadLocale(projectId, localeIdDeBranch, properties)
 
         //THEN
         assertNotNull(branchLocaleMessages)
@@ -99,9 +99,9 @@ class PhraseApiClientLocalesIntegrationTest {
 
         //AND
         assertNotNull(masterLocale)
-        assertNotNull(masterLocale!!.id)
+        assertNotNull(masterLocale.id)
         assertNotNull(branchLocale)
-        assertNotNull(branchLocale!!.id)
+        assertNotNull(branchLocale.id)
 
         //WHEN
         phraseApiClient.deleteLocale(projectId, masterLocale.id)

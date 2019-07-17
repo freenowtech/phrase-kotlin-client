@@ -1,5 +1,20 @@
-package com.mytaxi.apis.phraseapi.client
+package com.freenow.apis.phraseapi.client
 
+import com.freenow.apis.phraseapi.client.model.CreateKey
+import com.freenow.apis.phraseapi.client.model.CreatePhraseLocale
+import com.freenow.apis.phraseapi.client.model.CreatePhraseProject
+import com.freenow.apis.phraseapi.client.model.CreateTranslation
+import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocaleProperties
+import com.freenow.apis.phraseapi.client.model.Key
+import com.freenow.apis.phraseapi.client.model.Keys
+import com.freenow.apis.phraseapi.client.model.PhraseLocale
+import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
+import com.freenow.apis.phraseapi.client.model.PhraseLocales
+import com.freenow.apis.phraseapi.client.model.PhraseProject
+import com.freenow.apis.phraseapi.client.model.PhraseProjects
+import com.freenow.apis.phraseapi.client.model.Translation
+import com.freenow.apis.phraseapi.client.model.Translations
+import com.freenow.apis.phraseapi.client.model.UpdatePhraseProject
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import com.google.common.net.HttpHeaders
@@ -8,7 +23,6 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonIOException
 import com.google.gson.JsonSyntaxException
-import com.mytaxi.apis.phraseapi.client.model.*
 import feign.Feign
 import feign.RequestInterceptor
 import feign.Response
@@ -30,15 +44,13 @@ class PhraseApiClientImpl : PhraseApiClient {
 
     private val client: PhraseApi
     private val config: PhraseApiClientConfig
-    private val responseCache: Cache<String, Any> // key url, value
+    private val responseCache: Cache<PhraseAppURL, Any>
 
     // Response
     private val gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 
     constructor(client: PhraseApi) {
-        config = PhraseApiClientConfig(
-            authKey = ""
-        )
+        config = PhraseApiClientConfig(authKey = "")
         this.client = client
         responseCache = CacheBuilder.newBuilder()
             .expireAfterWrite(config.responseCacheExpireAfterWriteMilliseconds, TimeUnit.MILLISECONDS)
@@ -145,16 +157,16 @@ class PhraseApiClientImpl : PhraseApiClient {
         return processResponse("POST/api/v2/projects/$projectId/locales", response)
     }
 
-    override fun downloadLocale(projectId: String, localeId: String, downloadLocale: DownloadPhraseLocale?): PhraseLocaleMessages? {
+    override fun downloadLocale(projectId: String, localeId: String, properties: DownloadPhraseLocaleProperties?): PhraseLocaleMessages? {
         log.debug("Download locale [$localeId] for project [$projectId]")
         val response = client.downloadLocale(
             projectId,
             localeId,
             "json",
-            downloadLocale?.escapeSingleQuotes ?: false,
-            downloadLocale?.includeEmptyTranslations ?: false,
-            downloadLocale?.fallbackLocaleId,
-            downloadLocale?.branch
+            properties?.escapeSingleQuotes ?: false,
+            properties?.includeEmptyTranslations ?: false,
+            properties?.fallbackLocaleId,
+            properties?.branch
         )
         return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
     }
@@ -239,7 +251,6 @@ class PhraseApiClientImpl : PhraseApiClient {
     override fun deleteKey(projectId: String, keyId: String, branch: String?): Boolean {
         log.debug("Deleting key [$keyId] for [${processBranchNameForLog(branch)}] branch of project [$projectId]")
         val response = client.deleteKey(projectId, keyId, branch)
-        //processResponse<Void>("DELETE/api/v2/projects/$projectId/keys/$keyId", response)
         return response.status() == HttpStatus.SC_NO_CONTENT
     }
 
@@ -266,7 +277,7 @@ class PhraseApiClientImpl : PhraseApiClient {
 
             val contentType = response.headers()
                 .asSequence()
-                .firstOrNull { it -> HttpHeaders.CONTENT_TYPE.equals(it.key, true) }
+                .firstOrNull { HttpHeaders.CONTENT_TYPE.equals(it.key, true) }
                 ?.value
                 ?.first() ?: throw PhraseAppApiException("Content type is NULL")
 
@@ -486,3 +497,5 @@ class PhraseAppApiException : RuntimeException {
     constructor(httpStatus: Int, message: String?) : super("Code [$httpStatus] : $message")
     constructor(message: String, throwable: Throwable) : super(message, throwable)
 }
+
+private typealias PhraseAppURL = String

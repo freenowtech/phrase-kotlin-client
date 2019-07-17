@@ -1,9 +1,9 @@
-package com.mytaxi.apis.phraseapi.client
+package com.freenow.apis.phraseapi.client
 
-import com.mytaxi.apis.phraseapi.client.config.TestConfig
-import com.mytaxi.apis.phraseapi.client.model.PhraseLocale
-import com.mytaxi.apis.phraseapi.client.model.PhraseProject
-import com.mytaxi.apis.phraseapi.client.model.Key
+import com.freenow.apis.phraseapi.client.config.TestConfig
+import com.freenow.apis.phraseapi.client.model.PhraseLocale
+import com.freenow.apis.phraseapi.client.model.PhraseProject
+import com.freenow.apis.phraseapi.client.model.Key
 import org.aeonbits.owner.ConfigFactory
 import org.junit.Assume.assumeFalse
 import org.junit.Test

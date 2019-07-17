@@ -1,4 +1,4 @@
-package com.mytaxi.apis.phraseapi.client
+package com.freenow.apis.phraseapi.client
 
 data class PhraseApiClientConfig(
     val url: String = "https://api.phraseapp.com",

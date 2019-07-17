@@ -1,13 +1,13 @@
-package com.mytaxi.apis.phraseapi.client
+package com.freenow.apis.phraseapi.client
 
 import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
 import com.google.gson.Gson
-import com.mytaxi.apis.phraseapi.client.model.Message
-import com.mytaxi.apis.phraseapi.client.model.PhraseLocale
-import com.mytaxi.apis.phraseapi.client.model.PhraseLocaleMessages
-import com.mytaxi.apis.phraseapi.client.model.PhraseLocales
-import com.mytaxi.apis.phraseapi.client.model.PhraseProject
+import com.freenow.apis.phraseapi.client.model.Message
+import com.freenow.apis.phraseapi.client.model.PhraseLocale
+import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
+import com.freenow.apis.phraseapi.client.model.PhraseLocales
+import com.freenow.apis.phraseapi.client.model.PhraseProject
 import feign.Response
 import org.junit.Test
 import org.mockito.Mockito.`when` as on

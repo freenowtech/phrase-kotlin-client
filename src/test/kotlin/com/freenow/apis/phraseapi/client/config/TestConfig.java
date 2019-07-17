@@ -1,6 +1,5 @@
-package com.mytaxi.apis.phraseapi.client.config;
+package com.freenow.apis.phraseapi.client.config;
 
-import com.mytaxi.apis.phraseapi.client.model.DownloadPhraseLocale;
 import org.aeonbits.owner.Config;
 
 public interface TestConfig extends Config

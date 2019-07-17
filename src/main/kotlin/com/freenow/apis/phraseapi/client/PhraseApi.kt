@@ -1,4 +1,4 @@
-package com.mytaxi.apis.phraseapi.client
+package com.freenow.apis.phraseapi.client
 
 import feign.Headers
 import feign.Param

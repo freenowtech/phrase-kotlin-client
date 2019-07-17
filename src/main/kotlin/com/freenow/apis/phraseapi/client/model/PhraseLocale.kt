@@ -1,4 +1,4 @@
-package com.mytaxi.apis.phraseapi.client.model
+package com.freenow.apis.phraseapi.client.model
 
 import java.util.Date
 
@@ -15,7 +15,7 @@ data class CreatePhraseLocale(
     val autotranslate: String? = null
 )
 
-data class DownloadPhraseLocale(
+data class DownloadPhraseLocaleProperties(
     val escapeSingleQuotes: Boolean,
     val includeEmptyTranslations: Boolean,
     val fallbackLocaleId: String?,

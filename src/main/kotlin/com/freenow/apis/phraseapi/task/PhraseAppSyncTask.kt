@@ -1,8 +1,8 @@
-package com.mytaxi.apis.phraseapi.task
+package com.freenow.apis.phraseapi.task
 
-import com.mytaxi.apis.phraseapi.client.PhraseApiClient
-import com.mytaxi.apis.phraseapi.client.PhraseApiClientImpl
-import com.mytaxi.apis.phraseapi.client.model.PhraseLocale
+import com.freenow.apis.phraseapi.client.PhraseApiClient
+import com.freenow.apis.phraseapi.client.PhraseApiClientImpl
+import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.ClassPathResource
 import java.nio.file.Files
@@ -25,7 +25,7 @@ class PhraseAppSyncTask(
 
         try {
             val classPathResource = ClassPathResource("/").file.path
-            rootMessagesDirectory = Paths.get("$classPathResource")
+            rootMessagesDirectory = Paths.get(classPathResource)
         } catch (e: Exception) {
             log.error("could not get default ClassPathResource. use /generated-resources/ instead")
             rootMessagesDirectory = Paths.get(config.generatedResourcesFolder)
