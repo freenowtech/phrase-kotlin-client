@@ -1,15 +1,14 @@
 package com.freenow.apis.phraseapi.client
 
-import com.google.common.net.HttpHeaders
-import com.google.common.net.MediaType
-import com.google.gson.Gson
 import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocaleProperties
 import com.freenow.apis.phraseapi.client.model.Message
 import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
+import com.google.common.net.HttpHeaders
+import com.google.common.net.MediaType
+import com.google.gson.Gson
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
-import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
 import java.nio.charset.StandardCharsets
@@ -18,6 +17,7 @@ import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import org.mockito.Mockito.`when` as on
 
 class PhraseApiClientDownloadLocaleTest {
     private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
@@ -55,7 +55,6 @@ class PhraseApiClientDownloadLocaleTest {
         expectedLocaleMessages[messageKey] = Message(message, description)
 
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
-
 
         val response = Response.create(
             HttpStatus.SC_OK,
@@ -97,7 +96,6 @@ class PhraseApiClientDownloadLocaleTest {
 
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
 
-
         val responseFirst = Response.create(
             HttpStatus.SC_OK,
             "OK",
@@ -108,7 +106,6 @@ class PhraseApiClientDownloadLocaleTest {
 
         on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
         val actualLocaleMessages = phraseApiClient.downloadLocale(projectId, localeId)
-
 
         val responseSecond = Response.create(
             HttpStatus.SC_NOT_MODIFIED,
@@ -128,7 +125,6 @@ class PhraseApiClientDownloadLocaleTest {
         assertEquals(expectedLocaleMessages, actualLocaleMessages)
         assertEquals(expectedLocaleMessages, actualLocaleMessagesCached)
     }
-
 
     @Test(expected = PhraseAppApiException::class)
     fun `Should throw PhraseAppApiException exception with Too Many Requests`() {
@@ -209,7 +205,6 @@ class PhraseApiClientDownloadLocaleTest {
 
         val expectedLocaleMessages = "property = value".toByteArray()
 
-
         val responseFirst = Response.create(
             HttpStatus.SC_OK,
             "OK",
@@ -220,7 +215,6 @@ class PhraseApiClientDownloadLocaleTest {
         on(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(responseFirst)
         val actualLocaleMessages = phraseApiClient.downloadLocaleAsProperties(projectId, localeId, true)
 
-
         val responseSecond = Response.create(
             HttpStatus.SC_NOT_MODIFIED,
             "OK",
@@ -229,9 +223,9 @@ class PhraseApiClientDownloadLocaleTest {
             StandardCharsets.UTF_8
         )
 
-        on(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseSecond)
+        on(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(responseSecond)
         //WHEN
-        val actualLocaleMessagesCached = phraseApiClient.downloadLocaleAsProperties(projectId, localeId, false)
+        val actualLocaleMessagesCached = phraseApiClient.downloadLocaleAsProperties(projectId, localeId, true)
 
         //THEN
         assertNotNull(actualLocaleMessages)
@@ -239,7 +233,6 @@ class PhraseApiClientDownloadLocaleTest {
         assertTrue(Arrays.equals(expectedLocaleMessages, actualLocaleMessages))
         assertTrue(Arrays.equals(expectedLocaleMessages, actualLocaleMessagesCached))
     }
-
 
     @Test(expected = PhraseAppApiException::class)
     fun `Should throw PhraseAppApiException exception with Too Many Requests for ByteArray`() {
