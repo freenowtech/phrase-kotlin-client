@@ -14,8 +14,8 @@ class PhraseAppSyncTask(
     private val config: PhraseAppSyncTaskConfig
 ) : Runnable {
 
-    private var log = LoggerFactory.getLogger(PhraseAppSyncTask::class.java.name)
-    private var rootMessagesDirectory: Path
+    private val log = LoggerFactory.getLogger(PhraseAppSyncTask::class.java.name)
+    private val rootMessagesDirectory: Path
     private val client: PhraseApiClient
 
     private val defaultBranch = "master"
@@ -23,12 +23,12 @@ class PhraseAppSyncTask(
     init {
         client = PhraseApiClientImpl(config.url, config.authKey)
 
-        try {
+        rootMessagesDirectory = try {
             val classPathResource = ClassPathResource("/").file.path
-            rootMessagesDirectory = Paths.get(classPathResource)
+            Paths.get(classPathResource)
         } catch (e: Exception) {
             log.warn("could not get default ClassPathResource. use /generated-resources/ instead")
-            rootMessagesDirectory = Paths.get(config.generatedResourcesFolder)
+            Paths.get(config.generatedResourcesFolder)
         }
 
         Files.createDirectories(rootMessagesDirectory)
