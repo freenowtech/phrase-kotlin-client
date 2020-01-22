@@ -27,7 +27,7 @@ class PhraseAppSyncTask(
             val classPathResource = ClassPathResource("/").file.path
             rootMessagesDirectory = Paths.get(classPathResource)
         } catch (e: Exception) {
-            log.error("could not get default ClassPathResource. use /generated-resources/ instead")
+            log.warn("could not get default ClassPathResource. use /generated-resources/ instead")
             rootMessagesDirectory = Paths.get(config.generatedResourcesFolder)
         }
 
