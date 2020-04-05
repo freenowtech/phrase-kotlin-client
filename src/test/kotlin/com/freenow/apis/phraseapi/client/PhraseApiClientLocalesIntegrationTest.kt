@@ -1,8 +1,12 @@
 package com.freenow.apis.phraseapi.client
 
 import com.freenow.apis.phraseapi.client.config.TestConfig
-import com.freenow.apis.phraseapi.client.model.CreatePhraseLocale
-import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocaleProperties
+import com.isadounikau.phrase.api.client.PhraseApiClient
+import com.isadounikau.phrase.api.client.PhraseApiClientConfig
+import com.isadounikau.phrase.api.client.PhraseApiClientImpl
+import com.isadounikau.phrase.api.client.PhraseAppApiException
+import com.isadounikau.phrase.api.client.model.CreatePhraseLocale
+import com.isadounikau.phrase.api.client.model.DownloadPhraseLocaleProperties
 import org.aeonbits.owner.ConfigFactory
 import org.junit.Assume.assumeFalse
 import org.junit.Ignore

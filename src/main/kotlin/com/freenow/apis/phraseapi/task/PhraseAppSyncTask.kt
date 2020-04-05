@@ -1,8 +1,8 @@
 package com.freenow.apis.phraseapi.task
 
-import com.freenow.apis.phraseapi.client.PhraseApiClient
-import com.freenow.apis.phraseapi.client.PhraseApiClientImpl
-import com.freenow.apis.phraseapi.client.model.PhraseLocale
+import com.isadounikau.phrase.api.client.PhraseApiClient
+import com.isadounikau.phrase.api.client.PhraseApiClientImpl
+import com.isadounikau.phrase.api.client.model.PhraseLocale
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.ClassPathResource
 import java.nio.file.Files

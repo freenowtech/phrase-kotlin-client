@@ -1,13 +1,18 @@
 package com.freenow.apis.phraseapi.client
 
 import com.freenow.apis.phraseapi.client.config.TestConfig
-import com.freenow.apis.phraseapi.client.model.PhraseLocale
-import com.freenow.apis.phraseapi.client.model.PhraseProject
-import com.freenow.apis.phraseapi.client.model.Key
+import com.isadounikau.phrase.api.client.PhraseApiClient
+import com.isadounikau.phrase.api.client.PhraseApiClientConfig
+import com.isadounikau.phrase.api.client.PhraseApiClientImpl
+import com.isadounikau.phrase.api.client.model.Key
+import com.isadounikau.phrase.api.client.model.PhraseLocale
+import com.isadounikau.phrase.api.client.model.PhraseProject
 import org.aeonbits.owner.ConfigFactory
 import org.junit.Assume.assumeFalse
 import org.junit.Test
-import kotlin.test.*
+import kotlin.test.Ignore
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 
 @Ignore
 class PhraseApiClientTranslationsKeysIntegrationTest {

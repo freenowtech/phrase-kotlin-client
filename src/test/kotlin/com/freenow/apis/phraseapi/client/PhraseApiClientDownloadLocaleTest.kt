@@ -1,11 +1,16 @@
 package com.freenow.apis.phraseapi.client
 
-import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocaleProperties
-import com.freenow.apis.phraseapi.client.model.Message
-import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
 import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
 import com.google.gson.Gson
+import com.isadounikau.phrase.api.client.CacheApi
+import com.isadounikau.phrase.api.client.PhraseApi
+import com.isadounikau.phrase.api.client.PhraseApiClient
+import com.isadounikau.phrase.api.client.PhraseApiClientImpl
+import com.isadounikau.phrase.api.client.PhraseAppApiException
+import com.isadounikau.phrase.api.client.model.DownloadPhraseLocaleProperties
+import com.isadounikau.phrase.api.client.model.Message
+import com.isadounikau.phrase.api.client.model.PhraseLocaleMessages
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
@@ -56,13 +61,11 @@ class PhraseApiClientDownloadLocaleTest {
 
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
 
-        val response = Response.create(
-            HttpStatus.SC_OK,
-            "OK",
-            headers,
-            projectsJSON,
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .headers(headers)
+            .status(HttpStatus.SC_OK)
+            .body(projectsJSON, StandardCharsets.UTF_8)
+            .build()
 
         on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch)).thenReturn(response)
 
@@ -96,24 +99,20 @@ class PhraseApiClientDownloadLocaleTest {
 
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
 
-        val responseFirst = Response.create(
-            HttpStatus.SC_OK,
-            "OK",
-            headers,
-            projectsJSON,
-            StandardCharsets.UTF_8
-        )
+        val responseFirst = Response.builder()
+            .headers(headers)
+            .status(HttpStatus.SC_OK)
+            .body(projectsJSON, StandardCharsets.UTF_8)
+            .build()
 
         on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
         val actualLocaleMessages = phraseApiClient.downloadLocale(projectId, localeId)
 
-        val responseSecond = Response.create(
-            HttpStatus.SC_NOT_MODIFIED,
-            "OK",
-            headers,
-            "",
-            StandardCharsets.UTF_8
-        )
+        val responseSecond = Response.builder()
+            .headers(headers)
+            .status(HttpStatus.SC_NOT_MODIFIED)
+            .body("", StandardCharsets.UTF_8)
+            .build()
 
         on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseSecond)
         //WHEN
@@ -146,13 +145,11 @@ class PhraseApiClientDownloadLocaleTest {
         val expectedLocaleMessages = PhraseLocaleMessages()
         expectedLocaleMessages[messageKey] = Message(message, description)
 
-        val responseFirst = Response.create(
-            429,
-            "Not Ok",
-            headers,
-            "{\"message\":\"Rate limit exceeded\",\"documentation_url\":\"https://developers.phraseapp.com/api/#rate-limit\"}",
-            StandardCharsets.UTF_8
-        )
+        val responseFirst = Response.builder()
+            .headers(headers)
+            .status(429)
+            .body("{\"message\":\"Rate limit exceeded\",\"documentation_url\":\"https://developers.phraseapp.com/api/#rate-limit\"}", StandardCharsets.UTF_8)
+            .build()
 
         on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
 
@@ -173,12 +170,11 @@ class PhraseApiClientDownloadLocaleTest {
 
         val expectedLocaleMessages = "property = value".toByteArray()
 
-        val response = Response.create(
-            HttpStatus.SC_OK,
-            "OK",
-            headers,
-            expectedLocaleMessages
-        )
+        val response = Response.builder()
+            .headers(headers)
+            .status(HttpStatus.SC_OK)
+            .body(expectedLocaleMessages)
+            .build()
 
         on(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(response)
 
@@ -205,23 +201,20 @@ class PhraseApiClientDownloadLocaleTest {
 
         val expectedLocaleMessages = "property = value".toByteArray()
 
-        val responseFirst = Response.create(
-            HttpStatus.SC_OK,
-            "OK",
-            headers,
-            expectedLocaleMessages
-        )
+        val responseFirst = Response.builder()
+            .headers(headers)
+            .status(HttpStatus.SC_OK)
+            .body(expectedLocaleMessages)
+            .build()
 
         on(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(responseFirst)
         val actualLocaleMessages = phraseApiClient.downloadLocaleAsProperties(projectId, localeId, true)
 
-        val responseSecond = Response.create(
-            HttpStatus.SC_NOT_MODIFIED,
-            "OK",
-            headers,
-            "",
-            StandardCharsets.UTF_8
-        )
+        val responseSecond = Response.builder()
+            .headers(headers)
+            .status(HttpStatus.SC_NOT_MODIFIED)
+            .body("", StandardCharsets.UTF_8)
+            .build()
 
         on(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(responseSecond)
         //WHEN
@@ -247,13 +240,11 @@ class PhraseApiClientDownloadLocaleTest {
             HttpHeaders.CONTENT_TYPE to listOf(MediaType.OCTET_STREAM.toString())
         )
 
-        val responseFirst = Response.create(
-            429,
-            "Not Ok",
-            headers,
-            "{\"message\":\"Rate limit exceeded\",\"documentation_url\":\"https://developers.phraseapp.com/api/#rate-limit\"}",
-            StandardCharsets.UTF_8
-        )
+        val responseFirst = Response.builder()
+            .headers(headers)
+            .status(429)
+            .body("{\"message\":\"Rate limit exceeded\",\"documentation_url\":\"https://developers.phraseapp.com/api/#rate-limit\"}", StandardCharsets.UTF_8)
+            .build()
 
         on(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseFirst)
         //WHEN
