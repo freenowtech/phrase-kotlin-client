@@ -1,8 +1,7 @@
 # phrase-kotlin-client
 Kotlin Client for PhraseApp 
 ## What is this?
-This projects contain client to handle the API from [PhraseApp API v2](http://docs.phraseapp.com/api/v2/).
-It's supposed to expose Phrase Core within the kotlin world.
+This projects contain task to handle the synchronization via API from [PhraseApp API v2](http://docs.phraseapp.com/api/v2/).
 
 [![Build Status][travis-image]][travis-url-main]
 [![codecov][codecov-badge-url]][codecov-project-url]
@@ -14,34 +13,13 @@ It's supposed to expose Phrase Core within the kotlin world.
 
 ## How to use it
 
-You need configure your client 
+You need configure your sync task 
 ```
-val config =  PhraseApiClientConfig(
+val config =  PhraseAppSyncTaskConfig(
     url = "https://api.phraseapp.com",
     authKey = "authKey"
 )
 
-val phraseApiClient = PhraseApiClientImpl(config)
+val phraseAppSyncTask = PhraseAppSyncTask(config)
+phraseAppSyncTask.run()
 ```
-## Supported API
-* Project
-  * Create project
-  * Get project by id
-  * Get all projects
-  * Delete project
-  * Update project
-
-* Locale
-  * Create locale
-  * Get all locales for project
-  * Get locale by id
-  * Delete locale
-  * Download locale translations
-  
-* Translation
-  * Create translation
-
-* Key
-  * Create key
-  * Search key
-  * Delete key
