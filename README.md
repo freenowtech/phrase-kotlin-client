@@ -1,7 +1,7 @@
 # phrase-kotlin-client
 Kotlin Client for PhraseApp 
 ## What is this?
-This projects contain task to handle the synchronization via API from [PhraseApp API v2](http://docs.phraseapp.com/api/v2/).
+This project contains the task to handle the synchronization via API from [PhraseApp API v2](http://docs.phraseapp.com/api/v2/).
 
 [![Build Status][travis-image]][travis-url-main]
 [![codecov][codecov-badge-url]][codecov-project-url]
