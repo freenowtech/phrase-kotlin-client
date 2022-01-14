@@ -71,4 +71,6 @@ jobs:
           maven-repo-server-username: ${{ secrets.FREE_NOW_GITHUB_USER }}
           maven-repo-server-password: ${{ secrets.FREE_NOW_MAVEN_ACCESS_TOKEN }}
           maven-args: "-DskipTests -DskipITs"
+        env:
+          JAVA_HOME: /usr/lib/jvm/java-1.8-openjdk/
 
