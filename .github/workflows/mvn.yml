@@ -54,22 +54,21 @@ jobs:
       - name: Release and Publish
         uses: qcastel/github-actions-maven-release@v1.12.25
         with:
-          release-branch-name: ${{ env.BRANCH_NAME }}
+          access-token: ${{ secrets.FREE_NOW_GITHUB_ACCESS_TOKEN }}
+          release-branch-name: "master"
+          maven-args: "-DskipTests -DskipITs"
+          git-release-bot-name: "free-now-github"
+          git-release-bot-email: "70742378+free-now-github@users.noreply.github.com"
+          git-skip-sanity-check: true
+          ssh-private-key: ${{ secrets.FREE_NOW_GITHUB_PRIVATE_KEY }}
+          maven-project-folder: ${{ matrix.path }}
+          maven-repo-server-id: ossrh
+          maven-repo-server-username: ${{ secrets.FREE_NOW_GITHUB_USER }}
+          maven-repo-server-password: ${{ secrets.FREE_NOW_MAVEN_ACCESS_TOKEN }}
           gpg-enabled: true
           gpg-key-id: ${{ secrets.FREE_NOW_GPG_KEY_ID }}
           gpg-key: ${{ secrets.FREE_NOW_GPG_KEY }}
           gpg-passphrase: ${{ secrets.FREE_NOW_GPG_PASSPHRASE }}
-
-          ssh-private-key: ${{ secrets.FREE_NOW_GITHUB_PRIVATE_KEY }}
-
-          git-release-bot-name: "free-now-github"
-          git-release-bot-email: "70742378+free-now-github@users.noreply.github.com"
-          git-skip-sanity-check: true
-
-          maven-repo-server-id: ossrh
-          maven-repo-server-username: ${{ secrets.FREE_NOW_GITHUB_USER }}
-          maven-repo-server-password: ${{ secrets.FREE_NOW_MAVEN_ACCESS_TOKEN }}
-          maven-args: "-DskipTests -DskipITs"
         env:
           JAVA_HOME: /usr/lib/jvm/java-1.8-openjdk/
 
