@@ -55,7 +55,6 @@ jobs:
         uses: qcastel/github-actions-maven-release@v1.12.25
         with:
           release-branch-name: ${{ env.BRANCH_NAME }}
-
           gpg-enabled: true
           gpg-key-id: ${{ secrets.FREE_NOW_GPG_KEY_ID }}
           gpg-key: ${{ secrets.FREE_NOW_GPG_KEY }}
