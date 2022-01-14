@@ -1,15 +1,15 @@
 package com.freenow.apis.phraseapi.task
 
-import com.isadounikau.phrase.api.client.PhraseApiClient
-import com.isadounikau.phrase.api.client.PhraseApiClientImpl
-import com.isadounikau.phrase.api.client.model.PhraseLocale
+import com.freenow.apis.phraseapi.client.PhraseApiClient
+import com.freenow.apis.phraseapi.client.PhraseApiClientImpl
+import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.ClassPathResource
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught","SwallowedException")
 class PhraseAppSyncTask(
     private val config: PhraseAppSyncTaskConfig
 ) : Runnable {
@@ -60,7 +60,8 @@ class PhraseAppSyncTask(
 
     private fun updateLocaleFile(locale: PhraseLocale, branch: String) {
         try {
-            val byteArray = client.downloadLocaleAsProperties(config.projectId, locale.id, config.escapeSingleQuotes, branch)
+            val byteArray = client.downloadLocaleAsProperties(
+                config.projectId, locale.id, config.escapeSingleQuotes, branch)
             if (byteArray != null) {
                 val fileName = createFileName(locale.code)
                 val path = handleBranchPath(branch).resolve(fileName)
