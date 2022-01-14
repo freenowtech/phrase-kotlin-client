@@ -19,6 +19,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
+@Suppress("MaxLineLength")
 class PhraseApiClientDownloadLocaleTest {
     private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
@@ -65,7 +66,8 @@ class PhraseApiClientDownloadLocaleTest {
             StandardCharsets.UTF_8
         )
 
-        on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch)).thenReturn(response)
+        on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch))
+            .thenReturn(response)
 
         //WHEN
         val actualLocaleMessages = phraseApiClient.downloadLocale(projectId, localeId, downloadLocale)

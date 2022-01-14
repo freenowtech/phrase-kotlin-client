@@ -9,7 +9,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught","SwallowedException")
 class PhraseAppSyncTask(
     private val config: PhraseAppSyncTaskConfig
 ) : Runnable {
@@ -60,7 +60,8 @@ class PhraseAppSyncTask(
 
     private fun updateLocaleFile(locale: PhraseLocale, branch: String) {
         try {
-            val byteArray = client.downloadLocaleAsProperties(config.projectId, locale.id, config.escapeSingleQuotes, branch)
+            val byteArray = client.downloadLocaleAsProperties(
+                config.projectId, locale.id, config.escapeSingleQuotes, branch)
             if (byteArray != null) {
                 val fileName = createFileName(locale.code)
                 val path = handleBranchPath(branch).resolve(fileName)

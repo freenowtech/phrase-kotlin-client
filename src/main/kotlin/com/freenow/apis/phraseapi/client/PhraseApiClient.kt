@@ -35,7 +35,8 @@ interface PhraseApiClient {
 
     fun createLocale(projectId: String, locale: CreatePhraseLocale): PhraseLocale?
 
-    fun downloadLocale(projectId: String, localeId: String, properties: DownloadPhraseLocaleProperties? = null): PhraseLocaleMessages?
+    fun downloadLocale(projectId: String, localeId: String, properties: DownloadPhraseLocaleProperties? = null)
+        : PhraseLocaleMessages?
 
     fun downloadLocaleAsProperties(projectId: String, localeId: String,
                                    escapeSingleQuotes: Boolean, branch: String? = null): ByteArray?

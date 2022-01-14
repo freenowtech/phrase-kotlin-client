@@ -130,13 +130,13 @@ class PhraseApiClientTranslationTest {
         val expectedTranslation = Translation(
             id = UUID.randomUUID().toString(),
             key = TranslationKey(
-                    id = keyId,
-                    name = keyName
+                id = keyId,
+                name = keyName
             ),
             locale = PhraseLocale(
-                    id = localeId,
-                    code = Locale.US.toLanguageTag(),
-                    name = UUID.randomUUID().toString()
+                id = localeId,
+                code = Locale.US.toLanguageTag(),
+                name = UUID.randomUUID().toString()
             ),
             content = translationContent
         )
@@ -148,5 +148,4 @@ class PhraseApiClientTranslationTest {
         assertNotNull(actualResponse)
         assertEquals(actualResponse!!.content, expectedTranslation.content)
     }
-
 }

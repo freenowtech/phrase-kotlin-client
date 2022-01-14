@@ -1,6 +1,5 @@
 package com.freenow.apis.phraseapi.client.config;
 
-import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocale;
 import org.aeonbits.owner.Config;
 
 public interface TestConfig extends Config
@@ -13,9 +12,6 @@ public interface TestConfig extends Config
 
     @DefaultValue("${ENV_PHRASE_BRANCH}")
     String branch();
-
-    @DefaultValue("${ENV_PHRASE_DOWNLOAD_LOCALE}")
-    DownloadPhraseLocale downloadLocale();
 
     @DefaultValue("${ENV_PHRASE_LOCALEID_DE}")
     String localeIdDe();

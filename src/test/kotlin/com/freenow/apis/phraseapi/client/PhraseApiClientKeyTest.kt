@@ -53,7 +53,8 @@ class PhraseApiClientKeyTest {
             plural = createKey.plural
         )).thenReturn(response)
 
-        val expectedKey = Key(id = UUID.randomUUID().toString(), name = keyName, tags = tags, description = "desc", plural = "false")
+        val expectedKey = Key(
+            id = UUID.randomUUID().toString(), name = keyName, tags = tags, description = "desc", plural = "false")
 
         //WHEN
         val actualResponse = phraseApiClient.createKey(projectId, createKey)

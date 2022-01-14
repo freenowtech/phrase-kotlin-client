@@ -254,6 +254,7 @@ class PhraseApiClientImpl : PhraseApiClient {
         return response.status() == HttpStatus.SC_NO_CONTENT
     }
 
+    @Suppress("ThrowsCount")
     private inline fun <reified T> processResponse(key: String, response: Response): T? {
         log.debug("Response : status [${response.status()}] \n headers [${response.headers()}]")
 

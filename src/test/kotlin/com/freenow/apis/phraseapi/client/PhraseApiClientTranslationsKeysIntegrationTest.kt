@@ -75,8 +75,10 @@ class PhraseApiClientTranslationsKeysIntegrationTest {
         assertNotNull(branchKey!!.id)
 
         //WHEN
-        val branchTranslation = phraseApiClient.createTranslation(projectId, localeIdDeBranch, branchKey.id ,  "test translation", branch)
-        val masterTranslation = phraseApiClient.createTranslation(projectId, localeIdDe, masterKey.id ,  "test translation")
+        val branchTranslation = phraseApiClient.createTranslation(
+            projectId, localeIdDeBranch, branchKey.id ,  "test translation", branch)
+        val masterTranslation = phraseApiClient.createTranslation(
+            projectId, localeIdDe, masterKey.id ,  "test translation")
 
         //THEN
         assertNotNull(masterTranslation)
