@@ -4,7 +4,7 @@
 
     <groupId>com.free-now.apis</groupId>
     <artifactId>phrase-kotlin-client</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.3.2-SNAPSHOT</version>
     <name>phrase-api-kotlin</name>
     <packaging>jar</packaging>
 
