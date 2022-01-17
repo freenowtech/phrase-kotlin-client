@@ -4,7 +4,7 @@
 
     <groupId>com.free-now.apis</groupId>
     <artifactId>phrase-kotlin-client</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>phrase-api-kotlin</name>
     <packaging>jar</packaging>
 
@@ -129,7 +129,7 @@
     <scm>
         <connection>${scm.connection}</connection>
         <developerConnection>${scm.connection}</developerConnection>
-        <tag>phrase-kotlin-client-1.0.0</tag>
+        <tag>HEAD</tag>
         <url>${scm.url}</url>
     </scm>
 
