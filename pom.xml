@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.freenow.apis</groupId>
+    <groupId>com.free-now.apis</groupId>
     <artifactId>phrase-kotlin-client</artifactId>
-    <version>1.3.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>phrase-api-kotlin</name>
     <packaging>jar</packaging>
 
@@ -41,6 +41,7 @@
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+        <dokka.version>1.6.10</dokka.version>
     </properties>
 
     <dependencies>
@@ -128,7 +129,7 @@
     <scm>
         <connection>${scm.connection}</connection>
         <developerConnection>${scm.connection}</developerConnection>
-        <tag>phrase-kotlin-client-1.0.0</tag>
+        <tag>HEAD</tag>
         <url>${scm.url}</url>
     </scm>
 
@@ -152,7 +153,6 @@
             <name>bintray-plugins</name>
             <url>https://dl.bintray.com/ozsie/maven</url>
         </pluginRepository>
-
     </pluginRepositories>
 
     <build>
@@ -190,14 +190,16 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven-javadoc-plugin.version}</version>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+                <version>${dokka.version}</version>
                 <executions>
                     <execution>
-                        <id>attach-javadocs</id>
+                        <phase>prepare-package</phase>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>dokka</goal>
+                            <goal>javadoc</goal>
+                            <goal>javadocJar</goal>
                         </goals>
                     </execution>
                 </executions>
