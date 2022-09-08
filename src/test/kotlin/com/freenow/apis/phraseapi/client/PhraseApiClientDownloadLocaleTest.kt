@@ -6,7 +6,6 @@ import com.google.gson.Gson
 import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocaleProperties
 import com.freenow.apis.phraseapi.client.model.Message
 import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
-import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
 import org.mockito.Mockito.`when` as on
@@ -58,7 +57,7 @@ class PhraseApiClientDownloadLocaleTest {
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
 
 
-        val response = Response.create(
+        val response = FeignUtil.create(
             HttpStatus.SC_OK,
             "OK",
             headers,
@@ -100,7 +99,7 @@ class PhraseApiClientDownloadLocaleTest {
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
 
 
-        val responseFirst = Response.create(
+        val responseFirst = FeignUtil.create(
             HttpStatus.SC_OK,
             "OK",
             headers,
@@ -112,7 +111,7 @@ class PhraseApiClientDownloadLocaleTest {
         val actualLocaleMessages = phraseApiClient.downloadLocale(projectId, localeId)
 
 
-        val responseSecond = Response.create(
+        val responseSecond = FeignUtil.create(
             HttpStatus.SC_NOT_MODIFIED,
             "OK",
             headers,
@@ -152,7 +151,7 @@ class PhraseApiClientDownloadLocaleTest {
         val expectedLocaleMessages = PhraseLocaleMessages()
         expectedLocaleMessages[messageKey] = Message(message, description)
 
-        val responseFirst = Response.create(
+        val responseFirst = FeignUtil.create(
             429,
             "Not Ok",
             headers,
@@ -179,7 +178,7 @@ class PhraseApiClientDownloadLocaleTest {
 
         val expectedLocaleMessages = "property = value".toByteArray()
 
-        val response = Response.create(
+        val response = FeignUtil.create(
             HttpStatus.SC_OK,
             "OK",
             headers,
@@ -212,7 +211,7 @@ class PhraseApiClientDownloadLocaleTest {
         val expectedLocaleMessages = "property = value".toByteArray()
 
 
-        val responseFirst = Response.create(
+        val responseFirst = FeignUtil.create(
             HttpStatus.SC_OK,
             "OK",
             headers,
@@ -223,7 +222,7 @@ class PhraseApiClientDownloadLocaleTest {
         val actualLocaleMessages = phraseApiClient.downloadLocaleAsProperties(projectId, localeId, true)
 
 
-        val responseSecond = Response.create(
+        val responseSecond = FeignUtil.create(
             HttpStatus.SC_NOT_MODIFIED,
             "OK",
             headers,
@@ -256,7 +255,7 @@ class PhraseApiClientDownloadLocaleTest {
             HttpHeaders.CONTENT_TYPE to listOf(MediaType.OCTET_STREAM.toString())
         )
 
-        val responseFirst = Response.create(
+        val responseFirst = FeignUtil.create(
             429,
             "Not Ok",
             headers,

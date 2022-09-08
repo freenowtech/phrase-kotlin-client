@@ -7,7 +7,6 @@ import com.freenow.apis.phraseapi.client.model.CreateTranslation
 import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import com.freenow.apis.phraseapi.client.model.Translation
 import com.freenow.apis.phraseapi.client.model.TranslationKey
-import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
 import org.mockito.Mockito.`when` as on
@@ -52,7 +51,7 @@ class PhraseApiClientTranslationTest {
 
         val translationJSON = Gson().toJson(createTranslation)
 
-        val response = Response.create(
+        val response = FeignUtil.create(
             HttpStatus.SC_CREATED,
             "OK",
             headers,
@@ -112,7 +111,7 @@ class PhraseApiClientTranslationTest {
 
         val translationJSON = Gson().toJson(createTranslation)
 
-        val response = Response.create(
+        val response = FeignUtil.create(
             HttpStatus.SC_CREATED,
             "OK",
             headers,

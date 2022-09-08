@@ -6,7 +6,6 @@ import com.google.gson.Gson
 import com.freenow.apis.phraseapi.client.model.CreateKey
 import com.freenow.apis.phraseapi.client.model.Key
 import com.freenow.apis.phraseapi.client.model.Keys
-import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
 import org.mockito.Mockito.`when` as on
@@ -43,7 +42,7 @@ class PhraseApiClientKeyTest {
 
         val keyJSON = Gson().toJson(createKey)
 
-        val response = Response.create(HttpStatus.SC_CREATED, "OK", headers, keyJSON, StandardCharsets.UTF_8)
+        val response = FeignUtil.create(HttpStatus.SC_CREATED, "OK", headers, keyJSON, StandardCharsets.UTF_8)
 
         on(client.createKey(
             projectId = projectId,
@@ -81,7 +80,7 @@ class PhraseApiClientKeyTest {
 
         val keyJSON = Gson().toJson(expectedKey)
 
-        val response = Response.create(HttpStatus.SC_CREATED, "OK", headers, keyJSON, StandardCharsets.UTF_8)
+        val response = FeignUtil.create(HttpStatus.SC_CREATED, "OK", headers, keyJSON, StandardCharsets.UTF_8)
 
         on(client.createKey(projectId = projectId, name = keyName)).thenReturn(response)
 
@@ -114,7 +113,7 @@ class PhraseApiClientKeyTest {
 
         val keysJSON = Gson().toJson(keys)
 
-        val response = Response.create(HttpStatus.SC_OK, "OK", headers, keysJSON, StandardCharsets.UTF_8)
+        val response = FeignUtil.create(HttpStatus.SC_OK, "OK", headers, keysJSON, StandardCharsets.UTF_8)
 
         on(client.searchKey(projectId, localeId, q)).thenReturn(response)
 
@@ -139,7 +138,7 @@ class PhraseApiClientKeyTest {
             HttpHeaders.CONTENT_TYPE to listOf(JSON_UTF_8.toString())
         )
 
-        val response = Response.create(HttpStatus.SC_NO_CONTENT, "OK", headers, "{}", StandardCharsets.UTF_8)
+        val response = FeignUtil.create(HttpStatus.SC_NO_CONTENT, "OK", headers, "{}", StandardCharsets.UTF_8)
 
         on(client.deleteKey(projectId, keyId)).thenReturn(response)
 

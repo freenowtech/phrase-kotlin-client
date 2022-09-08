@@ -5,7 +5,6 @@ import com.google.common.net.MediaType
 import com.google.gson.Gson
 import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import com.freenow.apis.phraseapi.client.model.PhraseLocales
-import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
 import org.mockito.Mockito.`when` as on
@@ -45,7 +44,7 @@ class PhraseApiClientLocaleTest {
 
         val projectsJSON = Gson().toJson(expectedLocale)
 
-        val response = Response.create(
+        val response = FeignUtil.create(
             HttpStatus.SC_OK,
             "OK",
             headers,
@@ -91,7 +90,7 @@ class PhraseApiClientLocaleTest {
 
         val projectsJSON = Gson().toJson(expectedLocales)
 
-        val response = Response.create(
+        val response = FeignUtil.create(
             HttpStatus.SC_OK,
             "OK",
             headers,

@@ -6,7 +6,6 @@ import com.google.gson.Gson
 import com.freenow.apis.phraseapi.client.model.CreatePhraseProject
 import com.freenow.apis.phraseapi.client.model.PhraseProject
 import com.freenow.apis.phraseapi.client.model.UpdatePhraseProject
-import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
 import org.mockito.Mockito.`when` as on
@@ -41,7 +40,7 @@ class PhraseApiClientProjectTest {
             HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val response = Response.create(
+        val response = FeignUtil.create(
             HttpStatus.SC_OK,
             "OK",
             headers,
@@ -77,7 +76,7 @@ class PhraseApiClientProjectTest {
             HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val response = Response.create(
+        val response = FeignUtil.create(
             HttpStatus.SC_OK,
             "OK",
             headers,
@@ -106,7 +105,7 @@ class PhraseApiClientProjectTest {
             HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val response = Response.create(
+        val response = FeignUtil.create(
             HttpStatus.SC_NO_CONTENT,
             "OK",
             headers,
@@ -143,7 +142,7 @@ class PhraseApiClientProjectTest {
 
         val projectsJSON = Gson().toJson(createProjectEntity)
 
-        val response = Response.create(
+        val response = FeignUtil.create(
             HttpStatus.SC_NO_CONTENT,
             "OK",
             headers,
@@ -204,7 +203,7 @@ class PhraseApiClientProjectTest {
             "name" to projectName
         ))
 
-        val response = Response.create(
+        val response = FeignUtil.create(
             HttpStatus.SC_NO_CONTENT,
             "OK",
             headers,

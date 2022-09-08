@@ -8,7 +8,6 @@ import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
 import com.freenow.apis.phraseapi.client.model.PhraseLocales
 import com.freenow.apis.phraseapi.client.model.PhraseProject
-import feign.Response
 import org.junit.Test
 import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
@@ -45,7 +44,7 @@ class PhraseApiClientTest {
             "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val responseFirst = Response.create(
+        val responseFirst = FeignUtil.create(
             200,
             "OK",
             headers,
@@ -53,7 +52,7 @@ class PhraseApiClientTest {
             StandardCharsets.UTF_8
         )
 
-        val responseSecond = Response.create(
+        val responseSecond = FeignUtil.create(
             304,
             "OK",
             headers,
@@ -95,7 +94,7 @@ class PhraseApiClientTest {
             "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val response = Response.create(
+        val response = FeignUtil.create(
             200,
             "OK",
             headers,
@@ -134,7 +133,7 @@ class PhraseApiClientTest {
             "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val responseFirst = Response.create(
+        val responseFirst = FeignUtil.create(
             200,
             "OK",
             headers,
@@ -142,7 +141,7 @@ class PhraseApiClientTest {
             StandardCharsets.UTF_8
         )
 
-        val responseSecond = Response.create(
+        val responseSecond = FeignUtil.create(
             304,
             "OK",
             headers,
@@ -180,7 +179,7 @@ class PhraseApiClientTest {
         val messagesString = Gson().toJson(messages)
         val headers = mapOf("content-type" to listOf(MediaType.JSON_UTF_8.toString()))
 
-        val response = Response.create(
+        val response = FeignUtil.create(
             200,
             "OK",
             headers,
@@ -219,7 +218,7 @@ class PhraseApiClientTest {
             "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val responseFirst = Response.create(
+        val responseFirst = FeignUtil.create(
             200,
             "OK",
             headers,
@@ -227,7 +226,7 @@ class PhraseApiClientTest {
             StandardCharsets.UTF_8
         )
 
-        val responseSecond = Response.create(
+        val responseSecond = FeignUtil.create(
             304,
             "OK",
             headers,
