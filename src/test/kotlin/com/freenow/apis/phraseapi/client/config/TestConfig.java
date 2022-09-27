@@ -21,4 +21,7 @@ public interface TestConfig extends Config
 
     @DefaultValue("${ENV_PHRASE_HOST}")
     String host();
+
+    @DefaultValue("${ENV_PHRASE_TAG_NAME}")
+    String tagName();
 }

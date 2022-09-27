@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets
 import java.util.Arrays
 import java.util.UUID
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -23,11 +24,7 @@ import kotlin.test.assertTrue
 class PhraseApiClientDownloadLocaleTest {
     private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
-    private var phraseApiClient: PhraseApiClient
-
-    init {
-        phraseApiClient = PhraseApiClientImpl(client)
-    }
+    private var phraseApiClient: PhraseApiClient = PhraseApiClientImpl(client)
 
     @Test
     fun `Should return locale messages AS Object direct from PhraseApi`() {
@@ -267,5 +264,198 @@ class PhraseApiClientDownloadLocaleTest {
         on(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseFirst)
         //WHEN
         phraseApiClient.downloadLocaleAsProperties(projectId, localeId, false)
+    }
+
+    @Test
+    fun `Should return locale messages by tag`() {
+
+        //GIVEN
+        val projectId = UUID.randomUUID().toString()
+        val localeId = UUID.randomUUID().toString()
+
+        val headers = mapOf(
+            HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
+        )
+
+        val messageKey = UUID.randomUUID().toString()
+        val message = UUID.randomUUID().toString()
+        val description = UUID.randomUUID().toString()
+        val fallbackLocaleId = UUID.randomUUID().toString()
+        val branch = "branch"
+        val tags = "tag"
+        val downloadLocale = DownloadPhraseLocaleProperties(
+            escapeSingleQuotes = true,
+            includeEmptyTranslations = true,
+            fallbackLocaleId = fallbackLocaleId,
+            branch = branch,
+            tags = tags
+        )
+
+        val expectedLocaleMessages = PhraseLocaleMessages()
+        expectedLocaleMessages[messageKey] = Message(message, description)
+
+        val projectsJSON = Gson().toJson(expectedLocaleMessages)
+
+        val response = Response.create(
+            HttpStatus.SC_OK,
+            "OK",
+            headers,
+            projectsJSON,
+            StandardCharsets.UTF_8
+        )
+
+        on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch, tags))
+            .thenReturn(response)
+
+        //WHEN
+        val actualLocaleMessages = phraseApiClient.downloadLocale(projectId, localeId, downloadLocale)
+
+        //THEN
+        assertNotNull(actualLocaleMessages)
+        assertEquals(expectedLocaleMessages, actualLocaleMessages)
+    }
+
+    @Test
+    fun `Should return cached locale messages by tag`() {
+
+        //GIVEN
+        val projectId = UUID.randomUUID().toString()
+        val localeId = UUID.randomUUID().toString()
+        val eTag = UUID.randomUUID().toString()
+
+        val headers = mapOf(
+            HttpHeaders.ETAG to listOf(eTag),
+            HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
+        )
+
+        val messageKey = UUID.randomUUID().toString()
+        val message = UUID.randomUUID().toString()
+        val description = UUID.randomUUID().toString()
+
+        val expectedLocaleMessages = PhraseLocaleMessages()
+        expectedLocaleMessages[messageKey] = Message(message, description)
+
+        val projectsJSON = Gson().toJson(expectedLocaleMessages)
+
+        val responseFirst = Response.create(
+            HttpStatus.SC_OK,
+            "OK",
+            headers,
+            projectsJSON,
+            StandardCharsets.UTF_8
+        )
+
+        val fallbackLocaleId = UUID.randomUUID().toString()
+        val branch = "branch"
+        val tags = "tag"
+        val downloadLocale = DownloadPhraseLocaleProperties(
+            escapeSingleQuotes = true,
+            includeEmptyTranslations = true,
+            fallbackLocaleId = fallbackLocaleId,
+            branch = branch,
+            tags = tags
+        )
+
+        on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch, tags))
+            .thenReturn(responseFirst)
+
+        val actualLocaleMessages = phraseApiClient.downloadLocale(projectId, localeId, downloadLocale)
+
+        val responseSecond = Response.create(
+            HttpStatus.SC_NOT_MODIFIED,
+            "OK",
+            headers,
+            "",
+            StandardCharsets.UTF_8
+        )
+
+        on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch, tags))
+            .thenReturn(responseSecond)
+        //WHEN
+        val actualLocaleMessagesCached = phraseApiClient.downloadLocale(projectId, localeId, downloadLocale)
+
+        //THEN
+        assertNotNull(actualLocaleMessages)
+        assertNotNull(actualLocaleMessagesCached)
+        assertEquals(expectedLocaleMessages, actualLocaleMessages)
+        assertEquals(expectedLocaleMessages, actualLocaleMessagesCached)
+    }
+
+    @Test
+    fun `Should return cached different locale messages for different tags`() {
+
+        //GIVEN
+        val projectId = UUID.randomUUID().toString()
+        val localeId = UUID.randomUUID().toString()
+        val eTag = UUID.randomUUID().toString()
+        val fallbackLocaleId = UUID.randomUUID().toString()
+        val branch = "branch"
+
+        val headers = mapOf(
+            HttpHeaders.ETAG to listOf(eTag),
+            HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
+        )
+
+        // AND a response 1
+        val tag1 = "tag1"
+        val messageKey1 = UUID.randomUUID().toString()
+        val message1 = UUID.randomUUID().toString()
+        val description1 = UUID.randomUUID().toString()
+        val expectedLocaleMessages1 = PhraseLocaleMessages()
+        expectedLocaleMessages1[messageKey1] = Message(message1, description1)
+
+        val response1 = Response.create(
+            HttpStatus.SC_OK,
+            "OK",
+            headers,
+            Gson().toJson(expectedLocaleMessages1),
+            StandardCharsets.UTF_8
+        )
+
+        // AND a response 2
+        val tag2 = "tag2"
+        val messageKey2 = UUID.randomUUID().toString()
+        val message2 = UUID.randomUUID().toString()
+        val description2 = UUID.randomUUID().toString()
+        val expectedLocaleMessages2 = PhraseLocaleMessages()
+        expectedLocaleMessages2[messageKey2] = Message(message2, description2)
+
+        val response2 = Response.create(
+            HttpStatus.SC_OK,
+            "OK",
+            headers,
+            Gson().toJson(expectedLocaleMessages2),
+            StandardCharsets.UTF_8
+        )
+
+        //WHEN
+        val downloadLocale1 = DownloadPhraseLocaleProperties(
+            escapeSingleQuotes = true,
+            includeEmptyTranslations = true,
+            fallbackLocaleId = fallbackLocaleId,
+            branch = branch,
+            tags = tag1
+        )
+        on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch, tag1))
+            .thenReturn(response1)
+
+        val downloadLocale2 = DownloadPhraseLocaleProperties(
+            escapeSingleQuotes = true,
+            includeEmptyTranslations = true,
+            fallbackLocaleId = fallbackLocaleId,
+            branch = branch,
+            tags = tag2
+        )
+        on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch, tag2))
+            .thenReturn(response2)
+
+        //WHEN
+        val download1 = phraseApiClient.downloadLocale(projectId, localeId, downloadLocale1)
+        val download2 = phraseApiClient.downloadLocale(projectId, localeId, downloadLocale2)
+
+        //THEN
+        assertNotNull(download1)
+        assertNotNull(download2)
+        assertNotEquals(download1, download2)
     }
 }

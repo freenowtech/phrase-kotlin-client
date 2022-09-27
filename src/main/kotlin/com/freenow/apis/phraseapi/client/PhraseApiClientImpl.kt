@@ -12,6 +12,7 @@ import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
 import com.freenow.apis.phraseapi.client.model.PhraseLocales
 import com.freenow.apis.phraseapi.client.model.PhraseProject
 import com.freenow.apis.phraseapi.client.model.PhraseProjects
+import com.freenow.apis.phraseapi.client.model.PhraseTagWithStats
 import com.freenow.apis.phraseapi.client.model.Translation
 import com.freenow.apis.phraseapi.client.model.Translations
 import com.freenow.apis.phraseapi.client.model.UpdatePhraseProject
@@ -159,6 +160,7 @@ class PhraseApiClientImpl : PhraseApiClient {
 
     override fun downloadLocale(projectId: String, localeId: String, properties: DownloadPhraseLocaleProperties?): PhraseLocaleMessages? {
         log.debug("Download locale [$localeId] for project [$projectId]")
+
         val response = client.downloadLocale(
             projectId,
             localeId,
@@ -166,15 +168,23 @@ class PhraseApiClientImpl : PhraseApiClient {
             properties?.escapeSingleQuotes ?: false,
             properties?.includeEmptyTranslations ?: false,
             properties?.fallbackLocaleId,
-            properties?.branch
+            properties?.branch,
+            properties?.tags
         )
-        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json", response)
+        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?file_format=json&tags=${properties?.tags}", response)
     }
 
-    override fun downloadLocaleAsProperties(projectId: String, localeId: String, escapeSingleQuotes: Boolean, branch: String?): ByteArray? {
-        log.debug("Download locale [$localeId] for [${processBranchNameForLog(branch)}] branch of project [$projectId]")
-        val response = client.downloadLocale(projectId, localeId, "properties", escapeSingleQuotes, false, null, branch)
-        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?branch=$branch&file_format=json", response)
+    override fun downloadLocaleAsProperties(
+        projectId: String,
+        localeId: String,
+        escapeSingleQuotes: Boolean,
+        branch: String?,
+        tags: String?
+    ): ByteArray? {
+        log.debug("Download locale [$localeId] for [${processBranchNameForLog(branch)}] branch of project [$projectId] and tags $tags")
+
+        val response = client.downloadLocale(projectId, localeId, "properties", escapeSingleQuotes, false, null, branch, tags)
+        return processResponse("GET/api/v2/projects/$projectId/locales/$localeId/download?branch=$branch&file_format=json&tags=${tags}", response)
     }
 
     override fun deleteLocale(projectId: String, localeId: String, branch: String?) {
@@ -252,6 +262,12 @@ class PhraseApiClientImpl : PhraseApiClient {
         log.debug("Deleting key [$keyId] for [${processBranchNameForLog(branch)}] branch of project [$projectId]")
         val response = client.deleteKey(projectId, keyId, branch)
         return response.status() == HttpStatus.SC_NO_CONTENT
+    }
+
+    override fun getSingleTag(projectId: String, tagName: String): PhraseTagWithStats? {
+        val response = client.getSingleTag(projectId, tagName)
+        log.debug("Get single tag [$tagName] for project [$projectId]")
+        return processResponse("GET/api/v2/projects/$projectId/tags/$tagName", response)
     }
 
     @Suppress("ThrowsCount")
@@ -425,8 +441,9 @@ class PhraseApiClientImpl : PhraseApiClient {
             escapeSingleQuotes: Boolean?,
             includeEmptyTranslations: Boolean?,
             fallbackLocaleId: String?,
-            branch: String?
-        ): Response = target.downloadLocale(projectId, localeId, fileFormat, escapeSingleQuotes, includeEmptyTranslations, fallbackLocaleId, branch)
+            branch: String?,
+            tags: String?
+        ): Response = target.downloadLocale(projectId, localeId, fileFormat, escapeSingleQuotes, includeEmptyTranslations, fallbackLocaleId, branch, tags)
 
         override fun createLocale(
             projectId: String,
@@ -493,6 +510,8 @@ class PhraseApiClientImpl : PhraseApiClient {
         override fun searchKey(projectId: String, localeId: String?, q: String?, branch: String?): Response = target.searchKey(projectId, localeId, q, branch)
 
         override fun deleteKey(projectId: String, keyId: String, branch: String?): Response = target.deleteKey(projectId, keyId, branch)
+
+        override fun getSingleTag(projectId: String, tagName: String): Response = target.getSingleTag(projectId, tagName)
     }
 }
 
