@@ -21,9 +21,9 @@ import kotlin.test.assertNotNull
 
 class PhraseApiClientTest {
 
-    private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+    private val client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
-    private var phraseApiClient: PhraseApiClient
+    private val phraseApiClient: PhraseApiClient
 
     init {
         phraseApiClient = PhraseApiClientImpl(client)
