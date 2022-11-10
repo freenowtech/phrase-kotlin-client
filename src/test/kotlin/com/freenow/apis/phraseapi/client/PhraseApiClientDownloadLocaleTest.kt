@@ -1,24 +1,24 @@
 package com.freenow.apis.phraseapi.client
 
-import com.google.common.net.HttpHeaders
-import com.google.common.net.MediaType
-import com.google.gson.Gson
 import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocaleProperties
 import com.freenow.apis.phraseapi.client.model.Message
 import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
+import com.google.common.net.HttpHeaders
+import com.google.common.net.MediaType
+import com.google.gson.Gson
 import feign.Response
-import org.apache.commons.httpclient.HttpStatus
+import org.apache.commons.httpclient.HttpStatus.SC_NOT_MODIFIED
+import org.apache.commons.httpclient.HttpStatus.SC_OK
 import org.junit.Test
-import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
-import java.nio.charset.StandardCharsets
-import java.util.Arrays
-import java.util.UUID
+import java.nio.charset.StandardCharsets.UTF_8
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import org.mockito.Mockito.`when` as on
 
 @Suppress("MaxLineLength")
 class PhraseApiClientDownloadLocaleTest {
@@ -56,11 +56,11 @@ class PhraseApiClientDownloadLocaleTest {
 
 
         val response = Response.create(
-            HttpStatus.SC_OK,
+            SC_OK,
             "OK",
             headers,
             projectsJSON,
-            StandardCharsets.UTF_8
+            UTF_8
         )
 
         on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch))
@@ -98,11 +98,11 @@ class PhraseApiClientDownloadLocaleTest {
 
 
         val responseFirst = Response.create(
-            HttpStatus.SC_OK,
+            SC_OK,
             "OK",
             headers,
             projectsJSON,
-            StandardCharsets.UTF_8
+            UTF_8
         )
 
         on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
@@ -110,11 +110,11 @@ class PhraseApiClientDownloadLocaleTest {
 
 
         val responseSecond = Response.create(
-            HttpStatus.SC_NOT_MODIFIED,
+            SC_NOT_MODIFIED,
             "OK",
             headers,
             "",
-            StandardCharsets.UTF_8
+            UTF_8
         )
 
         on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseSecond)
@@ -154,7 +154,7 @@ class PhraseApiClientDownloadLocaleTest {
             "Not Ok",
             headers,
             "{\"message\":\"Rate limit exceeded\",\"documentation_url\":\"https://developers.phraseapp.com/api/#rate-limit\"}",
-            StandardCharsets.UTF_8
+            UTF_8
         )
 
         on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
@@ -177,7 +177,7 @@ class PhraseApiClientDownloadLocaleTest {
         val expectedLocaleMessages = "property = value".toByteArray()
 
         val response = Response.create(
-            HttpStatus.SC_OK,
+            SC_OK,
             "OK",
             headers,
             expectedLocaleMessages
@@ -210,7 +210,7 @@ class PhraseApiClientDownloadLocaleTest {
 
 
         val responseFirst = Response.create(
-            HttpStatus.SC_OK,
+            SC_OK,
             "OK",
             headers,
             expectedLocaleMessages
@@ -221,11 +221,11 @@ class PhraseApiClientDownloadLocaleTest {
 
 
         val responseSecond = Response.create(
-            HttpStatus.SC_NOT_MODIFIED,
+            SC_NOT_MODIFIED,
             "OK",
             headers,
             "",
-            StandardCharsets.UTF_8
+            UTF_8
         )
 
         on(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseSecond)
@@ -258,7 +258,7 @@ class PhraseApiClientDownloadLocaleTest {
             "Not Ok",
             headers,
             "{\"message\":\"Rate limit exceeded\",\"documentation_url\":\"https://developers.phraseapp.com/api/#rate-limit\"}",
-            StandardCharsets.UTF_8
+            UTF_8
         )
 
         on(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseFirst)
@@ -297,11 +297,11 @@ class PhraseApiClientDownloadLocaleTest {
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
 
         val response = Response.create(
-            HttpStatus.SC_OK,
+            SC_OK,
             "OK",
             headers,
             projectsJSON,
-            StandardCharsets.UTF_8
+            UTF_8
         )
 
         on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch, tags))
@@ -338,11 +338,11 @@ class PhraseApiClientDownloadLocaleTest {
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
 
         val responseFirst = Response.create(
-            HttpStatus.SC_OK,
+            SC_OK,
             "OK",
             headers,
             projectsJSON,
-            StandardCharsets.UTF_8
+            UTF_8
         )
 
         val fallbackLocaleId = UUID.randomUUID().toString()
@@ -362,11 +362,11 @@ class PhraseApiClientDownloadLocaleTest {
         val actualLocaleMessages = phraseApiClient.downloadLocale(projectId, localeId, downloadLocale)
 
         val responseSecond = Response.create(
-            HttpStatus.SC_NOT_MODIFIED,
+            SC_NOT_MODIFIED,
             "OK",
             headers,
             "",
-            StandardCharsets.UTF_8
+            UTF_8
         )
 
         on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch, tags))
@@ -399,34 +399,24 @@ class PhraseApiClientDownloadLocaleTest {
         // AND a response 1
         val tag1 = "tag1"
         val messageKey1 = UUID.randomUUID().toString()
-        val message1 = UUID.randomUUID().toString()
-        val description1 = UUID.randomUUID().toString()
         val expectedLocaleMessages1 = PhraseLocaleMessages()
-        expectedLocaleMessages1[messageKey1] = Message(message1, description1)
-
-        val response1 = Response.create(
-            HttpStatus.SC_OK,
-            "OK",
-            headers,
-            Gson().toJson(expectedLocaleMessages1),
-            StandardCharsets.UTF_8
+        expectedLocaleMessages1[messageKey1] = Message(
+            UUID.randomUUID().toString(),
+            UUID.randomUUID().toString()
         )
+
+        val response1 = Response.create(SC_OK, "OK", headers, Gson().toJson(expectedLocaleMessages1), UTF_8)
 
         // AND a response 2
         val tag2 = "tag2"
         val messageKey2 = UUID.randomUUID().toString()
-        val message2 = UUID.randomUUID().toString()
-        val description2 = UUID.randomUUID().toString()
         val expectedLocaleMessages2 = PhraseLocaleMessages()
-        expectedLocaleMessages2[messageKey2] = Message(message2, description2)
-
-        val response2 = Response.create(
-            HttpStatus.SC_OK,
-            "OK",
-            headers,
-            Gson().toJson(expectedLocaleMessages2),
-            StandardCharsets.UTF_8
+        expectedLocaleMessages2[messageKey2] = Message(
+            UUID.randomUUID().toString(),
+            UUID.randomUUID().toString()
         )
+
+        val response2 = Response.create(SC_OK, "OK", headers, Gson().toJson(expectedLocaleMessages2), UTF_8)
 
         //WHEN
         val downloadLocale1 = DownloadPhraseLocaleProperties(
