@@ -22,9 +22,9 @@ import org.mockito.Mockito.`when` as on
 
 @Suppress("MaxLineLength")
 class PhraseApiClientDownloadLocaleTest {
-    private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+    private val client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
-    private var phraseApiClient: PhraseApiClient = PhraseApiClientImpl(client)
+    private val phraseApiClient: PhraseApiClient = PhraseApiClientImpl(client)
 
     @Test
     fun `Should return locale messages AS Object direct from PhraseApi`() {

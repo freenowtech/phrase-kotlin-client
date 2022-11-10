@@ -19,9 +19,9 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class PhraseApiClientKeyTest {
-    private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+    private val client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
-    private var phraseApiClient: PhraseApiClient
+    private val phraseApiClient: PhraseApiClient
 
     init {
         phraseApiClient = PhraseApiClientImpl(client)
@@ -61,7 +61,7 @@ class PhraseApiClientKeyTest {
 
         //THEN
         assertNotNull(actualResponse)
-        assertEquals(actualResponse!!.name, expectedKey.name)
+        assertEquals(actualResponse.name, expectedKey.name)
         assertEquals(actualResponse.tags, expectedKey.tags)
     }
 

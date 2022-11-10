@@ -41,7 +41,7 @@ import kotlin.concurrent.scheduleAtFixedRate
 @Suppress("MaxLineLength", "TooManyFunctions", "TooGenericExceptionCaught")
 class PhraseApiClientImpl : PhraseApiClient {
 
-    private var log = LoggerFactory.getLogger(PhraseApiClientImpl::class.java.name)
+    private val log = LoggerFactory.getLogger(PhraseApiClientImpl::class.java.name)
 
     private val client: PhraseApi
     private val config: PhraseApiClientConfig
@@ -97,7 +97,7 @@ class PhraseApiClientImpl : PhraseApiClient {
     override fun deleteProject(projectId: String): Boolean {
         log.debug("Delete project [$projectId]")
         val response = client.deleteProject(projectId)
-        processResponse<Void>("DELETE/api/v2/projects/$projectId", response)
+        processResponse<Unit>("DELETE/api/v2/projects/$projectId", response)
         return response.status() == HttpStatus.SC_NO_CONTENT
     }
 
@@ -279,7 +279,7 @@ class PhraseApiClientImpl : PhraseApiClient {
             val warningMessage = key.plus("\n")
                 .plus("Status : ${response.status()}")
                 .plus("\n")
-                .plus("Headers : \n ${response.headers().map { it -> it.toString().plus("\n") }}")
+                .plus("Headers : \n ${response.headers().map { it.toString().plus("\n") }}")
                 .plus("\n")
                 .plus("Body : $message")
             log.warn(warningMessage)
@@ -351,7 +351,7 @@ class PhraseApiClientImpl : PhraseApiClient {
         val config: PhraseApiClientConfig
     ) : PhraseApi, CacheApi {
 
-        private var log = LoggerFactory.getLogger(PhraseApiImpl::class.java.name)
+        private val log = LoggerFactory.getLogger(PhraseApiImpl::class.java.name)
 
         private val target: PhraseApi
         private val eTagCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build<String, String>() // key : url, value : eTag
