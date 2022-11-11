@@ -34,7 +34,7 @@ class PhraseApiClientTagsIntegrationTest {
         phraseApiClient = PhraseApiClientImpl(clientConfig)
         projectId = cfg.projectId()
         branch = cfg.branch()
-        properties = DownloadPhraseLocaleProperties(true, true, null, branch, tags = cfg.tagName())
+        properties = DownloadPhraseLocaleProperties(true, false, null, branch, tags = cfg.tagName())
         localeIdDe = cfg.localeIdDe()
         localeIdDeBranch = cfg.localeIdDeBranch()
         tagName = cfg.tagName()
@@ -48,9 +48,10 @@ class PhraseApiClientTagsIntegrationTest {
         val messages = phraseApiClient.downloadLocale(projectId, localeIdDe, properties)
 
         //THEN
+        val localePreview = tag?.statistics?.single { it.locale.id == localeIdDe }?.locale
         assertNotNull(messages)
         assertNotNull(tag)
-        assertEquals(tag.keysCount, messages.size)
+        assertEquals(localePreview?.statistics?.translationsCompletedCount, messages.size)
     }
 
 }
