@@ -20,5 +20,14 @@ data class TagWithStatsStatistics(
 data class LocalePreview(
     val id: String,
     val name: String,
-    val code: String
+    val code: String,
+    val statistics: LocalePreviewWithStatsStatisticsDTO
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+class LocalePreviewWithStatsStatisticsDTO(
+    @JsonProperty("keys_total_count") val keysTotalCount: Int? = null,
+    @JsonProperty("translations_completed_count") val translationsCompletedCount: Int? = null,
+    @JsonProperty("translations_unverified_count") val translationsUnverifiedCount: Int? = null,
+    @JsonProperty("keys_untranslated_count") val keysUntranslatedCount: Int? = null
 )
