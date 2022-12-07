@@ -30,7 +30,7 @@
     </developers>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <scm.connection>scm:git:git@github.com:freenowtech/phrase-kotlin-client.git</scm.connection>
         <scm.url>https://github.com/freenowtech/phrase-kotlin-client</scm.url>
         <kotlin.version>1.7.10</kotlin.version>
@@ -242,7 +242,7 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <version>${kotlin.version}</version>
                 <configuration>
-                    <jvmTarget>1.8</jvmTarget>
+                    <jvmTarget>11</jvmTarget>
                     <args>-java-parameters</args>
                 </configuration>
                 <executions>
