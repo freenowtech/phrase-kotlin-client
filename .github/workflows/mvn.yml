@@ -54,7 +54,7 @@ jobs:
         run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Release and Publish
-        uses: qcastel/github-actions-maven-release@v1.12.25
+        uses: qcastel/github-actions-maven-release@v1.12.31
         with:
           access-token: ${{ secrets.FREE_NOW_GITHUB_ACCESS_TOKEN }}
           release-branch-name: "master"
