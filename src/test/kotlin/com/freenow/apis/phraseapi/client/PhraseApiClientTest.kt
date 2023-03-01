@@ -8,6 +8,7 @@ import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
 import com.freenow.apis.phraseapi.client.model.PhraseLocales
 import com.freenow.apis.phraseapi.client.model.PhraseProject
+import feign.Request
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
@@ -24,6 +25,8 @@ import kotlin.test.assertNotNull
 class PhraseApiClientTest {
 
     private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+
+    private var request: Request = mock(Request::class.java)
 
     private var phraseApiClient: PhraseApiClient
 
@@ -49,12 +52,14 @@ class PhraseApiClientTest {
 
         val responseFirst = Response.builder()
             .status(200)
+            .request(request)
             .headers(headers)
             .body(projectString, Charset.defaultCharset())
             .build()
 
         val responseSecond = Response.builder()
             .status(304)
+            .request(request)
             .headers(headers)
             .body(projectString, Charset.defaultCharset())
             .build()
@@ -95,6 +100,7 @@ class PhraseApiClientTest {
 
         val response = Response.builder()
             .status(200)
+            .request(request)
             .headers(headers)
             .body(listLocalesString, Charset.defaultCharset())
             .build()
@@ -134,11 +140,13 @@ class PhraseApiClientTest {
             .status(200)
             .headers(headers)
             .body(listLocalesString, Charset.defaultCharset())
+            .request(request)
             .build()
 
         val responseSecond = Response.builder()
             .status(304)
             .headers(headers)
+            .request(request)
             .body(listLocalesString, Charset.defaultCharset())
             .build()
 
@@ -174,6 +182,7 @@ class PhraseApiClientTest {
 
         val response = Response.builder()
             .status(200)
+            .request(request)
             .headers(headers)
             .body(messagesString, Charset.defaultCharset())
             .build()
@@ -211,12 +220,14 @@ class PhraseApiClientTest {
 
         val responseFirst = Response.builder()
             .status(200)
+            .request(request)
             .headers(headers)
             .body(messagesString, Charset.defaultCharset())
             .build()
 
         val responseSecond = Response.builder()
             .status(304)
+            .request(request)
             .headers(headers)
             .body(messagesString, Charset.defaultCharset())
             .build()

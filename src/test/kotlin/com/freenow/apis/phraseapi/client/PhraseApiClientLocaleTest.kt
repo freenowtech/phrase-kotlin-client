@@ -5,6 +5,7 @@ import com.google.common.net.MediaType
 import com.google.gson.Gson
 import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import com.freenow.apis.phraseapi.client.model.PhraseLocales
+import feign.Request
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
@@ -20,6 +21,8 @@ import kotlin.test.assertNotNull
 
 class PhraseApiClientLocaleTest {
     private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+
+    private var request: Request = mock(Request::class.java)
 
     private var phraseApiClient: PhraseApiClient
 
@@ -48,6 +51,7 @@ class PhraseApiClientLocaleTest {
 
         val response = Response.builder()
             .status(HttpStatus.SC_OK)
+            .request(request)
             .headers(headers)
             .body(projectsJSON, Charset.defaultCharset())
             .build()
@@ -92,6 +96,7 @@ class PhraseApiClientLocaleTest {
 
         val response = Response.builder()
             .status(HttpStatus.SC_OK)
+            .request(request)
             .headers(headers)
             .body(projectsJSON, Charset.defaultCharset())
             .build()

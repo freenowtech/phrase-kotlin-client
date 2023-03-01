@@ -6,9 +6,11 @@ import com.google.gson.Gson
 import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocaleProperties
 import com.freenow.apis.phraseapi.client.model.Message
 import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
+import feign.Request
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
+import org.mockito.Mock
 import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
@@ -23,6 +25,8 @@ import kotlin.test.assertTrue
 @Suppress("MaxLineLength")
 class PhraseApiClientDownloadLocaleTest {
     private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+
+    private var request: Request = mock(Request::class.java)
 
     private var phraseApiClient: PhraseApiClient
 
@@ -58,11 +62,11 @@ class PhraseApiClientDownloadLocaleTest {
 
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
 
-
         val response = Response.builder()
             .status(HttpStatus.SC_OK)
             .body(projectsJSON, Charset.defaultCharset())
             .headers(headers)
+            .request(request)
             .build()
 
         on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch))
@@ -103,6 +107,7 @@ class PhraseApiClientDownloadLocaleTest {
             .status(HttpStatus.SC_OK)
             .body(projectsJSON, Charset.defaultCharset())
             .headers(headers)
+            .request(request)
             .build()
 
         on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
@@ -113,6 +118,7 @@ class PhraseApiClientDownloadLocaleTest {
             .status(HttpStatus.SC_NOT_MODIFIED)
             .body("", Charset.defaultCharset())
             .headers(headers)
+            .request(request)
             .build()
 
         on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseSecond)
@@ -152,6 +158,7 @@ class PhraseApiClientDownloadLocaleTest {
             .status(429)
             .body(body, Charset.defaultCharset())
             .headers(headers)
+            .request(request)
             .build()
 
         on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
@@ -177,6 +184,7 @@ class PhraseApiClientDownloadLocaleTest {
             .status(HttpStatus.SC_OK)
             .body(expectedLocaleMessages)
             .headers(headers)
+            .request(request)
             .build()
 
         on(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(response)
@@ -208,6 +216,7 @@ class PhraseApiClientDownloadLocaleTest {
             .status(HttpStatus.SC_OK)
             .body(expectedLocaleMessages)
             .headers(headers)
+            .request(request)
             .build()
 
         on(client.downloadLocale(projectId, localeId, "properties", true)).thenReturn(responseFirst)
@@ -217,6 +226,7 @@ class PhraseApiClientDownloadLocaleTest {
             .status(HttpStatus.SC_NOT_MODIFIED)
             .body("", Charset.defaultCharset())
             .headers(headers)
+            .request(request)
             .build()
 
         on(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseSecond)
@@ -249,6 +259,7 @@ class PhraseApiClientDownloadLocaleTest {
             .status(429)
             .body(body, Charset.defaultCharset())
             .headers(headers)
+            .request(request)
             .build()
 
         on(client.downloadLocale(projectId, localeId, "properties")).thenReturn(responseFirst)

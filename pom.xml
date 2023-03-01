@@ -46,7 +46,7 @@
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
-        <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
         <detekt-maven-plugin.version>1.19.0</detekt-maven-plugin.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
 
@@ -58,11 +58,12 @@
         <commons-io.version>2.11.0</commons-io.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
         <owner.version>1.0.10</owner.version>
-        <mockito-inline.version>2.13.0</mockito-inline.version>
+        <mockito-inline.version>5.1.1</mockito-inline.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <guava.version>31.1-jre</guava.version>
         <gson.version>2.10.1</gson.version>
         <feign-form.version>3.8.0</feign-form.version>
+        <jackson-databind.version>2.14.2</jackson-databind.version>
     </properties>
 
     <dependencies>
@@ -126,6 +127,12 @@
             <groupId>org.aeonbits.owner</groupId>
             <artifactId>owner</artifactId>
             <version>${owner.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -219,6 +226,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                    <argLine>-XX:+AllowRedefinitionToAddDeleteMethods</argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>

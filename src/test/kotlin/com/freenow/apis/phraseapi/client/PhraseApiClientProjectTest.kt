@@ -1,11 +1,13 @@
 package com.freenow.apis.phraseapi.client
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
 import com.google.gson.Gson
 import com.freenow.apis.phraseapi.client.model.CreatePhraseProject
 import com.freenow.apis.phraseapi.client.model.PhraseProject
 import com.freenow.apis.phraseapi.client.model.UpdatePhraseProject
+import feign.Request
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
@@ -22,6 +24,8 @@ import kotlin.test.assertTrue
 
 class PhraseApiClientProjectTest {
     private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+
+    private var request: Request = mock(Request::class.java)
 
     private var phraseApiClient: PhraseApiClient
 
@@ -45,6 +49,7 @@ class PhraseApiClientProjectTest {
         val response = Response.builder()
             .status(HttpStatus.SC_OK)
             .headers(headers)
+            .request(request)
             .body(projectString, Charset.defaultCharset())
             .build()
 
@@ -78,6 +83,7 @@ class PhraseApiClientProjectTest {
 
         val response = Response.builder()
             .status(HttpStatus.SC_OK)
+            .request(request)
             .headers(headers)
             .body(projectsJSON, Charset.defaultCharset())
             .build()
@@ -106,7 +112,8 @@ class PhraseApiClientProjectTest {
         val response = Response.builder()
             .status(HttpStatus.SC_NO_CONTENT)
             .headers(headers)
-            .body( "{}", Charset.defaultCharset())
+            .request(request)
+            .body( "", Charset.defaultCharset())
             .build()
 
         on(client.deleteProject(projectId)).thenReturn(response)
@@ -136,12 +143,13 @@ class PhraseApiClientProjectTest {
             HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val projectsJSON = Gson().toJson(createProjectEntity)
+        val projectsJSON = ObjectMapper().writeValueAsString(createProjectEntity)
 
         val response = Response.builder()
             .status(HttpStatus.SC_NO_CONTENT)
             .headers(headers)
             .body(projectsJSON, Charset.defaultCharset())
+            .request(request)
             .build()
 
         on(client.createProject(
@@ -199,6 +207,7 @@ class PhraseApiClientProjectTest {
 
         val response = Response.builder()
             .status(HttpStatus.SC_NO_CONTENT)
+            .request(request)
             .headers(headers)
             .body(projectsJSON, Charset.defaultCharset())
             .build()

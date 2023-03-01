@@ -7,6 +7,7 @@ import com.freenow.apis.phraseapi.client.model.CreateTranslation
 import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import com.freenow.apis.phraseapi.client.model.Translation
 import com.freenow.apis.phraseapi.client.model.TranslationKey
+import feign.Request
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
@@ -22,6 +23,8 @@ import kotlin.test.assertNotNull
 
 class PhraseApiClientTranslationTest {
     private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+
+    private var request: Request = mock(Request::class.java)
 
     private var phraseApiClient: PhraseApiClient
 
@@ -56,6 +59,7 @@ class PhraseApiClientTranslationTest {
         val response = Response.builder()
             .status(HttpStatus.SC_CREATED)
             .headers(headers)
+            .request(request)
             .body(translationJSON, Charset.defaultCharset())
             .build()
 
@@ -114,6 +118,7 @@ class PhraseApiClientTranslationTest {
         val response = Response.builder()
             .status(HttpStatus.SC_CREATED)
             .headers(headers)
+            .request(request)
             .body(translationJSON, Charset.defaultCharset())
             .build()
 
