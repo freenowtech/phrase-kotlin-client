@@ -1,18 +1,20 @@
 package com.freenow.apis.phraseapi.client
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType.JSON_UTF_8
 import com.google.gson.Gson
 import com.freenow.apis.phraseapi.client.model.CreateKey
 import com.freenow.apis.phraseapi.client.model.Key
 import com.freenow.apis.phraseapi.client.model.Keys
+import feign.Request
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
 import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
-import java.nio.charset.StandardCharsets
+import java.nio.charset.Charset
 import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -20,6 +22,8 @@ import kotlin.test.assertTrue
 
 class PhraseApiClientKeyTest {
     private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+
+    private var request: Request = mock(Request::class.java)
 
     private var phraseApiClient: PhraseApiClient
 
@@ -41,9 +45,14 @@ class PhraseApiClientKeyTest {
 
         val createKey = CreateKey(name = keyName, tags = tags, description = "desc", plural = false)
 
-        val keyJSON = Gson().toJson(createKey)
+        val keyJSON = ObjectMapper().writeValueAsString(createKey)
 
-        val response = Response.create(HttpStatus.SC_CREATED, "OK", headers, keyJSON, StandardCharsets.UTF_8)
+        val response = Response.builder()
+            .status(HttpStatus.SC_CREATED)
+            .headers(headers)
+            .request(request)
+            .body(keyJSON, Charset.defaultCharset())
+            .build()
 
         on(client.createKey(
             projectId = projectId,
@@ -81,7 +90,12 @@ class PhraseApiClientKeyTest {
 
         val keyJSON = Gson().toJson(expectedKey)
 
-        val response = Response.create(HttpStatus.SC_CREATED, "OK", headers, keyJSON, StandardCharsets.UTF_8)
+        val response = Response.builder()
+            .status(HttpStatus.SC_CREATED)
+            .headers(headers)
+            .request(request)
+            .body(keyJSON, Charset.defaultCharset())
+            .build()
 
         on(client.createKey(projectId = projectId, name = keyName)).thenReturn(response)
 
@@ -114,7 +128,11 @@ class PhraseApiClientKeyTest {
 
         val keysJSON = Gson().toJson(keys)
 
-        val response = Response.create(HttpStatus.SC_OK, "OK", headers, keysJSON, StandardCharsets.UTF_8)
+        val response = Response.builder()
+            .status(HttpStatus.SC_OK)
+            .request(request)
+            .headers(headers).body(keysJSON, Charset.defaultCharset())
+            .build()
 
         on(client.searchKey(projectId, localeId, q)).thenReturn(response)
 
@@ -139,7 +157,11 @@ class PhraseApiClientKeyTest {
             HttpHeaders.CONTENT_TYPE to listOf(JSON_UTF_8.toString())
         )
 
-        val response = Response.create(HttpStatus.SC_NO_CONTENT, "OK", headers, "{}", StandardCharsets.UTF_8)
+        val response = Response.builder()
+            .status(HttpStatus.SC_NO_CONTENT)
+            .request(request)
+            .headers(headers).body("{}", Charset.defaultCharset())
+            .build()
 
         on(client.deleteKey(projectId, keyId)).thenReturn(response)
 

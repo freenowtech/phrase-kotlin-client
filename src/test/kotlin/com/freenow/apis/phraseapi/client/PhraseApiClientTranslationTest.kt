@@ -7,12 +7,14 @@ import com.freenow.apis.phraseapi.client.model.CreateTranslation
 import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import com.freenow.apis.phraseapi.client.model.Translation
 import com.freenow.apis.phraseapi.client.model.TranslationKey
+import feign.Request
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
 import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
+import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.util.Locale
 import java.util.UUID
@@ -21,6 +23,8 @@ import kotlin.test.assertNotNull
 
 class PhraseApiClientTranslationTest {
     private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+
+    private var request: Request = mock(Request::class.java)
 
     private var phraseApiClient: PhraseApiClient
 
@@ -52,13 +56,12 @@ class PhraseApiClientTranslationTest {
 
         val translationJSON = Gson().toJson(createTranslation)
 
-        val response = Response.create(
-            HttpStatus.SC_CREATED,
-            "OK",
-            headers,
-            translationJSON,
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .status(HttpStatus.SC_CREATED)
+            .headers(headers)
+            .request(request)
+            .body(translationJSON, Charset.defaultCharset())
+            .build()
 
         on(client.createTranslation(
             projectId = projectId,
@@ -112,13 +115,12 @@ class PhraseApiClientTranslationTest {
 
         val translationJSON = Gson().toJson(createTranslation)
 
-        val response = Response.create(
-            HttpStatus.SC_CREATED,
-            "OK",
-            headers,
-            translationJSON,
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .status(HttpStatus.SC_CREATED)
+            .headers(headers)
+            .request(request)
+            .body(translationJSON, Charset.defaultCharset())
+            .build()
 
         on(client.createTranslation(
             projectId = projectId,
