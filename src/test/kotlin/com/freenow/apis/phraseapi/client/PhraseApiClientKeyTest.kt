@@ -12,6 +12,7 @@ import org.junit.Test
 import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
+import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.util.UUID
 import kotlin.test.assertEquals
@@ -43,7 +44,11 @@ class PhraseApiClientKeyTest {
 
         val keyJSON = Gson().toJson(createKey)
 
-        val response = Response.create(HttpStatus.SC_CREATED, "OK", headers, keyJSON, StandardCharsets.UTF_8)
+        val response = Response.builder()
+            .status(HttpStatus.SC_CREATED)
+            .headers(headers)
+            .body(keyJSON, Charset.defaultCharset())
+            .build()
 
         on(client.createKey(
             projectId = projectId,
@@ -81,7 +86,11 @@ class PhraseApiClientKeyTest {
 
         val keyJSON = Gson().toJson(expectedKey)
 
-        val response = Response.create(HttpStatus.SC_CREATED, "OK", headers, keyJSON, StandardCharsets.UTF_8)
+        val response = Response.builder()
+            .status(HttpStatus.SC_CREATED)
+            .headers(headers)
+            .body(keyJSON, Charset.defaultCharset())
+            .build()
 
         on(client.createKey(projectId = projectId, name = keyName)).thenReturn(response)
 
@@ -114,7 +123,10 @@ class PhraseApiClientKeyTest {
 
         val keysJSON = Gson().toJson(keys)
 
-        val response = Response.create(HttpStatus.SC_OK, "OK", headers, keysJSON, StandardCharsets.UTF_8)
+        val response = Response.builder()
+            .status(HttpStatus.SC_OK)
+            .headers(headers).body(keysJSON, Charset.defaultCharset())
+            .build()
 
         on(client.searchKey(projectId, localeId, q)).thenReturn(response)
 
@@ -139,7 +151,10 @@ class PhraseApiClientKeyTest {
             HttpHeaders.CONTENT_TYPE to listOf(JSON_UTF_8.toString())
         )
 
-        val response = Response.create(HttpStatus.SC_NO_CONTENT, "OK", headers, "{}", StandardCharsets.UTF_8)
+        val response = Response.builder()
+            .status(HttpStatus.SC_NO_CONTENT)
+            .headers(headers).body("{}", Charset.defaultCharset())
+            .build()
 
         on(client.deleteKey(projectId, keyId)).thenReturn(response)
 

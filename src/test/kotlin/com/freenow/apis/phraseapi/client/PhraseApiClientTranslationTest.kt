@@ -13,6 +13,7 @@ import org.junit.Test
 import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
+import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.util.Locale
 import java.util.UUID
@@ -52,13 +53,11 @@ class PhraseApiClientTranslationTest {
 
         val translationJSON = Gson().toJson(createTranslation)
 
-        val response = Response.create(
-            HttpStatus.SC_CREATED,
-            "OK",
-            headers,
-            translationJSON,
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .status(HttpStatus.SC_CREATED)
+            .headers(headers)
+            .body(translationJSON, Charset.defaultCharset())
+            .build()
 
         on(client.createTranslation(
             projectId = projectId,
@@ -112,13 +111,11 @@ class PhraseApiClientTranslationTest {
 
         val translationJSON = Gson().toJson(createTranslation)
 
-        val response = Response.create(
-            HttpStatus.SC_CREATED,
-            "OK",
-            headers,
-            translationJSON,
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .status(HttpStatus.SC_CREATED)
+            .headers(headers)
+            .body(translationJSON, Charset.defaultCharset())
+            .build()
 
         on(client.createTranslation(
             projectId = projectId,

@@ -12,6 +12,7 @@ import org.junit.Test
 import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
+import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.util.UUID
 import kotlin.test.assertEquals
@@ -41,13 +42,11 @@ class PhraseApiClientProjectTest {
             HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val response = Response.create(
-            HttpStatus.SC_OK,
-            "OK",
-            headers,
-            projectString,
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .status(HttpStatus.SC_OK)
+            .headers(headers)
+            .body(projectString, Charset.defaultCharset())
+            .build()
 
         on(client.project(projectId)).thenReturn(response)
 
@@ -77,13 +76,11 @@ class PhraseApiClientProjectTest {
             HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val response = Response.create(
-            HttpStatus.SC_OK,
-            "OK",
-            headers,
-            projectsJSON,
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .status(HttpStatus.SC_OK)
+            .headers(headers)
+            .body(projectsJSON, Charset.defaultCharset())
+            .build()
 
         on(client.projects()).thenReturn(response)
 
@@ -106,13 +103,11 @@ class PhraseApiClientProjectTest {
             HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val response = Response.create(
-            HttpStatus.SC_NO_CONTENT,
-            "OK",
-            headers,
-            "{}",
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .status(HttpStatus.SC_NO_CONTENT)
+            .headers(headers)
+            .body( "{}", Charset.defaultCharset())
+            .build()
 
         on(client.deleteProject(projectId)).thenReturn(response)
 
@@ -143,13 +138,11 @@ class PhraseApiClientProjectTest {
 
         val projectsJSON = Gson().toJson(createProjectEntity)
 
-        val response = Response.create(
-            HttpStatus.SC_NO_CONTENT,
-            "OK",
-            headers,
-            projectsJSON,
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .status(HttpStatus.SC_NO_CONTENT)
+            .headers(headers)
+            .body(projectsJSON, Charset.defaultCharset())
+            .build()
 
         on(client.createProject(
             name = projectName,
@@ -204,13 +197,11 @@ class PhraseApiClientProjectTest {
             "name" to projectName
         ))
 
-        val response = Response.create(
-            HttpStatus.SC_NO_CONTENT,
-            "OK",
-            headers,
-            projectsJSON,
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .status(HttpStatus.SC_NO_CONTENT)
+            .headers(headers)
+            .body(projectsJSON, Charset.defaultCharset())
+            .build()
 
         on(client.updateProject(
             projectId = projectId,
