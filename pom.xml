@@ -54,7 +54,7 @@
         <kotlin.version>1.8.10</kotlin.version>
         <feign.version>12.2</feign.version>
         <dokka.version>1.7.20</dokka.version>
-        <spring-core.version>6.0.5</spring-core.version>
+        <spring-core.version>6.0.7</spring-core.version>
         <commons-io.version>2.11.0</commons-io.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
         <owner.version>1.0.10</owner.version>
