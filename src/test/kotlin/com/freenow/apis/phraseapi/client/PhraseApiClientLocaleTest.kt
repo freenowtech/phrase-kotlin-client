@@ -22,11 +22,9 @@ import kotlin.test.assertNotNull
 class PhraseApiClientLocaleTest {
     private val client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
-    private val phraseApiClient: PhraseApiClient
+    private val request: Request = mock(Request::class.java)
 
-    init {
-        phraseApiClient = PhraseApiClientImpl(client)
-    }
+    private val phraseApiClient = PhraseApiClientImpl(client)
 
     @Test
     fun `Should return locale`() {

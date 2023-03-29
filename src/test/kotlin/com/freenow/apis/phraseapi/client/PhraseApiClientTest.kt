@@ -1,36 +1,32 @@
 package com.freenow.apis.phraseapi.client
 
-import com.google.common.net.HttpHeaders
-import com.google.common.net.MediaType
-import com.google.gson.Gson
 import com.freenow.apis.phraseapi.client.model.Message
 import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
 import com.freenow.apis.phraseapi.client.model.PhraseLocales
 import com.freenow.apis.phraseapi.client.model.PhraseProject
+import com.google.common.net.HttpHeaders
+import com.google.common.net.MediaType
+import com.google.gson.Gson
 import feign.Request
 import feign.Response
-import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
-import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
 import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
 import java.util.Locale
 import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import org.mockito.Mockito.`when` as on
 
 class PhraseApiClientTest {
 
     private val client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
-    private val phraseApiClient: PhraseApiClient
+    private val request: Request = mock(Request::class.java)
 
-    init {
-        phraseApiClient = PhraseApiClientImpl(client)
-    }
+    private val phraseApiClient = PhraseApiClientImpl(client)
 
     @Test
     fun `Should return project locales from cache when locale exist and bean already called`() {

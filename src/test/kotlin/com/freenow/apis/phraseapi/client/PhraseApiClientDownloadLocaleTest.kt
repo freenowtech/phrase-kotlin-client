@@ -3,24 +3,19 @@ package com.freenow.apis.phraseapi.client
 import com.freenow.apis.phraseapi.client.model.DownloadPhraseLocaleProperties
 import com.freenow.apis.phraseapi.client.model.Message
 import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
-import feign.Request
 import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
 import com.google.gson.Gson
+import feign.Request
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus.SC_NOT_MODIFIED
 import org.apache.commons.httpclient.HttpStatus.SC_OK
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
 import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
 import java.util.Arrays
 import java.util.UUID
-import java.nio.charset.StandardCharsets.UTF_8
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
@@ -30,6 +25,8 @@ import org.mockito.Mockito.`when` as on
 @Suppress("MaxLineLength")
 class PhraseApiClientDownloadLocaleTest {
     private val client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+
+    private val request: Request = mock(Request::class.java)
 
     private val phraseApiClient: PhraseApiClient = PhraseApiClientImpl(client)
 
@@ -62,7 +59,7 @@ class PhraseApiClientDownloadLocaleTest {
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
 
         val response = Response.builder()
-            .status(HttpStatus.SC_OK)
+            .status(SC_OK)
             .body(projectsJSON, Charset.defaultCharset())
             .headers(headers)
             .request(request)
@@ -101,9 +98,8 @@ class PhraseApiClientDownloadLocaleTest {
 
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
 
-
         val responseFirst = Response.builder()
-            .status(HttpStatus.SC_OK)
+            .status(SC_OK)
             .body(projectsJSON, Charset.defaultCharset())
             .headers(headers)
             .request(request)
@@ -112,9 +108,8 @@ class PhraseApiClientDownloadLocaleTest {
         on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)
         val actualLocaleMessages = phraseApiClient.downloadLocale(projectId, localeId)
 
-
         val responseSecond = Response.builder()
-            .status(HttpStatus.SC_NOT_MODIFIED)
+            .status(SC_NOT_MODIFIED)
             .body("", Charset.defaultCharset())
             .headers(headers)
             .request(request)
@@ -130,7 +125,6 @@ class PhraseApiClientDownloadLocaleTest {
         assertEquals(expectedLocaleMessages, actualLocaleMessages)
         assertEquals(expectedLocaleMessages, actualLocaleMessagesCached)
     }
-
 
     @Test(expected = PhraseAppApiException::class)
     fun `Should throw PhraseAppApiException exception with Too Many Requests`() {
@@ -180,7 +174,7 @@ class PhraseApiClientDownloadLocaleTest {
         val expectedLocaleMessages = "property = value".toByteArray()
 
         val response = Response.builder()
-            .status(HttpStatus.SC_OK)
+            .status(SC_OK)
             .body(expectedLocaleMessages)
             .headers(headers)
             .request(request)
@@ -212,7 +206,7 @@ class PhraseApiClientDownloadLocaleTest {
         val expectedLocaleMessages = "property = value".toByteArray()
 
         val responseFirst = Response.builder()
-            .status(HttpStatus.SC_OK)
+            .status(SC_OK)
             .body(expectedLocaleMessages)
             .headers(headers)
             .request(request)
@@ -222,7 +216,7 @@ class PhraseApiClientDownloadLocaleTest {
         val actualLocaleMessages = phraseApiClient.downloadLocaleAsProperties(projectId, localeId, true)
 
         val responseSecond = Response.builder()
-            .status(HttpStatus.SC_NOT_MODIFIED)
+            .status(SC_NOT_MODIFIED)
             .body("", Charset.defaultCharset())
             .headers(headers)
             .request(request)
@@ -238,7 +232,6 @@ class PhraseApiClientDownloadLocaleTest {
         assertTrue(Arrays.equals(expectedLocaleMessages, actualLocaleMessages))
         assertTrue(Arrays.equals(expectedLocaleMessages, actualLocaleMessagesCached))
     }
-
 
     @Test(expected = PhraseAppApiException::class)
     fun `Should throw PhraseAppApiException exception with Too Many Requests for ByteArray`() {
@@ -296,13 +289,13 @@ class PhraseApiClientDownloadLocaleTest {
 
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
 
-        val response = Response.create(
-            SC_OK,
-            "OK",
-            headers,
-            projectsJSON,
-            UTF_8
-        )
+        val response = Response.builder()
+            .status(SC_OK)
+            .body(projectsJSON, Charset.defaultCharset())
+            .headers(headers)
+            .request(request)
+            .build()
+
 
         on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch, tags))
             .thenReturn(response)
@@ -336,14 +329,12 @@ class PhraseApiClientDownloadLocaleTest {
         expectedLocaleMessages[messageKey] = Message(message, description)
 
         val projectsJSON = Gson().toJson(expectedLocaleMessages)
-
-        val responseFirst = Response.create(
-            SC_OK,
-            "OK",
-            headers,
-            projectsJSON,
-            UTF_8
-        )
+        val responseFirst = Response.builder()
+            .status(SC_OK)
+            .body(projectsJSON, Charset.defaultCharset())
+            .headers(headers)
+            .request(request)
+            .build()
 
         val fallbackLocaleId = UUID.randomUUID().toString()
         val branch = "branch"
@@ -361,13 +352,13 @@ class PhraseApiClientDownloadLocaleTest {
 
         val actualLocaleMessages = phraseApiClient.downloadLocale(projectId, localeId, downloadLocale)
 
-        val responseSecond = Response.create(
-            SC_NOT_MODIFIED,
-            "OK",
-            headers,
-            "",
-            UTF_8
-        )
+        val responseSecond = Response.builder()
+            .status(SC_NOT_MODIFIED)
+            .body("", Charset.defaultCharset())
+            .headers(headers)
+            .request(request)
+            .build()
+
 
         on(client.downloadLocale(projectId, localeId, "json", true, true, fallbackLocaleId, branch, tags))
             .thenReturn(responseSecond)
@@ -382,7 +373,8 @@ class PhraseApiClientDownloadLocaleTest {
     }
 
     @Test
-    fun `Should return cached different locale messages for different tags`() {
+    @Suppress("LongMethod")
+    fun `Should return cached locales for different tags`() {
 
         //GIVEN
         val projectId = UUID.randomUUID().toString()
@@ -405,7 +397,12 @@ class PhraseApiClientDownloadLocaleTest {
             UUID.randomUUID().toString()
         )
 
-        val response1 = Response.create(SC_OK, "OK", headers, Gson().toJson(expectedLocaleMessages1), UTF_8)
+        val response1 = Response.builder()
+            .status(SC_OK)
+            .body(Gson().toJson(expectedLocaleMessages1), Charset.defaultCharset())
+            .headers(headers)
+            .request(request)
+            .build()
 
         // AND a response 2
         val tag2 = "tag2"
@@ -416,7 +413,12 @@ class PhraseApiClientDownloadLocaleTest {
             UUID.randomUUID().toString()
         )
 
-        val response2 = Response.create(SC_OK, "OK", headers, Gson().toJson(expectedLocaleMessages2), UTF_8)
+        val response2 = Response.builder()
+            .status(SC_OK)
+            .body(Gson().toJson(expectedLocaleMessages2), Charset.defaultCharset())
+            .headers(headers)
+            .request(request)
+            .build()
 
         //WHEN
         val downloadLocale1 = DownloadPhraseLocaleProperties(

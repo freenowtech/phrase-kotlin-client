@@ -23,11 +23,9 @@ import kotlin.test.assertTrue
 class PhraseApiClientKeyTest {
     private val client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
-    private val phraseApiClient: PhraseApiClient
+    private val request: Request = mock(Request::class.java)
 
-    init {
-        phraseApiClient = PhraseApiClientImpl(client)
-    }
+    private val phraseApiClient = PhraseApiClientImpl(client)
 
     @Test
     fun `Should create a key with optional parameters`() {
@@ -103,7 +101,7 @@ class PhraseApiClientKeyTest {
 
         //THEN
         assertNotNull(actualResponse)
-        assertEquals(actualResponse!!.name, expectedKey.name)
+        assertEquals(actualResponse.name, expectedKey.name)
     }
 
 
@@ -140,7 +138,7 @@ class PhraseApiClientKeyTest {
 
         //THEN
         assertNotNull(actualResponse)
-        assertEquals(actualResponse!!.get(0).name, expectedKey.name)
+        assertEquals(actualResponse[0].name, expectedKey.name)
     }
 
 
