@@ -8,11 +8,14 @@ import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
 import com.freenow.apis.phraseapi.client.model.PhraseLocales
 import com.freenow.apis.phraseapi.client.model.PhraseProject
+import feign.Request
 import feign.Response
+import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
 import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
+import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.util.Locale
 import java.util.UUID
@@ -45,21 +48,19 @@ class PhraseApiClientTest {
             "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val responseFirst = Response.create(
-            200,
-            "OK",
-            headers,
-            projectString,
-            StandardCharsets.UTF_8
-        )
+        val responseFirst = Response.builder()
+            .status(200)
+            .request(request)
+            .headers(headers)
+            .body(projectString, Charset.defaultCharset())
+            .build()
 
-        val responseSecond = Response.create(
-            304,
-            "OK",
-            headers,
-            projectString,
-            StandardCharsets.UTF_8
-        )
+        val responseSecond = Response.builder()
+            .status(304)
+            .request(request)
+            .headers(headers)
+            .body(projectString, Charset.defaultCharset())
+            .build()
 
         //WHEN
         on(client.project(projectId)).thenReturn(responseFirst)
@@ -95,13 +96,12 @@ class PhraseApiClientTest {
             "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val response = Response.create(
-            200,
-            "OK",
-            headers,
-            listLocalesString,
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .status(200)
+            .request(request)
+            .headers(headers)
+            .body(listLocalesString, Charset.defaultCharset())
+            .build()
 
         on(client.locales(projectId)).thenReturn(response)
 
@@ -134,21 +134,19 @@ class PhraseApiClientTest {
             "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val responseFirst = Response.create(
-            200,
-            "OK",
-            headers,
-            listLocalesString,
-            StandardCharsets.UTF_8
-        )
+        val responseFirst = Response.builder()
+            .status(200)
+            .headers(headers)
+            .body(listLocalesString, Charset.defaultCharset())
+            .request(request)
+            .build()
 
-        val responseSecond = Response.create(
-            304,
-            "OK",
-            headers,
-            listLocalesString,
-            StandardCharsets.UTF_8
-        )
+        val responseSecond = Response.builder()
+            .status(304)
+            .headers(headers)
+            .request(request)
+            .body(listLocalesString, Charset.defaultCharset())
+            .build()
 
         //WHEN
         on(client.locales(projectId)).thenReturn(responseFirst)
@@ -180,13 +178,12 @@ class PhraseApiClientTest {
         val messagesString = Gson().toJson(messages)
         val headers = mapOf("content-type" to listOf(MediaType.JSON_UTF_8.toString()))
 
-        val response = Response.create(
-            200,
-            "OK",
-            headers,
-            messagesString,
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .status(200)
+            .request(request)
+            .headers(headers)
+            .body(messagesString, Charset.defaultCharset())
+            .build()
 
         on(client.downloadLocale(projectId, localeId, "json")).thenReturn(response)
 
@@ -219,21 +216,19 @@ class PhraseApiClientTest {
             "content-type" to listOf(MediaType.JSON_UTF_8.toString())
         )
 
-        val responseFirst = Response.create(
-            200,
-            "OK",
-            headers,
-            messagesString,
-            StandardCharsets.UTF_8
-        )
+        val responseFirst = Response.builder()
+            .status(200)
+            .request(request)
+            .headers(headers)
+            .body(messagesString, Charset.defaultCharset())
+            .build()
 
-        val responseSecond = Response.create(
-            304,
-            "OK",
-            headers,
-            messagesString,
-            StandardCharsets.UTF_8
-        )
+        val responseSecond = Response.builder()
+            .status(304)
+            .request(request)
+            .headers(headers)
+            .body(messagesString, Charset.defaultCharset())
+            .build()
 
         //WHEN
         on(client.downloadLocale(projectId, localeId, "json")).thenReturn(responseFirst)

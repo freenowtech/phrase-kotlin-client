@@ -5,12 +5,14 @@ import com.google.common.net.MediaType
 import com.google.gson.Gson
 import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import com.freenow.apis.phraseapi.client.model.PhraseLocales
+import feign.Request
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
 import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
+import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.util.Locale
 import java.util.UUID
@@ -45,13 +47,12 @@ class PhraseApiClientLocaleTest {
 
         val projectsJSON = Gson().toJson(expectedLocale)
 
-        val response = Response.create(
-            HttpStatus.SC_OK,
-            "OK",
-            headers,
-            projectsJSON,
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .status(HttpStatus.SC_OK)
+            .request(request)
+            .headers(headers)
+            .body(projectsJSON, Charset.defaultCharset())
+            .build()
 
         on(client.locale(projectId, localeId)).thenReturn(response)
 
@@ -91,13 +92,12 @@ class PhraseApiClientLocaleTest {
 
         val projectsJSON = Gson().toJson(expectedLocales)
 
-        val response = Response.create(
-            HttpStatus.SC_OK,
-            "OK",
-            headers,
-            projectsJSON,
-            StandardCharsets.UTF_8
-        )
+        val response = Response.builder()
+            .status(HttpStatus.SC_OK)
+            .request(request)
+            .headers(headers)
+            .body(projectsJSON, Charset.defaultCharset())
+            .build()
 
         on(client.locales(projectId)).thenReturn(response)
 

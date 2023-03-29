@@ -1,5 +1,7 @@
 # phrase-kotlin-client
-Kotlin Client for PhraseApp 
+
+Kotlin Client for PhraseApp.
+
 ## What is this?
 This project contains the task to handle the synchronization via API from [PhraseApp API v2](http://docs.phraseapp.com/api/v2/).
 
@@ -9,6 +11,13 @@ This project contains the task to handle the synchronization via API from [Phras
 
 [codecov-project-url]: https://codecov.io/gh/freenowtech/phrase-kotlin-client
 [codecov-badge-url]: https://codecov.io/gh/freenowtech/phrase-kotlin-client/branch/master/graph/badge.svg
+
+Supported Spring Boot versions:
+
+| Version | Spring Boot Version |
+|---------|---------------------|
+| 2.x     | 3.x                 |
+| 1.x     | 2.x                 |
 
 ## How to use it
 
