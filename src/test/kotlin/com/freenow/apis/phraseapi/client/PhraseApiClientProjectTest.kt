@@ -15,7 +15,6 @@ import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
 import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
 import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -23,15 +22,11 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class PhraseApiClientProjectTest {
-    private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+    private val client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
-    private var request: Request = mock(Request::class.java)
+    private val request: Request = mock(Request::class.java)
 
-    private var phraseApiClient: PhraseApiClient
-
-    init {
-        phraseApiClient = PhraseApiClientImpl(client)
-    }
+    private val phraseApiClient = PhraseApiClientImpl(client)
 
     @Test
     fun `Should return project when project exist`() {
@@ -95,7 +90,7 @@ class PhraseApiClientProjectTest {
 
         //THEN
         assertNotNull(actualProjects)
-        assertEquals(actualProjects!![0], actualProjects[0])
+        assertEquals(actualProjects[0], actualProjects[0])
         assertEquals(actualProjects[1], actualProjects[1])
     }
 
@@ -178,7 +173,7 @@ class PhraseApiClientProjectTest {
 
         //THEN
         assertNotNull(actualResponse)
-        assertEquals(actualResponse!!.name, expectedProject.name)
+        assertEquals(actualResponse.name, expectedProject.name)
     }
 
     @Test
@@ -239,7 +234,7 @@ class PhraseApiClientProjectTest {
 
         //THEN
         assertNotNull(actualResponse)
-        assertEquals(actualResponse!!.id, expectedProject.id)
+        assertEquals(actualResponse.id, expectedProject.id)
         assertNotEquals(actualResponse.name, expectedProject.name)
     }
 }

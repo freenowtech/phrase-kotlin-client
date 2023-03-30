@@ -61,7 +61,13 @@ class PhraseAppSyncTask(
     private fun updateLocaleFile(locale: PhraseLocale, branch: String) {
         try {
             val byteArray = client.downloadLocaleAsProperties(
-                config.projectId, locale.id, config.escapeSingleQuotes, branch)
+                config.projectId,
+                locale.id,
+                config.escapeSingleQuotes,
+                branch,
+                config.tags
+            )
+
             if (byteArray != null) {
                 val fileName = createFileName(locale.code)
                 val path = handleBranchPath(branch).resolve(fileName)
@@ -86,6 +92,7 @@ data class PhraseAppSyncTaskConfig @JvmOverloads constructor(
     val authKey: String,
     val projectId: String,
     val branches: List<String> = listOf("master"),
+    val tags: String?,
     val generatedResourcesFolder: String = "generated-resources/",
     val messagesFolder: String = "messages",
     val messagesFilePostfix: String = ".properties",

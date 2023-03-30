@@ -12,6 +12,7 @@ import com.freenow.apis.phraseapi.client.model.PhraseLocaleMessages
 import com.freenow.apis.phraseapi.client.model.PhraseLocales
 import com.freenow.apis.phraseapi.client.model.PhraseProject
 import com.freenow.apis.phraseapi.client.model.PhraseProjects
+import com.freenow.apis.phraseapi.client.model.PhraseTagWithStats
 import com.freenow.apis.phraseapi.client.model.Translation
 import com.freenow.apis.phraseapi.client.model.Translations
 import com.freenow.apis.phraseapi.client.model.UpdatePhraseProject
@@ -38,8 +39,13 @@ interface PhraseApiClient {
     fun downloadLocale(projectId: String, localeId: String, properties: DownloadPhraseLocaleProperties? = null)
         : PhraseLocaleMessages?
 
-    fun downloadLocaleAsProperties(projectId: String, localeId: String,
-                                   escapeSingleQuotes: Boolean, branch: String? = null): ByteArray?
+    fun downloadLocaleAsProperties(
+        projectId: String,
+        localeId: String,
+        escapeSingleQuotes: Boolean,
+        branch: String? = null,
+        tags: String? = null
+    ): ByteArray?
 
     fun deleteLocale(projectId: String, localeId: String, branch: String? = null)
 
@@ -59,4 +65,5 @@ interface PhraseApiClient {
 
     fun deleteKey(projectId: String, keyId: String, branch: String? = null): Boolean
 
+    fun getSingleTag(projectId: String, tagName: String): PhraseTagWithStats?
 }

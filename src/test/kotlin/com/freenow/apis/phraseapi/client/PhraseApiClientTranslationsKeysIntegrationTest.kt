@@ -57,7 +57,7 @@ class PhraseApiClientTranslationsKeysIntegrationTest {
         //THEN
         assertNotNull(branchTranslations)
         assertNotNull(masterTranslations)
-        assertNotEquals(branchTranslations?.get(0)?.id, masterTranslations?.get(0)?.id)
+        assertNotEquals(branchTranslations[0].id, masterTranslations[0].id)
     }
 
 
@@ -70,9 +70,9 @@ class PhraseApiClientTranslationsKeysIntegrationTest {
 
         //AND
         assertNotNull(masterKey)
-        assertNotNull(masterKey!!.id)
+        assertNotNull(masterKey.id)
         assertNotNull(branchKey)
-        assertNotNull(branchKey!!.id)
+        assertNotNull(branchKey.id)
 
         //WHEN
         val branchTranslation = phraseApiClient.createTranslation(
@@ -82,9 +82,9 @@ class PhraseApiClientTranslationsKeysIntegrationTest {
 
         //THEN
         assertNotNull(masterTranslation)
-        assertNotNull(masterTranslation!!.id)
+        assertNotNull(masterTranslation.id)
         assertNotNull(branchTranslation)
-        assertNotNull(branchTranslation!!.id)
+        assertNotNull(branchTranslation.id)
 
         //CLEAN UP
         phraseApiClient.deleteKey(projectId, masterKey.id)
@@ -101,9 +101,9 @@ class PhraseApiClientTranslationsKeysIntegrationTest {
 
         //AND
         assertNotNull(masterKey)
-        assertNotNull(masterKey!!.id)
+        assertNotNull(masterKey.id)
         assertNotNull(branchKey)
-        assertNotNull(branchKey!!.id)
+        assertNotNull(branchKey.id)
 
         //WHEN
         val masterResponse = phraseApiClient.deleteKey(projectId, masterKey.id)

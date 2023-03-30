@@ -1,36 +1,31 @@
 package com.freenow.apis.phraseapi.client
 
-import com.google.common.net.HttpHeaders
-import com.google.common.net.MediaType
-import com.google.gson.Gson
 import com.freenow.apis.phraseapi.client.model.CreateTranslation
 import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import com.freenow.apis.phraseapi.client.model.Translation
 import com.freenow.apis.phraseapi.client.model.TranslationKey
+import com.google.common.net.HttpHeaders
+import com.google.common.net.MediaType
+import com.google.gson.Gson
 import feign.Request
 import feign.Response
 import org.apache.commons.httpclient.HttpStatus
 import org.junit.Test
-import org.mockito.Mockito.`when` as on
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.withSettings
 import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
 import java.util.Locale
 import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import org.mockito.Mockito.`when` as on
 
 class PhraseApiClientTranslationTest {
-    private var client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
+    private val client: PhraseApi = mock(PhraseApi::class.java, withSettings().extraInterfaces(CacheApi::class.java))
 
-    private var request: Request = mock(Request::class.java)
+    private val request: Request = mock(Request::class.java)
 
-    private var phraseApiClient: PhraseApiClient
-
-    init {
-        phraseApiClient = PhraseApiClientImpl(client)
-    }
+    private val phraseApiClient = PhraseApiClientImpl(client)
 
     @Test
     fun `Should create translation with optional parameters`() {
@@ -63,12 +58,14 @@ class PhraseApiClientTranslationTest {
             .body(translationJSON, Charset.defaultCharset())
             .build()
 
-        on(client.createTranslation(
-            projectId = projectId,
-            localeId = localeId,
-            keyId = keyId,
-            content = translationContent
-        )).thenReturn(response)
+        on(
+            client.createTranslation(
+                projectId = projectId,
+                localeId = localeId,
+                keyId = keyId,
+                content = translationContent
+            )
+        ).thenReturn(response)
 
         val expectedTranslation = Translation(
             id = UUID.randomUUID().toString(),
@@ -89,9 +86,8 @@ class PhraseApiClientTranslationTest {
 
         //THEN
         assertNotNull(actualResponse)
-        assertEquals(actualResponse!!.content, expectedTranslation.content)
+        assertEquals(actualResponse.content, expectedTranslation.content)
     }
-
 
     @Test
     fun `Should create translation with only the required parameters`() {
@@ -122,12 +118,14 @@ class PhraseApiClientTranslationTest {
             .body(translationJSON, Charset.defaultCharset())
             .build()
 
-        on(client.createTranslation(
-            projectId = projectId,
-            localeId = localeId,
-            keyId = keyId,
-            content = translationContent
-        )).thenReturn(response)
+        on(
+            client.createTranslation(
+                projectId = projectId,
+                localeId = localeId,
+                keyId = keyId,
+                content = translationContent
+            )
+        ).thenReturn(response)
 
         val expectedTranslation = Translation(
             id = UUID.randomUUID().toString(),
@@ -148,6 +146,6 @@ class PhraseApiClientTranslationTest {
 
         //THEN
         assertNotNull(actualResponse)
-        assertEquals(actualResponse!!.content, expectedTranslation.content)
+        assertEquals(actualResponse.content, expectedTranslation.content)
     }
 }

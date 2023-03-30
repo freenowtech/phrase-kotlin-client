@@ -99,9 +99,14 @@ interface PhraseApi {
         @Param("branch") branch: String? = null
     ): Response
 
-    @RequestLine("GET /api/v2/projects/{projectId}/locales/{localeId}/download?file_format={fileFormat}" +
-        "&format_options[escape_single_quotes]={escapeSingleQuotes}&branch={branch}" +
-        "&fallback_locale_id={fallbackLocaleId}&include_empty_translations={includeEmptyTranslations}"
+    @RequestLine(
+        "GET /api/v2/projects/{projectId}/locales/{localeId}/download" +
+            "?file_format={fileFormat}" +
+            "&format_options[escape_single_quotes]={escapeSingleQuotes}" +
+            "&branch={branch}" +
+            "&fallback_locale_id={fallbackLocaleId}" +
+            "&include_empty_translations={includeEmptyTranslations}" +
+            "&tags={tags}"
     )
     fun downloadLocale(
         @Param("projectId") projectId: String,
@@ -110,7 +115,8 @@ interface PhraseApi {
         @Param("escapeSingleQuotes") escapeSingleQuotes: Boolean? = false,
         @Param("includeEmptyTranslations") includeEmptyTranslations: Boolean? = false,
         @Param("fallbackLocaleId") fallbackLocaleId: String? = null,
-        @Param("branch") branch: String? = null
+        @Param("branch") branch: String? = null,
+        @Param("tags") tags: String? = null
     ): Response
 
     //Translations
@@ -175,6 +181,12 @@ interface PhraseApi {
         @Param("branch") branch: String? = null
     ): Response
 
+    // Tags
+    @RequestLine("GET /api/v2/projects/{projectId}/tags/{tagName}")
+    fun getSingleTag(
+        @Param("projectId") projectId: String,
+        @Param("tagName") tagName: String
+    ): Response
 }
 
 interface CacheApi {

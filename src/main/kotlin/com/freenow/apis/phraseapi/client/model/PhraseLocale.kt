@@ -19,7 +19,8 @@ data class DownloadPhraseLocaleProperties(
     val escapeSingleQuotes: Boolean,
     val includeEmptyTranslations: Boolean,
     val fallbackLocaleId: String?,
-    val branch: String?
+    val branch: String?,
+    val tags: String? = null
 )
 
 data class PhraseLocale(
