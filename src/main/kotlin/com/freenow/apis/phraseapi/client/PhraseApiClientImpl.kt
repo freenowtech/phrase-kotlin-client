@@ -279,7 +279,7 @@ class PhraseApiClientImpl : PhraseApiClient {
             val warningMessage = key.plus("\n")
                 .plus("Status : ${response.status()}")
                 .plus("\n")
-                .plus("Headers : \n ${response.headers().map { it.toString().plus("\n") }}")
+                .plus("Headers : \n ${response.headers().map { "$it\n" }}")
                 .plus("\n")
                 .plus("Body : $message")
             log.warn(warningMessage)
