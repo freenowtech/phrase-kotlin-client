@@ -9,7 +9,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-@Suppress("TooGenericExceptionCaught","SwallowedException")
+@Suppress("TooGenericExceptionCaught", "SwallowedException")
 class PhraseAppSyncTask(
     private val config: PhraseAppSyncTaskConfig
 ) : Runnable {
@@ -98,4 +98,10 @@ data class PhraseAppSyncTaskConfig @JvmOverloads constructor(
     val messagesFilePostfix: String = ".properties",
     val messagesFilePrefix: String = "messages_",
     val escapeSingleQuotes: Boolean = false
-)
+) {
+    constructor(
+        url: String,
+        authKey: String,
+        projectId: String,
+    ) : this(url = url, authKey = authKey, projectId = projectId, tags = null)
+}
