@@ -21,9 +21,9 @@ class PhraseApiClientTranslationsKeysIntegrationTest {
     private var clientConfig: PhraseApiClientConfig
     private var branch: String
     private var projectId: String
+    private var keyId: String
     private var localeIdDe: String
     private var localeIdDeBranch: String
-
 
     init {
         //GIVEN
@@ -35,11 +35,11 @@ class PhraseApiClientTranslationsKeysIntegrationTest {
         clientConfig = PhraseApiClientConfig(cfg.host(), cfg.authToken())
         phraseApiClient = PhraseApiClientImpl(clientConfig)
         projectId = cfg.projectId()
+        keyId = cfg.keyId()
         branch = cfg.branch()
         localeIdDe = cfg.localeIdDe()
         localeIdDeBranch = cfg.localeIdDeBranch()
     }
-
 
     @Test
     fun `Should list translations`() {
@@ -47,12 +47,14 @@ class PhraseApiClientTranslationsKeysIntegrationTest {
         //WHEN
         val masterTranslations = phraseApiClient.translations(
             PhraseProject(projectId, projectName),
-            PhraseLocale(localeIdDe, localeName, localeCode))
+            PhraseLocale(localeIdDe, localeName, localeCode)
+        )
 
         val branchTranslations = phraseApiClient.translations(
             PhraseProject(projectId, projectName),
             PhraseLocale(localeIdDeBranch, localeName, localeCode),
-            branch)
+            branch
+        )
 
         //THEN
         assertNotNull(branchTranslations)
@@ -60,6 +62,26 @@ class PhraseApiClientTranslationsKeysIntegrationTest {
         assertNotEquals(branchTranslations[0].id, masterTranslations[0].id)
     }
 
+    @Test
+    fun `Should list translations by key`() {
+
+        //WHEN
+        val masterTranslations = phraseApiClient.translationsByKey(
+            projectId,
+            keyId
+        )
+
+        val branchTranslations = phraseApiClient.translationsByKey(
+            projectId,
+            keyId,
+            branch
+        )
+
+        //THEN
+        assertNotNull(branchTranslations)
+        assertNotNull(masterTranslations)
+        assertNotEquals(branchTranslations[0].id, masterTranslations[0].id)
+    }
 
     @Test
     fun `Should create keys and translations`() {
@@ -76,9 +98,11 @@ class PhraseApiClientTranslationsKeysIntegrationTest {
 
         //WHEN
         val branchTranslation = phraseApiClient.createTranslation(
-            projectId, localeIdDeBranch, branchKey.id ,  "test translation", branch)
+            projectId, localeIdDeBranch, branchKey.id, "test translation", branch
+        )
         val masterTranslation = phraseApiClient.createTranslation(
-            projectId, localeIdDe, masterKey.id ,  "test translation")
+            projectId, localeIdDe, masterKey.id, "test translation"
+        )
 
         //THEN
         assertNotNull(masterTranslation)
@@ -90,7 +114,6 @@ class PhraseApiClientTranslationsKeysIntegrationTest {
         phraseApiClient.deleteKey(projectId, masterKey.id)
         phraseApiClient.deleteKey(projectId, branchKey.id, branch)
     }
-
 
     @Test
     fun `Should create and delete keys`() {
@@ -113,7 +136,6 @@ class PhraseApiClientTranslationsKeysIntegrationTest {
         assert(masterResponse)
         assert(branchResponse)
     }
-
 
     @Test
     fun `Should search for keys`() {

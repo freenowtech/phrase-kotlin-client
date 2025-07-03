@@ -10,6 +10,9 @@ public interface TestConfig extends Config
     @DefaultValue("${ENV_PHRASE_PROJECTID}")
     String projectId();
 
+    @DefaultValue("${ENV_PHRASE_KEYID}")
+    String keyId();
+
     @DefaultValue("${ENV_PHRASE_BRANCH}")
     String branch();
 

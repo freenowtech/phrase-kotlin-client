@@ -136,6 +136,13 @@ interface PhraseApi {
         @Param("branch") branch: String? = null
     ): Response
 
+    @RequestLine("GET /api/v2/projects/{project_id}/keys/{key_id}/translations?branch={branch}")
+    fun translationsByKey(
+        @Param("project_id") projectId: String,
+        @Param("key_id") keyId: String,
+        @Param("branch") branch: String? = null
+    ): Response
+
 
     //Keys
     @RequestLine("POST /api/v2/projects/{project_id}/keys")
