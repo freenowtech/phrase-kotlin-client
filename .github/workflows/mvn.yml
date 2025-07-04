@@ -10,6 +10,10 @@ on:
       - release/**
       - develop/**
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   build:
     if: ${{ !startsWith(github.event.head_commit.message, '[maven-release-plugin] prepare') }}
