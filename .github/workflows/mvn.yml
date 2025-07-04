@@ -60,7 +60,7 @@ jobs:
       - name: Release and Publish
         uses: qcastel/github-actions-maven-release@v1.12.31
         with:
-          access-token: ${{ secrets.FREE_NOW_GITHUB_ACCESS_TOKEN }}
+          #access-token: ${{ secrets.FREE_NOW_GITHUB_ACCESS_TOKEN }}
           release-branch-name: "master"
           maven-args: "-DskipTests -DskipITs"
           git-release-bot-name: "free-now-github"
