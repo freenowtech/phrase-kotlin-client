@@ -4,6 +4,7 @@ import com.freenow.apis.phraseapi.client.model.CreateTranslation
 import com.freenow.apis.phraseapi.client.model.PhraseLocale
 import com.freenow.apis.phraseapi.client.model.Translation
 import com.freenow.apis.phraseapi.client.model.TranslationKey
+import com.freenow.apis.phraseapi.client.model.Translations
 import com.google.common.net.HttpHeaders
 import com.google.common.net.MediaType
 import com.google.gson.Gson
@@ -26,6 +27,51 @@ class PhraseApiClientTranslationTest {
     private val request: Request = mock(Request::class.java)
 
     private val phraseApiClient = PhraseApiClientImpl(client)
+
+    @Test
+    fun `Should translation with optional parameters`() {
+
+        //GIVEN
+        val projectId = UUID.randomUUID().toString()
+        val keyId = UUID.randomUUID().toString()
+        val branch = UUID.randomUUID().toString()
+
+        val translations = Translations()
+        translations.add(
+            Translation(
+                "id01",
+                "Test",
+                PhraseLocale(UUID.randomUUID().toString(), "en", "English"),
+                TranslationKey(UUID.randomUUID().toString(), "translation.key")
+            )
+        )
+
+        val headers = mapOf(
+            HttpHeaders.CONTENT_TYPE to listOf(MediaType.JSON_UTF_8.toString())
+        )
+
+        val translationJSON = Gson().toJson(translations)
+
+        val response = Response.builder()
+            .status(HttpStatus.SC_OK)
+            .headers(headers)
+            .request(request)
+            .body(translationJSON, Charset.defaultCharset())
+            .build()
+
+        on(client.translationsByKey(projectId, keyId, branch)).thenReturn(response)
+
+        //WHEN
+        val actualResponse = phraseApiClient.translationsByKey(projectId, keyId, branch)
+
+        //THEN
+        assertNotNull(actualResponse)
+        assertEquals(actualResponse.size, 1)
+        assertEquals(actualResponse.first().id, "id01")
+        assertEquals(actualResponse.first().content, "Test")
+        assertEquals(actualResponse.first().locale.name, "en")
+        assertEquals(actualResponse.first().key.name, "translation.key")
+    }
 
     @Test
     fun `Should create translation with optional parameters`() {

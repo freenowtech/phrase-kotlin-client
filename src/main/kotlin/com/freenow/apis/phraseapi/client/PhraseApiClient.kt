@@ -51,6 +51,8 @@ interface PhraseApiClient {
 
     fun translations(project: PhraseProject, locale: PhraseLocale, branch: String? = null): Translations?
 
+    fun translationsByKey(projectId: String, keyId: String, branch: String? = null): Translations?
+
     fun createTranslation(projectId: String, createTranslation: CreateTranslation): Translation?
 
     fun createTranslation(projectId: String, localeId: String,

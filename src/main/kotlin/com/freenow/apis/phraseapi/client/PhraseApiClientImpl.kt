@@ -200,6 +200,14 @@ class PhraseApiClientImpl : PhraseApiClient {
         return processResponse("GET/api/v2/projects/${project.id}/locales/${locale.id}/translations?branch=$branch", response)
     }
 
+    override fun translationsByKey(projectId: String, keyId: String, branch: String?): Translations? {
+        log.debug("Get translations for key [${keyId}] for " +
+            "[${processBranchNameForLog(branch)}] branch of " +
+            "project [${projectId}]")
+        val response = client.translationsByKey(projectId, keyId, branch)
+        return processResponse("GET/api/v2/projects/${projectId}/keys/${keyId}/translations?branch=$branch", response)
+    }
+
     override fun createTranslation(projectId: String, createTranslation: CreateTranslation): Translation? {
         log.debug("Creating the translation [${createTranslation.content}] for " +
             "locale [${createTranslation.localeId}] for " +
@@ -479,6 +487,8 @@ class PhraseApiClientImpl : PhraseApiClient {
 
         //TRANSLATION
         override fun translations(projectId: String, localeId: String, branch: String?): Response = target.translations(projectId, localeId, branch)
+
+        override fun translationsByKey(projectId: String, keyId: String, branch: String?): Response = target.translationsByKey(projectId, keyId, branch)
 
         override fun createTranslation(projectId: String, localeId: String, keyId: String, content: String, branch: String?): Response = target.createTranslation(projectId,
             localeId, keyId, content, branch)
